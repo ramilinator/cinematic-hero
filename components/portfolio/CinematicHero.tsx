@@ -65,7 +65,7 @@ export default function CinematicHero() {
 
       const stage = q(".ch-sticky")[0];
       const grid = q(".ch-grid");
-      const orangeWash = q(".ch-orange-wash");
+      const orangeWash = q(".ch-ship-flash");
       const ship = q(".ch-ship-scene");
       const nameGroup = q(".ch-name-group");
       const ramil = q(".ch-name-ramil");
@@ -176,18 +176,7 @@ export default function CinematicHero() {
         2.65,
       );
 
-      // SCENE 3 — Smooth, gradual background color transition
-      tl.to(
-        grid,
-        {
-          backgroundColor: "#f16b3b",
-          duration: 2.8,
-          ease: "none",
-        },
-        2.4,
-      );
-
-      // SCENE 3 — Background turns orange first.
+      // SCENE 3 — Orange transition
       tl.to(
         grid,
         {
@@ -195,67 +184,58 @@ export default function CinematicHero() {
           duration: 1.45,
           ease: "none",
         },
-        2.55,
+        2.4,
       );
 
-      // Ship starts ascending after the orange transition finishes.
+      // SCENE 4 — Ship launches completely off-screen
       tl.to(
         ship,
         {
-          y: "-130vh",
+          y: "-160svh",
+          scale: 0.55,
           autoAlpha: 0,
-          duration: 1.3,
-          ease: "power2.in",
+          duration: 1.2,
+          ease: "power3.in",
         },
         4.0,
       );
 
-      // SCENE 4 — Caricature appears after the ship leaves.
-      tl.to(
-        portrait,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        5.3,
-      );
+      // Reveal the portrait
+      tl.to(portrait, {
+        autoAlpha: 1,
+        scale: 1,
+        duration: 1,
+        ease: "power3.out",
+      });
 
-      // SCENE 4 — Caricature grows into view.
-      tl.to(
-        portrait,
-        {
-          autoAlpha: 1,
-          scale: 1,
-          duration: 0.75,
-          ease: "power3.out",
-        },
-        4.0,
-      );
+      const isMobile = window.matchMedia("(max-width: 600px)").matches;
 
-      // SCENE 5 — Four story popups appear one at a time.
-
+      // Reveal each story after the portrait animation
       stories.forEach((item, index) => {
-        const start = 4.95 + index * 0.72;
-
         gsap.set(item, {
           autoAlpha: 0,
-          x: index % 2 === 0 ? -30 : 30,
-          y: 0,
-          scale: 1,
+          x: isMobile ? 0 : index % 2 === 0 ? -30 : 30,
+          y: isMobile ? 14 : 0,
+          scale: isMobile ? 0.98 : 1,
         });
 
-        tl.to(
-          item,
-          {
-            autoAlpha: 1,
-            x: 0,
-            duration: 0.35,
-            ease: "power2.out",
-          },
-          start,
-        );
+        if (isMobile && index > 0) {
+          tl.to(stories[index - 1], {
+            autoAlpha: 0,
+            y: -10,
+            duration: 0.18,
+            ease: "power1.in",
+          });
+        }
+
+        tl.to(item, {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.35,
+          ease: "power2.out",
+        });
       });
     }, sectionRef);
 
@@ -370,13 +350,13 @@ export default function CinematicHero() {
           </svg>
         </div>
 
-        <div className="ch-scene-label">
-          <span className="ch-scene-label-dot" />
-          <span>SCENE 01 / ASCENSION PROTOCOL</span>
-        </div>
-
         {/* Scene 2: name arrives from opposite directions */}
         <div className="ch-name-group" aria-hidden="true">
+          <div className="ch-scene-label">
+            <span className="ch-scene-label-dot" />
+            <span>SCENE 01 / ASCENSION PROTOCOL</span>
+          </div>
+
           <div className="ch-name-line ch-name-line-top">
             <span className="ch-name ch-name-ramil">RAMIL</span>
           </div>
@@ -395,25 +375,19 @@ export default function CinematicHero() {
 
         {/* Scene 4: centered portrait */}
         <div className="ch-portrait-scene">
-          <div className="ch-portrait-frame">
-            <div className="ch-portrait-grid" aria-hidden="true" />
-
-            <div className="ch-portrait-image">
-              <Image
-                src="/images/caricature.png"
-                alt="Ramil Aoanan caricature portrait"
-                fill
-                priority
-                sizes="(max-width: 600px) 75vw, (max-width: 1024px) 45vw, 420px"
-                className="ch-portrait-img"
-              />
-            </div>
+          <div className="ch-portrait-image">
+            <Image
+              src="/images/caricature.png"
+              alt="Ramil Aoanan caricature portrait"
+              fill
+              priority
+              sizes="(max-width: 600px) 75vw, (max-width: 1024px) 45vw, 420px"
+              className="ch-portrait-img"
+            />
           </div>
         </div>
 
-        {/* Scene 5: four persistent story cards around the portrait */}
-
-        {/* Scene 5: centered story group */}
+        {/* Scene 5: Story messages */}
         <div className="ch-story-stage">
           <div className="ch-story-grid" aria-live="polite">
             {storyItems.map((item) => {
@@ -427,7 +401,7 @@ export default function CinematicHero() {
                   </div>
 
                   <div className="ch-story-icon">
-                    <Icon size={23} strokeWidth={1.7} />
+                    <Icon aria-hidden="true" size={17} strokeWidth={1.7} />
                   </div>
 
                   <h2>{item.title}</h2>

@@ -1,49 +1,54 @@
+/* =========================================================
+   CINEMATIC HERO — RESPONSIVE BASE
+   ========================================================= */
+
 .ch-section {
     position: relative;
-    min-height: 650svh;
+    height: 850vh;
+    min-height: 850svh;
     isolation: isolate;
+    overflow: clip;
     color: #29251f;
     background: #f7f0e5;
 }
 
 .ch-sticky {
-    position: sticky;
-    top: 0;
+    position: relative;
     width: 100%;
+    height: 100vh;
     height: 100svh;
-    min-height: 560px;
+    min-height: 540px;
     overflow: hidden;
     isolation: isolate;
-    background: #f7f0e5;
+    background: #fffaf2;
 }
-
-
 
 .ch-grid {
+    position: absolute;
+    inset: -2000px 0 0;
+    z-index: 0;
     background-color: #fffaf2;
-
     background-image:
-        linear-gradient(rgba(20, 20, 20, 0.12) 1px,
-            transparent 1px),
-        linear-gradient(90deg,
-            rgba(20, 20, 20, 0.12) 1px,
-            transparent 1px);
-
+        linear-gradient(rgba(41, 37, 31, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(41, 37, 31, 0.12) 1px, transparent 1px);
     background-size: 48px 48px;
     background-position: center 0;
+    will-change: background-position, background-color;
 }
-
 
 .ch-grain {
     position: absolute;
-    z-index: 15;
     inset: 0;
+    z-index: 15;
     pointer-events: none;
     opacity: 0.055;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
 }
 
-/* Persistent interface */
+/* =========================================================
+   PERSISTENT HUD
+   ========================================================= */
+
 .ch-top-status {
     position: absolute;
     z-index: 30;
@@ -58,10 +63,16 @@
     letter-spacing: 0.13em;
 }
 
-.ch-top-status-dot {
+.ch-top-status-dot,
+.ch-scene-label-dot {
+    flex: 0 0 auto;
     width: 7px;
     height: 7px;
     border-radius: 50%;
+    background: #f16b3b;
+}
+
+.ch-top-status-dot {
     background: #4d7854;
     box-shadow: 0 0 0 4px rgba(77, 120, 84, 0.12);
 }
@@ -102,6 +113,7 @@
 }
 
 .ch-scroll-hint svg {
+    flex: 0 0 auto;
     animation: ch-scroll-bob 1.4s ease-in-out infinite;
 }
 
@@ -137,13 +149,18 @@
     background: rgba(41, 37, 31, 0.5);
 }
 
-/* Scene 1: spaceship */
+/* =========================================================
+   SCENE 1 — SPACECRAFT
+   ========================================================= */
+
 .ch-ship-scene {
     position: absolute;
     inset: 0;
+    z-index: 3;
     display: grid;
     place-items: center;
     pointer-events: none;
+    will-change: transform, opacity;
 }
 
 .ch-ship {
@@ -151,10 +168,10 @@
     z-index: 3;
     display: block;
     width: clamp(150px, 25vw, 290px);
+    max-width: 65vw;
     height: auto;
     overflow: visible;
     filter: drop-shadow(0 16px 15px rgba(41, 37, 31, 0.13));
-    will-change: transform, opacity;
 }
 
 .ch-ship-glow {
@@ -186,133 +203,75 @@
     transform: translateX(-50%);
 }
 
-.ch-scene-label-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #f16b3b;
-}
-
+/* =========================================================
+   SCENE 2 — LARGE TYPOGRAPHY
+   ========================================================= */
 
 .ch-name-group {
     position: absolute;
     inset: 0;
-    z-index: 5;
+    z-index: 4;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
     pointer-events: none;
+}
+
+.ch-name-line {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    overflow: visible;
+}
+
+.ch-name-line-top {
+    justify-content: flex-end;
+    padding-right: 11%;
+}
+
+.ch-name-line-bottom {
+    justify-content: flex-start;
+    padding-left: 6%;
+    margin-top: 0.08em;
+}
+
+.ch-name {
+    display: block;
+    margin: 0;
+    color: #29251f;
+    font-size: clamp(78px, 17vw, 240px);
+    font-weight: 950;
+    line-height: 0.82;
+    letter-spacing: -0.095em;
+    white-space: nowrap;
+    will-change: transform, opacity;
 }
 
 .ch-name-ramil,
 .ch-name-aoanan {
-    position: absolute;
-    left: 50%;
+    position: relative;
+    top: auto;
+    left: auto;
     width: max-content;
-    max-width: 100%;
+    max-width: none;
     margin: 0;
-    line-height: 0.82;
     text-align: center;
     white-space: nowrap;
-}
-
-.ch-name-ramil {
-    top: calc(50% - 0.02em);
-    transform: translate(-50%, -100%);
-}
-
-.ch-name-aoanan {
-    top: calc(50% + 0.02em);
-    transform: translate(-50%, 0);
-}
-
-
-.ch-section {
-    position: relative;
-    height: 850vh;
-}
-
-.ch-sticky {
-    position: relative;
-    height: 100svh;
-    width: 100%;
-    overflow: hidden;
-}
-
-.ch-grid {
-    position: absolute;
-    inset: -2000px 0 0;
-    z-index: 0;
-    background-position: center 0;
-    will-change: background-position;
-}
-
-.ch-orange-wash {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: #ff6a00;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.ch-ship-scene,
-.ch-name-group,
-.ch-portrait-scene,
-.ch-story-stage {
-    z-index: 2;
-}
-
-.ch-name-group {
-    overflow: hidden;
-}
-
-.ch-name-ramil,
-.ch-name-aoanan {
-    will-change: transform;
-}
-
-
-
-.ch-portrait-scene {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    overflow: hidden;
-    pointer-events: none;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translate3d(0, 12vh, 0) scale(0.35);
-    transform-origin: center 70%;
     will-change: transform, opacity;
 }
 
-.ch-portrait-scene img {
-    display: block;
-    width: min(72vw, 760px);
-    height: auto;
-    max-height: 94vh;
-    object-fit: contain;
-    object-position: center bottom;
+.ch-name-aoanan {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #29251f;
 }
 
-
-
-.ch-story-item {
-    will-change: transform, opacity;
+.ch-name-period {
+    color: #f16b3b;
+    -webkit-text-stroke: 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-    .ch-grid {
-        will-change: auto;
-    }
-}
-
 
 .ch-name-kicker,
 .ch-name-footer {
@@ -332,77 +291,92 @@
     margin-top: clamp(20px, 4vh, 40px);
 }
 
-.ch-name-line {
-    position: relative;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
+/* =========================================================
+   SCENE 3 — TRANSITION FLASH
+   ========================================================= */
+
+.ch-orange-wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #f16b3b;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.ch-name {
-    display: block;
-    margin: 0;
-    color: #29251f;
-    font-size: clamp(78px, 17vw, 240px);
-    font-weight: 950;
-    line-height: 0.82;
-    letter-spacing: -0.095em;
-    white-space: nowrap;
+.ch-ship-flash {
+    position: absolute;
+    inset: -10%;
+    z-index: 12;
+    background: #f7f0e5;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* =========================================================
+   SCENE 4 — CENTERED PORTRAIT
+   Keep the scene full-screen so GSAP scale preserves centering.
+   ========================================================= */
+
+.ch-portrait-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform-origin: center center;
     will-change: transform, opacity;
 }
 
-.ch-name-line-top {
-    justify-content: flex-end;
-    padding-right: 11%;
-}
-
-.ch-name-line-bottom {
-    justify-content: flex-start;
-    padding-left: 6%;
-    margin-top: 0.08em;
-}
-
-.ch-name-aoanan {
-    color: transparent;
-    -webkit-text-stroke: 1.5px #29251f;
-}
-
-.ch-name-period {
-    color: #f16b3b;
-    -webkit-text-stroke: 0;
-}
-
-/* Scene 3: camera flash */
-.ch-ship-flash {
-    position: absolute;
-    z-index: 12;
-    inset: -10%;
-    pointer-events: none;
-    background: #f7f0e5;
-    opacity: 0;
-}
-
-/* Scene 4: portrait */
-.ch-portrait-scene {
-    position: absolute;
-    z-index: 7;
-    top: 50%;
-    left: 50%;
+.ch-portrait-frame {
+    position: relative;
     width: min(36vw, 420px);
     min-width: 260px;
     aspect-ratio: 0.8;
-    transform: translate(-50%, -50%);
+    overflow: visible;
+    border: 1px solid rgba(41, 37, 31, 0.5);
+    background: rgba(247, 240, 229, 0.12);
 }
 
-.ch-portrait-frame {
+.ch-portrait-grid {
     position: absolute;
     inset: 0;
-    overflow: visible;
-    will-change: transform;
+    z-index: 0;
+    background-image:
+        linear-gradient(rgba(41, 37, 31, 0.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(41, 37, 31, 0.14) 1px, transparent 1px);
+    background-size: 24px 24px;
 }
 
+.ch-portrait-image {
+    position: absolute;
+    z-index: 1;
+    inset: 24px 18px;
+    overflow: hidden;
+}
+
+.ch-portrait-img {
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+
+/* Optional decorative frame corners, if used in your JSX */
+.ch-frame-tl,
+.ch-frame-tr,
+.ch-frame-bl,
+.ch-frame-br {
+    position: absolute;
+    z-index: 4;
+    width: 22px;
+    height: 22px;
+    border-color: #29251f;
+    border-style: solid;
+}
 
 .ch-frame-tl {
     top: -6px;
@@ -451,18 +425,6 @@
     bottom: 12px;
 }
 
-.ch-portrait-image {
-    position: absolute;
-    inset: 35px 22px 36px;
-    overflow: hidden;
-    will-change: transform;
-}
-
-.ch-portrait-img {
-    object-fit: contain;
-    object-position: center bottom;
-}
-
 .ch-orbit {
     position: absolute;
     z-index: 8;
@@ -493,381 +455,317 @@
     background: #29251f;
 }
 
-/* Scene 5: sequential messages */
-
-/* Mobile */
-@media (max-width: 600px) {
-    .ch-sticky {
-        min-height: 540px;
-    }
-
-    .ch-grid {
-        background-size: 30px 30px;
-    }
-
-    .ch-top-status {
-        top: 21px;
-        left: 17px;
-        font-size: 8px;
-        letter-spacing: 0.07em;
-    }
-
-    .ch-scroll-hint {
-        right: 17px;
-        bottom: 22px;
-        font-size: 7px;
-        letter-spacing: 0.04em;
-    }
-
-    .ch-scene-counter {
-        bottom: 22px;
-        left: 17px;
-        font-size: 8px;
-    }
-
-    .ch-counter-line {
-        width: 18px;
-    }
-
-    .ch-scene-label {
-        top: 85px;
-        font-size: 7px;
-        letter-spacing: 0.1em;
-    }
-
-    .ch-ship {
-        width: clamp(145px, 43vw, 220px);
-    }
-
-    .ch-ship-glow {
-        width: 85vw;
-    }
-
-    .ch-name-group {
-        padding-inline: 10px;
-    }
-
-    .ch-name-kicker,
-    .ch-name-footer {
-        font-size: 7px;
-        letter-spacing: 0.1em;
-    }
-
-    .ch-name {
-        font-size: clamp(51px, 15.6vw, 92px);
-        letter-spacing: -0.09em;
-    }
-
-    .ch-name-line-top {
-        padding-right: 3%;
-    }
-
-    .ch-name-line-bottom {
-        padding-left: 1%;
-    }
-
-    .ch-name-aoanan {
-        -webkit-text-stroke-width: 1px;
-    }
-
-    .ch-portrait-scene {
-        width: min(72vw, 320px);
-        min-width: 225px;
-    }
-
-    .ch-portrait-image {
-        inset: 32px 14px 34px;
-    }
-
-    .ch-portrait-detail {
-        right: 8px;
-        left: 8px;
-        font-size: 7px;
-        letter-spacing: 0.04em;
-    }
-
-    .ch-portrait-top {
-        top: 9px;
-    }
-
-    .ch-portrait-bottom {
-        bottom: 9px;
-    }
-
-    .ch-orbit {
-        width: 27px;
-        height: 27px;
-        font-size: 14px;
-    }
-
-    .ch-story-item {
-        width: min(390px, 84vw);
-        padding: 22px;
-    }
-
-    .ch-story-topline {
-        font-size: 8px;
-        letter-spacing: 0.06em;
-    }
-
-    .ch-story-icon {
-        width: 40px;
-        height: 40px;
-        margin-top: 19px;
-    }
-
-    .ch-story-item h2 {
-        margin-top: 17px;
-        font-size: clamp(27px, 8vw, 38px);
-    }
-
-    .ch-story-item p {
-        font-size: 13px;
-    }
-
-    .ch-story-cta {
-        margin-top: 18px;
-    }
-}
-
-@media (max-width: 360px) {
-    .ch-name {
-        font-size: 14.8vw;
-    }
-
-    .ch-name-kicker,
-    .ch-name-footer {
-        font-size: 6px;
-    }
-
-    .ch-story-item {
-        width: 88vw;
-        padding: 18px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .ch-scroll-hint svg {
-        animation: none;
-    }
-}
-
-
-/* Caricature stays behind the ship */
-.ch-portrait-scene {
-    position: absolute;
-    z-index: 1;
-}
-
-/* Ship stays in front */
-.ch-ship-scene {
-    position: absolute;
-    z-index: 3;
-}
-
-/* Names remain above both during their scene */
-.ch-name-group {
-    position: absolute;
-    z-index: 4;
-}
-
-
-/* Square grid background — back layer */
-.ch-grid {
-    position: absolute;
-    inset: -2000px 0 0;
-    z-index: 0;
-}
-
-/* RAMIL and AOANAN — behind the ship */
-.ch-name-group {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-
-
-/* Ship — foreground */
-.ch-ship-scene {
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-}
-
-
-/* Shared story card styles */
-.ch-story-item {
-    position: absolute;
-    top: 50%;
-    width: clamp(240px, 27vw, 350px);
-    margin: 0;
-    padding: 18px 20px;
-    color: #29251f;
-    text-align: left;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    will-change: transform, opacity;
-}
-
-/* Left side of the hero */
-.ch-story-item--left {
-    left: clamp(24px, 6vw, 100px);
-    right: auto;
-}
-
-/* Right side of the hero */
-.ch-story-item--right {
-    left: auto;
-    right: clamp(24px, 6vw, 100px);
-}
-
-/* Keep cards outside the centered portrait on smaller screens */
-@media (max-width: 760px) {
-    .ch-story-item {
-        top: auto;
-        bottom: 8%;
-        width: min(43vw, 240px);
-        padding: 10px;
-    }
-
-    .ch-story-item--left {
-        left: 3%;
-        right: auto;
-    }
-
-    .ch-story-item--right {
-        left: auto;
-        right: 3%;
-    }
-
-    .ch-story-item h2 {
-        font-size: clamp(14px, 3.5vw, 20px);
-    }
-
-    .ch-story-item p {
-        font-size: 12px;
-    }
-}
-
 
 /* =========================================================
-   STORY SECTION — SINGLE SOURCE OF TRUTH
+   SCENE 5 — CUTE MINI STORY CARDS
    ========================================================= */
 
 .ch-story-stage {
     position: absolute;
     inset: 0;
-    z-index: 10;
+    z-index: 8;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 72px 32px;
+    padding: 24px;
     pointer-events: none;
 }
 
+
 .ch-story-grid {
-    width: min(100%, 820px);
     display: grid;
+    width: min(100%, 680px);
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 32px;
-    margin: 0 auto;
+
+    /* Horizontal gap between cards */
+    column-gap: 300px;
+
+    /* Vertical gap to make room for the portrait */
+    row-gap: clamp(100px, 18vh, 190px);
+
     align-content: center;
+    margin: 0 auto;
 }
 
+
+
+
+/* Mini card */
 .ch-story-item {
     position: relative;
-    inset: auto;
-    width: 100%;
     min-width: 0;
-    max-width: none;
-    margin: 0;
-    padding: clamp(16px, 2vw, 26px);
-    border: 1px solid rgba(41, 37, 31, 0.65);
-    background: rgba(247, 240, 229, 0.96);
-    box-shadow: 7px 7px 0 rgba(41, 37, 31, 0.08);
+    padding: 15px 16px 16px;
+    overflow: hidden;
+
+    border: 1px solid rgba(41, 37, 31, 0.16);
+    border-radius: 14px;
+
+    background: rgba(255, 250, 242, 0.96);
     color: #29251f;
+
+    box-shadow:
+        0 4px 0 rgba(41, 37, 31, 0.05),
+        0 10px 25px rgba(41, 37, 31, 0.07);
+
     text-align: left;
+
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     will-change: transform, opacity;
+
+    transition:
+        box-shadow 220ms ease,
+        border-color 220ms ease;
 }
 
-/* Preserve card content styles */
+/* Small orange decorative corner */
+.ch-story-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16px;
+    width: 34px;
+    height: 3px;
+    border-radius: 0 0 5px 5px;
+    background: #f16b3b;
+}
+
+/* Tiny metadata row */
 .ch-story-topline {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(41, 37, 31, 0.25);
+    gap: 8px;
+
+    padding-bottom: 9px;
+    border-bottom: 1px solid rgba(41, 37, 31, 0.10);
+
     font-family: monospace;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.07em;
+    color: #817466;
 }
 
+/* Cute icon badge */
 .ch-story-icon {
     display: grid;
-    width: 42px;
-    height: 42px;
-    margin-top: 16px;
+    width: 34px;
+    height: 34px;
+    margin-top: 12px;
     place-items: center;
-    border: 1px solid #29251f;
-    color: #29251f;
-    background: #f16b3b;
+
+    border: 1px solid rgba(241, 107, 59, 0.22);
+    border-radius: 10px;
+
+    background: #fff0e7;
+    color: #e85f31;
 }
 
+.ch-story-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* Compact heading */
 .ch-story-item h2 {
-    margin: 16px 0 10px;
-    font-size: clamp(22px, 2.7vw, 34px);
-    font-weight: 950;
-    line-height: 0.98;
-    letter-spacing: -0.055em;
+    margin: 11px 0 6px;
+
+    font-size: clamp(16px, 1.6vw, 20px);
+    font-weight: 850;
+    line-height: 1.05;
+    letter-spacing: -0.045em;
+
+    overflow-wrap: anywhere;
 }
 
+/* Description */
 .ch-story-item p {
     margin: 0;
-    color: #665d51;
-    font-size: 13px;
-    line-height: 1.65;
+    max-width: 34ch;
+
+    color: #75695c;
+    font-size: 11px;
+    line-height: 1.55;
 }
 
-/* Mobile: a single column below the portrait */
-@media (max-width: 760px) {
-    .ch-story-stage {
-        align-items: flex-start;
-        justify-content: center;
-        padding: 0 20px 40px;
-    }
 
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (min-width: 601px) and (max-width: 900px) {
     .ch-story-grid {
-        width: 100%;
-        max-width: 460px;
-        grid-template-columns: minmax(0, 1fr);
+        width: min(100%, 500px);
         gap: 12px;
-        margin-top: 68vh;
     }
 
     .ch-story-item {
-        padding: 14px 16px;
-    }
-
-    .ch-story-icon {
-        width: 34px;
-        height: 34px;
-        margin-top: 12px;
+        padding: 13px;
     }
 
     .ch-story-item h2 {
-        margin-top: 12px;
-        font-size: clamp(21px, 6vw, 29px);
+        font-size: 17px;
+    }
+}
+
+/* =========================================================
+   MOBILE — SMALL, COMPACT CARDS
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .ch-story-stage {
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0 16px 68px;
+    }
+
+    .ch-story-grid {
+        position: relative;
+        display: block;
+
+        width: 100%;
+        max-width: 340px;
+        height: 175px;
+
+        margin: 0 auto;
+    }
+
+    .ch-story-item {
+        position: absolute;
+        inset: 0;
+
+        width: 100%;
+        height: max-content;
+        max-height: 100%;
+        overflow: auto;
+
+        padding: 11px 13px;
+        border-radius: 12px;
+
+        box-shadow:
+            0 3px 0 rgba(41, 37, 31, 0.04),
+            0 8px 20px rgba(41, 37, 31, 0.06);
+    }
+
+    .ch-story-item::before {
+        left: 13px;
+        width: 27px;
+        height: 2px;
+    }
+
+    .ch-story-topline {
+        gap: 6px;
+        padding-bottom: 7px;
+        font-size: 7px;
+        letter-spacing: 0.04em;
+    }
+
+    .ch-story-icon {
+        width: 28px;
+        height: 28px;
+        margin-top: 8px;
+        border-radius: 8px;
+    }
+
+    .ch-story-icon svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .ch-story-item h2 {
+        margin: 8px 0 5px;
+        font-size: clamp(17px, 5vw, 21px);
+        line-height: 1.05;
     }
 
     .ch-story-item p {
-        font-size: 12px;
+        font-size: 10px;
+        line-height: 1.45;
+    }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+    .ch-story-stage {
+        padding-inline: 12px;
+        padding-bottom: 62px;
+    }
+
+    .ch-story-grid {
+        height: 160px;
+    }
+
+    .ch-story-item {
+        padding: 10px 11px;
+    }
+
+    .ch-story-item h2 {
+        font-size: 17px;
+    }
+
+    .ch-story-item p {
+        font-size: 10px;
+    }
+}
+
+/* =========================================================
+   SHORT LANDSCAPE SCREENS
+   ========================================================= */
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .ch-story-stage {
+        align-items: center;
+        padding: 40px 16px;
+    }
+
+    .ch-story-grid {
+        width: min(100%, 600px);
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .ch-story-item {
+        position: relative;
+        inset: auto;
+        padding: 9px 11px;
+    }
+
+    .ch-story-icon {
+        width: 25px;
+        height: 25px;
+        margin-top: 7px;
+    }
+
+    .ch-story-item h2 {
+        margin-top: 7px;
+        font-size: 16px;
+    }
+
+    .ch-story-item p {
+        font-size: 10px;
+    }
+}
+
+/* Desktop: leave a clear space for the centered portrait */
+@media (min-width: 901px) {
+    .ch-story-grid {
+        width: min(100%, 1000px);
+        column-gap: clamp(260px, 30vw, 440px);
+        row-gap: clamp(100px, 18vh, 190px);
+    }
+}
+
+/* Keep tablet and mobile layouts compact */
+@media (max-width: 900px) {
+    .ch-story-grid {
+        column-gap: 16px;
+        row-gap: 16px;
     }
 }
