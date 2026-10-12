@@ -1,0 +1,873 @@
+.ch-section {
+    position: relative;
+    min-height: 650svh;
+    isolation: isolate;
+    color: #29251f;
+    background: #f7f0e5;
+}
+
+.ch-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+    isolation: isolate;
+    background: #f7f0e5;
+}
+
+
+
+.ch-grid {
+    background-color: #fffaf2;
+
+    background-image:
+        linear-gradient(rgba(20, 20, 20, 0.12) 1px,
+            transparent 1px),
+        linear-gradient(90deg,
+            rgba(20, 20, 20, 0.12) 1px,
+            transparent 1px);
+
+    background-size: 48px 48px;
+    background-position: center 0;
+}
+
+
+.ch-grain {
+    position: absolute;
+    z-index: 15;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* Persistent interface */
+.ch-top-status {
+    position: absolute;
+    z-index: 30;
+    top: 27px;
+    left: clamp(18px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+}
+
+.ch-top-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4d7854;
+    box-shadow: 0 0 0 4px rgba(77, 120, 84, 0.12);
+}
+
+.ch-progress-track {
+    position: absolute;
+    z-index: 30;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3px;
+    overflow: hidden;
+    background: rgba(41, 37, 31, 0.08);
+}
+
+.ch-progress-fill {
+    width: 100%;
+    height: 100%;
+    background: #f16b3b;
+    transform: scaleX(0);
+    transform-origin: left center;
+}
+
+.ch-scroll-hint {
+    position: absolute;
+    z-index: 30;
+    right: clamp(18px, 4vw, 60px);
+    bottom: 26px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-decoration: none;
+}
+
+.ch-scroll-hint svg {
+    animation: ch-scroll-bob 1.4s ease-in-out infinite;
+}
+
+@keyframes ch-scroll-bob {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(5px);
+    }
+}
+
+.ch-scene-counter {
+    position: absolute;
+    z-index: 30;
+    bottom: 27px;
+    left: clamp(18px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.ch-counter-line {
+    width: 30px;
+    height: 1px;
+    background: rgba(41, 37, 31, 0.5);
+}
+
+/* Scene 1: spaceship */
+.ch-ship-scene {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.ch-ship {
+    position: relative;
+    z-index: 3;
+    display: block;
+    width: clamp(150px, 25vw, 290px);
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 16px 15px rgba(41, 37, 31, 0.13));
+    will-change: transform, opacity;
+}
+
+.ch-ship-glow {
+    position: absolute;
+    z-index: 1;
+    width: min(55vw, 480px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+            rgba(241, 107, 59, 0.22),
+            rgba(241, 107, 59, 0.08) 38%,
+            transparent 70%);
+    filter: blur(15px);
+}
+
+.ch-scene-label {
+    position: absolute;
+    z-index: 5;
+    top: 105px;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.ch-scene-label-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f16b3b;
+}
+
+
+.ch-name-group {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.ch-name-ramil,
+.ch-name-aoanan {
+    position: absolute;
+    left: 50%;
+    width: max-content;
+    max-width: 100%;
+    margin: 0;
+    line-height: 0.82;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.ch-name-ramil {
+    top: calc(50% - 0.02em);
+    transform: translate(-50%, -100%);
+}
+
+.ch-name-aoanan {
+    top: calc(50% + 0.02em);
+    transform: translate(-50%, 0);
+}
+
+
+.ch-section {
+    position: relative;
+    height: 850vh;
+}
+
+.ch-sticky {
+    position: relative;
+    height: 100svh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.ch-grid {
+    position: absolute;
+    inset: -2000px 0 0;
+    z-index: 0;
+    background-position: center 0;
+    will-change: background-position;
+}
+
+.ch-orange-wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: #ff6a00;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ch-ship-scene,
+.ch-name-group,
+.ch-portrait-scene,
+.ch-story-stage {
+    z-index: 2;
+}
+
+.ch-name-group {
+    overflow: hidden;
+}
+
+.ch-name-ramil,
+.ch-name-aoanan {
+    will-change: transform;
+}
+
+
+
+.ch-portrait-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: none;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, 12vh, 0) scale(0.35);
+    transform-origin: center 70%;
+    will-change: transform, opacity;
+}
+
+.ch-portrait-scene img {
+    display: block;
+    width: min(72vw, 760px);
+    height: auto;
+    max-height: 94vh;
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+
+
+.ch-story-item {
+    will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ch-grid {
+        will-change: auto;
+    }
+}
+
+
+.ch-name-kicker,
+.ch-name-footer {
+    margin: 0;
+    font-family: monospace;
+    font-size: clamp(8px, 0.8vw, 10px);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-align: center;
+}
+
+.ch-name-kicker {
+    margin-bottom: clamp(18px, 3vh, 35px);
+}
+
+.ch-name-footer {
+    margin-top: clamp(20px, 4vh, 40px);
+}
+
+.ch-name-line {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.ch-name {
+    display: block;
+    margin: 0;
+    color: #29251f;
+    font-size: clamp(78px, 17vw, 240px);
+    font-weight: 950;
+    line-height: 0.82;
+    letter-spacing: -0.095em;
+    white-space: nowrap;
+    will-change: transform, opacity;
+}
+
+.ch-name-line-top {
+    justify-content: flex-end;
+    padding-right: 11%;
+}
+
+.ch-name-line-bottom {
+    justify-content: flex-start;
+    padding-left: 6%;
+    margin-top: 0.08em;
+}
+
+.ch-name-aoanan {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #29251f;
+}
+
+.ch-name-period {
+    color: #f16b3b;
+    -webkit-text-stroke: 0;
+}
+
+/* Scene 3: camera flash */
+.ch-ship-flash {
+    position: absolute;
+    z-index: 12;
+    inset: -10%;
+    pointer-events: none;
+    background: #f7f0e5;
+    opacity: 0;
+}
+
+/* Scene 4: portrait */
+.ch-portrait-scene {
+    position: absolute;
+    z-index: 7;
+    top: 50%;
+    left: 50%;
+    width: min(36vw, 420px);
+    min-width: 260px;
+    aspect-ratio: 0.8;
+    transform: translate(-50%, -50%);
+}
+
+.ch-portrait-frame {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+    will-change: transform;
+}
+
+
+.ch-frame-tl {
+    top: -6px;
+    left: -6px;
+    border-width: 2px 0 0 2px;
+}
+
+.ch-frame-tr {
+    top: -6px;
+    right: -6px;
+    border-width: 2px 2px 0 0;
+}
+
+.ch-frame-bl {
+    bottom: -6px;
+    left: -6px;
+    border-width: 0 0 2px 2px;
+}
+
+.ch-frame-br {
+    right: -6px;
+    bottom: -6px;
+    border-width: 0 2px 2px 0;
+}
+
+.ch-portrait-detail {
+    position: absolute;
+    z-index: 5;
+    right: 12px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: monospace;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.ch-portrait-top {
+    top: 12px;
+}
+
+.ch-portrait-bottom {
+    bottom: 12px;
+}
+
+.ch-portrait-image {
+    position: absolute;
+    inset: 35px 22px 36px;
+    overflow: hidden;
+    will-change: transform;
+}
+
+.ch-portrait-img {
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.ch-orbit {
+    position: absolute;
+    z-index: 8;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid #29251f;
+    background: #f7f0e5;
+    font-size: 17px;
+}
+
+.ch-orbit-one {
+    top: 13%;
+    right: -10%;
+}
+
+.ch-orbit-two {
+    top: 45%;
+    left: -11%;
+    font-size: 22px;
+}
+
+.ch-orbit-three {
+    right: 5%;
+    bottom: -7%;
+    color: #f7f0e5;
+    background: #29251f;
+}
+
+/* Scene 5: sequential messages */
+
+/* Mobile */
+@media (max-width: 600px) {
+    .ch-sticky {
+        min-height: 540px;
+    }
+
+    .ch-grid {
+        background-size: 30px 30px;
+    }
+
+    .ch-top-status {
+        top: 21px;
+        left: 17px;
+        font-size: 8px;
+        letter-spacing: 0.07em;
+    }
+
+    .ch-scroll-hint {
+        right: 17px;
+        bottom: 22px;
+        font-size: 7px;
+        letter-spacing: 0.04em;
+    }
+
+    .ch-scene-counter {
+        bottom: 22px;
+        left: 17px;
+        font-size: 8px;
+    }
+
+    .ch-counter-line {
+        width: 18px;
+    }
+
+    .ch-scene-label {
+        top: 85px;
+        font-size: 7px;
+        letter-spacing: 0.1em;
+    }
+
+    .ch-ship {
+        width: clamp(145px, 43vw, 220px);
+    }
+
+    .ch-ship-glow {
+        width: 85vw;
+    }
+
+    .ch-name-group {
+        padding-inline: 10px;
+    }
+
+    .ch-name-kicker,
+    .ch-name-footer {
+        font-size: 7px;
+        letter-spacing: 0.1em;
+    }
+
+    .ch-name {
+        font-size: clamp(51px, 15.6vw, 92px);
+        letter-spacing: -0.09em;
+    }
+
+    .ch-name-line-top {
+        padding-right: 3%;
+    }
+
+    .ch-name-line-bottom {
+        padding-left: 1%;
+    }
+
+    .ch-name-aoanan {
+        -webkit-text-stroke-width: 1px;
+    }
+
+    .ch-portrait-scene {
+        width: min(72vw, 320px);
+        min-width: 225px;
+    }
+
+    .ch-portrait-image {
+        inset: 32px 14px 34px;
+    }
+
+    .ch-portrait-detail {
+        right: 8px;
+        left: 8px;
+        font-size: 7px;
+        letter-spacing: 0.04em;
+    }
+
+    .ch-portrait-top {
+        top: 9px;
+    }
+
+    .ch-portrait-bottom {
+        bottom: 9px;
+    }
+
+    .ch-orbit {
+        width: 27px;
+        height: 27px;
+        font-size: 14px;
+    }
+
+    .ch-story-item {
+        width: min(390px, 84vw);
+        padding: 22px;
+    }
+
+    .ch-story-topline {
+        font-size: 8px;
+        letter-spacing: 0.06em;
+    }
+
+    .ch-story-icon {
+        width: 40px;
+        height: 40px;
+        margin-top: 19px;
+    }
+
+    .ch-story-item h2 {
+        margin-top: 17px;
+        font-size: clamp(27px, 8vw, 38px);
+    }
+
+    .ch-story-item p {
+        font-size: 13px;
+    }
+
+    .ch-story-cta {
+        margin-top: 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .ch-name {
+        font-size: 14.8vw;
+    }
+
+    .ch-name-kicker,
+    .ch-name-footer {
+        font-size: 6px;
+    }
+
+    .ch-story-item {
+        width: 88vw;
+        padding: 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ch-scroll-hint svg {
+        animation: none;
+    }
+}
+
+
+/* Caricature stays behind the ship */
+.ch-portrait-scene {
+    position: absolute;
+    z-index: 1;
+}
+
+/* Ship stays in front */
+.ch-ship-scene {
+    position: absolute;
+    z-index: 3;
+}
+
+/* Names remain above both during their scene */
+.ch-name-group {
+    position: absolute;
+    z-index: 4;
+}
+
+
+/* Square grid background — back layer */
+.ch-grid {
+    position: absolute;
+    inset: -2000px 0 0;
+    z-index: 0;
+}
+
+/* RAMIL and AOANAN — behind the ship */
+.ch-name-group {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* Ship — foreground */
+.ch-ship-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+
+/* Shared story card styles */
+.ch-story-item {
+    position: absolute;
+    top: 50%;
+    width: clamp(240px, 27vw, 350px);
+    margin: 0;
+    padding: 18px 20px;
+    color: #29251f;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* Left side of the hero */
+.ch-story-item--left {
+    left: clamp(24px, 6vw, 100px);
+    right: auto;
+}
+
+/* Right side of the hero */
+.ch-story-item--right {
+    left: auto;
+    right: clamp(24px, 6vw, 100px);
+}
+
+/* Keep cards outside the centered portrait on smaller screens */
+@media (max-width: 760px) {
+    .ch-story-item {
+        top: auto;
+        bottom: 8%;
+        width: min(43vw, 240px);
+        padding: 10px;
+    }
+
+    .ch-story-item--left {
+        left: 3%;
+        right: auto;
+    }
+
+    .ch-story-item--right {
+        left: auto;
+        right: 3%;
+    }
+
+    .ch-story-item h2 {
+        font-size: clamp(14px, 3.5vw, 20px);
+    }
+
+    .ch-story-item p {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   STORY SECTION — SINGLE SOURCE OF TRUTH
+   ========================================================= */
+
+.ch-story-stage {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 72px 32px;
+    pointer-events: none;
+}
+
+.ch-story-grid {
+    width: min(100%, 820px);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 32px;
+    margin: 0 auto;
+    align-content: center;
+}
+
+.ch-story-item {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: clamp(16px, 2vw, 26px);
+    border: 1px solid rgba(41, 37, 31, 0.65);
+    background: rgba(247, 240, 229, 0.96);
+    box-shadow: 7px 7px 0 rgba(41, 37, 31, 0.08);
+    color: #29251f;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* Preserve card content styles */
+.ch-story-topline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(41, 37, 31, 0.25);
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.ch-story-icon {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    margin-top: 16px;
+    place-items: center;
+    border: 1px solid #29251f;
+    color: #29251f;
+    background: #f16b3b;
+}
+
+.ch-story-item h2 {
+    margin: 16px 0 10px;
+    font-size: clamp(22px, 2.7vw, 34px);
+    font-weight: 950;
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+}
+
+.ch-story-item p {
+    margin: 0;
+    color: #665d51;
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+/* Mobile: a single column below the portrait */
+@media (max-width: 760px) {
+    .ch-story-stage {
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 20px 40px;
+    }
+
+    .ch-story-grid {
+        width: 100%;
+        max-width: 460px;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-top: 68vh;
+    }
+
+    .ch-story-item {
+        padding: 14px 16px;
+    }
+
+    .ch-story-icon {
+        width: 34px;
+        height: 34px;
+        margin-top: 12px;
+    }
+
+    .ch-story-item h2 {
+        margin-top: 12px;
+        font-size: clamp(21px, 6vw, 29px);
+    }
+
+    .ch-story-item p {
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,38 @@
+/* StoryScene.css */
+
+/* Keep the decorative name behind the portrait. */
+.ss-hero-outline-name {
+    pointer-events: none;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Keep the rocket artwork responsive. */
+.ss-rocket-art {
+    display: block;
+    overflow: visible;
+}
+
+/* Avoid accidental horizontal overflow from animated elements. */
+.ss-page {
+    width: 100%;
+    isolation: isolate;
+}
+
+.ss-hero,
+.ss-scene,
+.ss-contact-panel {
+    position: relative;
+}
+
+/* Respect visitors who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+
+    .ss-page *,
+    .ss-page *::before,
+    .ss-page *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
