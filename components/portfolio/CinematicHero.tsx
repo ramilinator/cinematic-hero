@@ -187,37 +187,6 @@ export default function CinematicHero() {
         2.65,
       );
 
-      // Scene 3 — Orange transition.
-      tl.to(
-        grid,
-        {
-          backgroundColor: "#f16b3b",
-          duration: 1.45,
-          ease: "none",
-        },
-        2.4,
-      );
-
-      tl.to(
-        flash,
-        {
-          autoAlpha: 0.85,
-          duration: 0.12,
-          ease: "power2.out",
-        },
-        3.85,
-      );
-
-      tl.to(
-        flash,
-        {
-          autoAlpha: 0,
-          duration: 0.65,
-          ease: "power2.out",
-        },
-        4.05,
-      );
-
       // Scene 4 — Rocket launches out of frame.
       tl.to(
         ship,
@@ -413,30 +382,24 @@ export default function CinematicHero() {
           className="pointer-events-none absolute inset-0 z-30 bg-[#f16b3b]"
         />
 
-        {/* Portrait */}
+        {/* Large bottom-centered portrait */}
         <div
           data-portrait
-          className="pointer-events-none absolute left-1/2 top-[43%] z-10 h-[48svh] max-h-[570px] min-h-[260px] w-[75vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 sm:w-[45vw] lg:w-[30vw]"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex h-[78svh] max-h-[900px] min-h-[420px] items-end justify-center sm:h-[88svh] lg:h-[96svh]"
         >
-          <div className="absolute inset-x-[12%] bottom-[4%] h-[25%] rounded-full bg-[#29251f]/15 blur-2xl" />
+          {/* Subtle grounding shadow */}
+          <div className="absolute bottom-0 left-1/2 h-24 w-[65%] -translate-x-1/2 rounded-full bg-[#29251f]/10 blur-3xl sm:h-32" />
 
-          <div className="absolute inset-0">
+          {/* Portrait image */}
+          <div className="relative h-full w-full">
             <Image
-              src="/images/caricature.png"
-              alt="Ramil Aoanan caricature portrait"
+              src="/images/profile.png"
+              alt="Ramil Aoanan, web developer"
               fill
               priority
-              sizes="(max-width: 600px) 75vw, (max-width: 1024px) 45vw, 420px"
-              className="object-contain object-bottom drop-shadow-[0_15px_20px_rgba(41,37,31,0.12)]"
+              sizes="100vw"
+              className="object-contain object-bottom drop-shadow-[0_12px_24px_rgba(41,37,31,0.12)]"
             />
-          </div>
-
-          <div className="absolute -right-2 top-[20%] flex h-10 w-10 items-center justify-center rounded-full border border-[#29251f]/15 bg-[#f7f0e5]/80 text-[#f16b3b] backdrop-blur sm:-right-6 sm:h-14 sm:w-14">
-            <Code2 size={22} strokeWidth={1.5} />
-          </div>
-
-          <div className="absolute -left-3 bottom-[24%] flex h-9 w-9 items-center justify-center rounded-full border border-[#29251f]/15 bg-[#f7f0e5]/80 text-[#29251f] backdrop-blur sm:-left-7 sm:h-12 sm:w-12">
-            <Braces size={20} strokeWidth={1.5} />
           </div>
         </div>
 
