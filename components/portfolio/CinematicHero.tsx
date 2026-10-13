@@ -1,20 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Braces,
-  Code2,
-  Layers3,
-  Rocket,
-} from "lucide-react";
-
-import "./CinematicHero.css";
+import { ArrowDown, Braces, Code2, Layers3, Rocket } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,25 +45,24 @@ const storyItems = [
 
 export default function CinematicHero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const shipSceneRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    const section = sectionRef.current;
+    if (!section) return;
 
     const ctx = gsap.context(() => {
-      const q = gsap.utils.selector(sectionRef);
+      const q = gsap.utils.selector(section);
 
-      const stage = q(".ch-sticky")[0];
-      const grid = q(".ch-grid");
-      const orangeWash = q(".ch-ship-flash");
-      const ship = q(".ch-ship-scene");
-      const nameGroup = q(".ch-name-group");
-      const ramil = q(".ch-name-ramil");
-      const aoanan = q(".ch-name-aoanan");
-      const portrait = q(".ch-portrait-scene");
-      const stories = q(".ch-story-item");
+      const grid = q("[data-grid]");
+      const ship = q("[data-ship]");
+      const nameGroup = q("[data-name-group]");
+      const ramil = q("[data-ramil]");
+      const aoanan = q("[data-aoanan]");
+      const portrait = q("[data-portrait]");
+      const stories = q("[data-story]");
+      const flash = q("[data-flash]");
+      const progress = q("[data-progress]");
 
-      // Initial states
       gsap.set(ship, {
         autoAlpha: 1,
         x: 0,
@@ -84,8 +73,7 @@ export default function CinematicHero() {
       gsap.set(nameGroup, { autoAlpha: 1 });
       gsap.set(ramil, { x: "110vw", autoAlpha: 0 });
       gsap.set(aoanan, { x: "-110vw", autoAlpha: 0 });
-
-      gsap.set(orangeWash, { autoAlpha: 0 });
+      gsap.set(flash, { autoAlpha: 0 });
 
       gsap.set(portrait, {
         autoAlpha: 0,
@@ -96,13 +84,27 @@ export default function CinematicHero() {
       gsap.set(stories, {
         autoAlpha: 0,
         y: 24,
-        scale: 0.94,
+        scale: 0.96,
+      });
+
+      gsap.set(progress, {
+        scaleX: 0,
+        transformOrigin: "left center",
+      });
+
+      const isMobile = window.matchMedia("(max-width: 600px)").matches;
+
+      stories.forEach((item, index) => {
+        gsap.set(item, {
+          x: isMobile ? 0 : index % 2 === 0 ? -30 : 30,
+          y: isMobile ? 14 : 0,
+        });
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: sectionRef.current,
-          pin: stage,
+          trigger: section,
+          pin: q("[data-stage]")[0],
           start: "top top",
           end: "bottom bottom",
           scrub: 0.6,
@@ -111,8 +113,7 @@ export default function CinematicHero() {
         },
       });
 
-      // SCENE 1 — Ship stays centered.
-      // The moving grid creates the upward-flight illusion.
+      // Scene 1 — Rocket ascent and moving grid.
       tl.to(
         grid,
         {
@@ -123,7 +124,17 @@ export default function CinematicHero() {
         0,
       );
 
-      // SCENE 2 — Names enter, meet, then continue past each other.
+      tl.to(
+        progress,
+        {
+          scaleX: 1,
+          duration: 8.2,
+          ease: "none",
+        },
+        0,
+      );
+
+      // Scene 2 — Name enters from opposite directions.
       tl.to(
         ramil,
         {
@@ -146,7 +157,7 @@ export default function CinematicHero() {
         1.2,
       );
 
-      // They meet at the center, then continue in their original directions.
+      // The names pass through each other.
       tl.to(
         ramil,
         {
@@ -176,7 +187,7 @@ export default function CinematicHero() {
         2.65,
       );
 
-      // SCENE 3 — Orange transition
+      // Scene 3 — Orange transition.
       tl.to(
         grid,
         {
@@ -187,7 +198,27 @@ export default function CinematicHero() {
         2.4,
       );
 
-      // SCENE 4 — Ship launches completely off-screen
+      tl.to(
+        flash,
+        {
+          autoAlpha: 0.85,
+          duration: 0.12,
+          ease: "power2.out",
+        },
+        3.85,
+      );
+
+      tl.to(
+        flash,
+        {
+          autoAlpha: 0,
+          duration: 0.65,
+          ease: "power2.out",
+        },
+        4.05,
+      );
+
+      // Scene 4 — Rocket launches out of frame.
       tl.to(
         ship,
         {
@@ -197,10 +228,10 @@ export default function CinematicHero() {
           duration: 1.2,
           ease: "power3.in",
         },
-        4.0,
+        4,
       );
 
-      // Reveal the portrait
+      // Portrait reveal.
       tl.to(portrait, {
         autoAlpha: 1,
         scale: 1,
@@ -208,17 +239,8 @@ export default function CinematicHero() {
         ease: "power3.out",
       });
 
-      const isMobile = window.matchMedia("(max-width: 600px)").matches;
-
-      // Reveal each story after the portrait animation
+      // Scene 5 — Story cards appear sequentially.
       stories.forEach((item, index) => {
-        gsap.set(item, {
-          autoAlpha: 0,
-          x: isMobile ? 0 : index % 2 === 0 ? -30 : 30,
-          y: isMobile ? 14 : 0,
-          scale: isMobile ? 0.98 : 1,
-        });
-
         if (isMobile && index > 0) {
           tl.to(stories[index - 1], {
             autoAlpha: 0,
@@ -237,7 +259,7 @@ export default function CinematicHero() {
           ease: "power2.out",
         });
       });
-    }, sectionRef);
+    }, section);
 
     return () => ctx.revert();
   }, []);
@@ -245,191 +267,259 @@ export default function CinematicHero() {
   return (
     <section
       ref={sectionRef}
-      className="ch-section"
       aria-label="Cinematic portfolio introduction"
+      className="relative min-h-[600svh] bg-[#f7f0e5] text-[#29251f]"
     >
-      <div className="ch-sticky">
-        <div className="ch-grid" aria-hidden="true" />
-        <div className="ch-grain" aria-hidden="true" />
+      {/* Pinned cinematic stage */}
+      <div
+        data-stage
+        className="sticky top-0 isolate h-svh min-h-[560px] overflow-hidden bg-[#f7f0e5]"
+      >
+        {/* Animated technical grid */}
+        <div
+          data-grid
+          aria-hidden="true"
+          className="absolute inset-0 -z-30 bg-[#f7f0e5] [background-image:linear-gradient(to_right,rgba(41,37,31,0.10)_1px,transparent_1px),linear-gradient(to_bottom,rgba(41,37,31,0.10)_1px,transparent_1px)] [background-size:48px_48px] sm:[background-size:64px_64px]"
+        />
 
-        {/* Scene 1: spacecraft ascent */}
-        <div ref={shipSceneRef} className="ch-ship-scene" aria-hidden="true">
-          <div className="ch-ship-glow" />
+        {/* Atmospheric background */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.72)_0%,transparent_65%)]"
+        />
+
+        {/* Grain-like technical overlay */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 opacity-30 [background-image:radial-gradient(rgba(41,37,31,0.20)_0.6px,transparent_0.6px)] [background-size:5px_5px]"
+        />
+
+        {/* Modern minimalist rocket scene */}
+        <div
+          data-ship
+          aria-hidden="true"
+          className="absolute left-1/2 top-[42%] z-10 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+        >
+          {/* Subtle orange atmosphere */}
+          <div className="absolute h-40 w-40 rounded-full bg-[#f16b3b]/10 blur-3xl sm:h-56 sm:w-56" />
 
           <svg
-            className="ch-ship"
-            viewBox="0 0 240 320"
+            viewBox="0 0 160 240"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="relative h-[clamp(160px,27vh,260px)] w-auto"
           >
-            {/* Main hull */}
+            {/* Engine flame */}
+            <path d="M69 158 L80 205 L91 158" fill="#F16B3B" />
+
+            <path d="M75 161 L80 187 L85 161" fill="#F6B84B" />
+
+            {/* Left fin */}
+            <path d="M59 111 L38 143 Q36 146 41 146 L66 137 Z" fill="#29251F" />
+
+            {/* Right fin */}
             <path
-              d="M120 14C91 49 75 93 75 159L120 207L165 159C165 93 149 49 120 14Z"
-              fill="#F16B3B"
+              d="M101 111 L122 143 Q124 146 119 146 L94 137 Z"
+              fill="#29251F"
+            />
+
+            {/* Main rocket body */}
+            <path
+              d="M80 20
+         C63 38 55 61 55 91
+         L55 143
+         Q55 153 65 153
+         L95 153
+         Q105 153 105 143
+         L105 91
+         C105 61 97 38 80 20 Z"
+              fill="#F7F0E5"
               stroke="#29251F"
-              strokeWidth="5"
+              strokeWidth="3"
               strokeLinejoin="round"
+            />
+
+            {/* Minimal nose accent */}
+            <path
+              d="M80 20 C68 33 61 48 58 64 L102 64 C99 48 92 33 80 20 Z"
+              fill="#F16B3B"
             />
 
             {/* Cockpit */}
-            <path
-              d="M120 79C103 79 93 93 93 111C93 128 104 139 120 139C136 139 147 128 147 111C147 93 137 79 120 79Z"
-              fill="#F7F0E5"
-              stroke="#29251F"
-              strokeWidth="5"
-            />
+            <circle cx="80" cy="83" r="10" fill="#29251F" />
 
+            <circle cx="83" cy="80" r="3" fill="#F7F0E5" fillOpacity="0.8" />
+
+            {/* Minimal body detail */}
             <path
-              d="M105 104L135 104"
+              d="M69 117 H91"
               stroke="#29251F"
-              strokeWidth="3"
+              strokeWidth="2.5"
               strokeLinecap="round"
+              opacity="0.65"
             />
 
-            {/* Wings */}
+            {/* Engine base */}
             <path
-              d="M76 137L28 181L23 241L94 190"
-              fill="#F7F0E5"
-              stroke="#29251F"
-              strokeWidth="5"
-              strokeLinejoin="round"
-            />
-
-            <path
-              d="M164 137L212 181L217 241L146 190"
-              fill="#F7F0E5"
-              stroke="#29251F"
-              strokeWidth="5"
-              strokeLinejoin="round"
-            />
-
-            {/* Hull markings */}
-            <path
-              d="M98 160L98 182M120 169L120 195M142 160L142 182"
-              stroke="#29251F"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-
-            {/* Engine */}
-            <path
-              d="M98 195L98 239L120 266L142 239L142 195"
-              fill="#F16B3B"
-              stroke="#29251F"
-              strokeWidth="5"
-              strokeLinejoin="round"
-            />
-
-            <path
-              d="M105 239L120 305L135 239"
-              fill="#F6B84B"
-              stroke="#29251F"
-              strokeWidth="4"
-              strokeLinejoin="round"
-            />
-
-            <path d="M113 248L120 281L127 248" fill="#FFF1B7" />
-
-            {/* Side engine details */}
-            <circle
-              cx="53"
-              cy="203"
-              r="6"
+              d="M69 153 V161 H91 V153"
               fill="#F16B3B"
               stroke="#29251F"
               strokeWidth="3"
-            />
-            <circle
-              cx="187"
-              cy="203"
-              r="6"
-              fill="#F16B3B"
-              stroke="#29251F"
-              strokeWidth="3"
+              strokeLinejoin="round"
             />
           </svg>
         </div>
 
-        {/* Scene 2: name arrives from opposite directions */}
-        <div className="ch-name-group" aria-hidden="true">
-          <div className="ch-scene-label">
-            <span className="ch-scene-label-dot" />
+        {/* Name animation */}
+        <div
+          data-name-group
+          aria-hidden="true"
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4"
+        >
+          <div className="mb-7 flex items-center gap-3 font-mono text-[9px] font-bold tracking-[0.22em] sm:text-[11px] sm:tracking-[0.3em]">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-[#f16b3b]" />
             <span>SCENE 01 / ASCENSION PROTOCOL</span>
           </div>
 
-          <div className="ch-name-line ch-name-line-top">
-            <span className="ch-name ch-name-ramil">RAMIL</span>
+          <div className="flex w-full flex-col items-center gap-1">
+            <div className="w-full overflow-hidden">
+              <span
+                data-ramil
+                className="block text-center font-black leading-[0.82] tracking-[-0.09em] text-[#29251f] text-[clamp(4rem,15vw,13rem)]"
+              >
+                RAMIL
+              </span>
+            </div>
+
+            <div className="w-full overflow-hidden">
+              <span
+                data-aoanan
+                className="block text-center font-black leading-[0.82] tracking-[-0.09em] text-[#f16b3b] text-[clamp(4rem,15vw,13rem)]"
+              >
+                AOANAN<span className="text-[#29251f]">.</span>
+              </span>
+            </div>
           </div>
 
-          <div className="ch-name-line ch-name-line-bottom">
-            <span className="ch-name ch-name-aoanan">
-              AOANAN<span className="ch-name-period">.</span>
-            </span>
-          </div>
-
-          <p className="ch-name-footer">DESIGN / DEVELOP / DEPLOY</p>
+          <p className="mt-8 font-mono text-[9px] font-bold tracking-[0.3em] text-[#29251f]/60 sm:text-xs sm:tracking-[0.5em]">
+            DESIGN / DEVELOP / DEPLOY
+          </p>
         </div>
 
-        {/* Scene 3: flash during the ship zoom transition */}
-        <div className="ch-ship-flash" aria-hidden="true" />
+        {/* Orange flash */}
+        <div
+          data-flash
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-30 bg-[#f16b3b]"
+        />
 
-        {/* Scene 4: centered portrait */}
-        <div className="ch-portrait-scene">
-          <div className="ch-portrait-image">
+        {/* Portrait */}
+        <div
+          data-portrait
+          className="pointer-events-none absolute left-1/2 top-[43%] z-10 h-[48svh] max-h-[570px] min-h-[260px] w-[75vw] max-w-[420px] -translate-x-1/2 -translate-y-1/2 sm:w-[45vw] lg:w-[30vw]"
+        >
+          <div className="absolute inset-x-[12%] bottom-[4%] h-[25%] rounded-full bg-[#29251f]/15 blur-2xl" />
+
+          <div className="absolute inset-0">
             <Image
               src="/images/caricature.png"
               alt="Ramil Aoanan caricature portrait"
               fill
               priority
               sizes="(max-width: 600px) 75vw, (max-width: 1024px) 45vw, 420px"
-              className="ch-portrait-img"
+              className="object-contain object-bottom drop-shadow-[0_15px_20px_rgba(41,37,31,0.12)]"
             />
+          </div>
+
+          <div className="absolute -right-2 top-[20%] flex h-10 w-10 items-center justify-center rounded-full border border-[#29251f]/15 bg-[#f7f0e5]/80 text-[#f16b3b] backdrop-blur sm:-right-6 sm:h-14 sm:w-14">
+            <Code2 size={22} strokeWidth={1.5} />
+          </div>
+
+          <div className="absolute -left-3 bottom-[24%] flex h-9 w-9 items-center justify-center rounded-full border border-[#29251f]/15 bg-[#f7f0e5]/80 text-[#29251f] backdrop-blur sm:-left-7 sm:h-12 sm:w-12">
+            <Braces size={20} strokeWidth={1.5} />
           </div>
         </div>
 
-        {/* Scene 5: Story messages */}
-        <div className="ch-story-stage">
-          <div className="ch-story-grid" aria-live="polite">
+        {/* Story cards */}
+        <div className="absolute inset-x-0 bottom-[13%] z-20 px-5 sm:bottom-[12%] sm:px-10 lg:px-16">
+          <div className="mx-auto grid max-w-3xl grid-cols-1">
             {storyItems.map((item) => {
               const Icon = item.icon;
 
               return (
-                <article className="ch-story-item" key={item.number}>
-                  <div className="ch-story-topline">
+                <article
+                  key={item.number}
+                  data-story
+                  className="col-start-1 row-start-1 mx-auto w-full max-w-2xl border-t border-[#29251f]/20 bg-[#f7f0e5]/80 px-5 py-4 shadow-[0_12px_40px_rgba(41,37,31,0.04)] backdrop-blur-md sm:px-8 sm:py-6"
+                >
+                  <div className="mb-4 flex items-center justify-between gap-4 font-mono text-[9px] font-bold tracking-[0.18em] text-[#29251f]/55 sm:text-[10px]">
                     <span>{item.number} / 04</span>
                     <span>{item.eyebrow}</span>
                   </div>
 
-                  <div className="ch-story-icon">
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center border border-[#f16b3b]/40 bg-[#f16b3b]/10 text-[#f16b3b]">
                     <Icon aria-hidden="true" size={17} strokeWidth={1.7} />
                   </div>
 
-                  <h2>{item.title}</h2>
-                  <p>{item.description}</p>
+                  <h2 className="max-w-xl text-2xl font-black leading-[0.95] tracking-[-0.055em] text-[#29251f] sm:text-4xl md:text-5xl">
+                    {item.title}
+                  </h2>
+
+                  <p className="mt-3 max-w-lg text-xs leading-6 text-[#29251f]/70 sm:text-sm sm:leading-7">
+                    {item.description}
+                  </p>
                 </article>
               );
             })}
           </div>
         </div>
 
-        {/* Persistent scene indicator */}
-        <div className="ch-top-status">
-          <span className="ch-top-status-dot" />
+        {/* Persistent top status */}
+        <div className="absolute left-5 top-5 z-40 flex items-center gap-2 font-mono text-[9px] font-bold tracking-[0.17em] text-[#29251f]/65 sm:left-10 sm:top-8 sm:text-[10px] lg:left-16">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#f16b3b]" />
           <span>PORTFOLIO EXPERIENCE</span>
         </div>
 
-        <div className="ch-progress-track" aria-hidden="true">
-          <div className="ch-progress-fill" />
+        <div className="absolute right-5 top-5 z-40 font-mono text-[9px] tracking-[0.15em] text-[#29251f]/50 sm:right-10 sm:top-8 sm:text-[10px] lg:right-16">
+          RA / 2026
         </div>
 
-        <a href="#story" className="ch-scroll-hint">
+        {/* Scroll progress */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 z-50 h-1 bg-[#29251f]/10"
+        >
+          <div data-progress className="h-full w-full bg-[#f16b3b]" />
+        </div>
+
+        {/* Scroll hint */}
+        <a
+          href="#story"
+          onClick={(event) => {
+            event.preventDefault();
+            const section = sectionRef.current;
+            if (!section) return;
+
+            const distance = section.offsetHeight - window.innerHeight;
+
+            window.scrollTo({
+              top: section.offsetTop + Math.max(0, distance * 0.12),
+              behavior: "smooth",
+            });
+          }}
+          className="absolute bottom-7 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 whitespace-nowrap font-mono text-[9px] font-bold tracking-[0.2em] text-[#29251f]/65 transition-colors hover:text-[#f16b3b] sm:bottom-9 sm:text-[10px]"
+        >
           <span>SCROLL TO EXPERIENCE</span>
-          <ArrowDown size={15} />
+          <ArrowDown size={14} className="animate-bounce" />
         </a>
 
-        <div className="ch-scene-counter" aria-hidden="true">
+        {/* Scene counter */}
+        <div
+          aria-hidden="true"
+          className="absolute bottom-8 right-5 z-40 hidden items-center gap-3 font-mono text-[10px] tracking-widest text-[#29251f]/55 sm:flex sm:right-10 lg:right-16"
+        >
           <span>01</span>
-          <span className="ch-counter-line" />
+          <span className="h-px w-8 bg-[#29251f]/30" />
           <span>05</span>
         </div>
       </div>

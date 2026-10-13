@@ -12,6 +12,7 @@ export default function Home() {
   return (
     <main className="overflow-x-hidden bg-[#03040d] text-white">
       <Hero />
+      <CinematicHero />
       <About />
       <Skills />
       <StoryScene />

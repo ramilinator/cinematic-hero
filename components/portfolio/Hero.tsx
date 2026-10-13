@@ -127,15 +127,15 @@ export default function PortfolioHero() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,#fff8f4_0%,#ffffff_55%,#fafafa_100%)]" />
 
         <div
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-70"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(36,35,33,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(36,35,33,0.035) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
+              "linear-gradient(rgba(36,35,33,0.075) 1px, transparent 1px), linear-gradient(90deg, rgba(36,35,33,0.075) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
             maskImage:
-              "linear-gradient(to bottom, transparent, black 18%, black 75%, transparent)",
+              "linear-gradient(to bottom, transparent, black 12%, black 82%, transparent)",
             WebkitMaskImage:
-              "linear-gradient(to bottom, transparent, black 18%, black 75%, transparent)",
+              "linear-gradient(to bottom, transparent, black 12%, black 82%, transparent)",
           }}
         />
 
