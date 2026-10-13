@@ -1,18 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import Navbar from "./Navbar";
 import Link from "next/link";
+import Navbar from "./Navbar";
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
 
 import {
-  ArrowDownRight,
+  ArrowDown,
   ArrowRight,
   ArrowUpRight,
   Code2,
-  Menu,
-  X,
+  Github,
+  Globe2,
 } from "lucide-react";
-import { useState } from "react";
 
 const technologies = [
   "React",
@@ -24,124 +25,281 @@ const technologies = [
 ];
 
 export default function PortfolioHero() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const ctx = gsap.context(() => {
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (prefersReducedMotion) return;
+
+      const intro = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        delay: 0.1,
+      });
+
+      intro
+        .from("[data-navbar]", {
+          y: -12,
+          opacity: 0,
+          duration: 0.65,
+        })
+        .from(
+          "[data-eyebrow]",
+          {
+            y: 14,
+            opacity: 0,
+            duration: 0.6,
+          },
+          "-=0.3",
+        )
+        .from(
+          "[data-heading]",
+          {
+            y: 35,
+            opacity: 0,
+            duration: 0.9,
+            clearProps: "transform",
+          },
+          "-=0.25",
+        )
+        .from(
+          "[data-portrait]",
+          {
+            y: 35,
+            opacity: 0,
+            scale: 0.97,
+            duration: 1,
+            clearProps: "transform",
+          },
+          "-=0.45",
+        )
+        .from(
+          "[data-content]",
+          {
+            y: 18,
+            opacity: 0,
+            duration: 0.7,
+            stagger: 0.12,
+          },
+          "-=0.5",
+        )
+        .from(
+          "[data-tech]",
+          {
+            y: 8,
+            opacity: 0,
+            duration: 0.4,
+            stagger: 0.06,
+          },
+          "-=0.25",
+        );
+
+      gsap.to("[data-orbit-glow]", {
+        scale: 1.08,
+        opacity: 0.65,
+        duration: 4,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }, hero);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <main
+      ref={heroRef}
       id="home"
-      className="relative isolate min-h-screen overflow-hidden bg-[#121516] text-[#F5F0E7]"
+      className="relative isolate min-h-screen overflow-hidden bg-white text-[#242321]"
     >
-      {/* Cinematic background atmosphere */}
+      {/* BACKGROUND */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        {/* Base cinematic gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_68%_42%,#30201c_0%,#1b1918_35%,#121516_72%)]" />
-        {/* Subtle orange architectural grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,#fff8f4_0%,#ffffff_55%,#fafafa_100%)]" />
+
         <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.12]"
+          className="absolute inset-0 opacity-40"
           style={{
-            backgroundImage: `
-      linear-gradient(to right, rgba(241,90,54,0.65) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(241,90,54,0.65) 1px, transparent 1px)
-    `,
-            backgroundSize: "100px 100px",
-            backgroundPosition: "center center",
+            backgroundImage:
+              "linear-gradient(rgba(36,35,33,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(36,35,33,0.035) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
             maskImage:
-              "radial-gradient(ellipse at 60% 45%, black 0%, transparent 78%)",
+              "linear-gradient(to bottom, transparent, black 18%, black 75%, transparent)",
             WebkitMaskImage:
-              "radial-gradient(ellipse at 60% 45%, black 0%, transparent 78%)",
+              "linear-gradient(to bottom, transparent, black 18%, black 75%, transparent)",
           }}
         />
 
-        {/* Warm light behind the portrait */}
         <div
-          aria-hidden="true"
-          className="cinematic-drift absolute right-[-15%] top-[8%] h-[500px] w-[500px] rounded-full bg-[#F15A36]/[0.12] blur-[140px] lg:h-[750px] lg:w-[750px]"
+          data-orbit-glow
+          className="absolute left-1/2 top-[25%] h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-[#F15A36]/10 blur-[100px] sm:h-[460px] sm:w-[460px]"
         />
-        {/* Soft central illumination */}
-        <div className="cinematic-drift absolute left-[30%] top-[25%] h-[350px] w-[350px] rounded-full bg-[#F5F0E7]/[0.025] blur-[120px]" />
-        {/* Cinematic edge vignette */}
-        <div className="cinematic-drift absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(8,10,11,0.58)_100%)]" />
-        {/* Subtle bottom fade */}
-        <div className="cinematic-drift absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#121516] to-transparent" />
+
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-white via-white/80 to-transparent" />
       </div>
 
-      {/* Ambient background accents */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none cinematic-drift absolute right-0 top-1/4 -z-10 h-[550px] w-[550px] rounded-full bg-[#F15A36]/10 blur-[130px]"
-      />
+      {/* CENTERED HERO */}
+      <section className="relative mx-auto flex min-h-[calc(100svh-82px)] w-full max-w-[1440px] flex-col items-center px-5 pb-10 pt-12 text-center sm:px-10 sm:pt-16 lg:px-16 lg:pt-12">
+        {/* EYEBROW */}
+        <div
+          data-eyebrow
+          className="relative z-10 flex items-center justify-center gap-3"
+        >
+          <span className="h-px w-7 bg-[#F15A36]" />
 
-      <Navbar />
-      {/* Hero */}
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#F15A36] sm:text-xs">
+            Independent Web Developer
+          </p>
 
-      <section className="relative mx-auto pb-12 grid min-h-[calc(100svh-82px)] max-w-[1600px] grid-cols-1 items-center px-8 sm:px-12 lg:grid-cols-12 lg:px-20 xl:px-24">
-        {/* Left third: introduction */}
-        <div className="relative z-20 flex flex-col items-start pb-10 pt-12 lg:col-span-6 lg:py-20">
-          <div className="mb-8 flex items-center gap-3">
-            <span className="h-px w-8 bg-[#F15A36]" />
-            <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#F15A36] sm:text-xs">
-              Web Developer / Philippines
-            </p>
-          </div>
+          <span className="h-px w-7 bg-[#F15A36]" />
+        </div>
 
-          <h1 className="max-w-full text-[clamp(3.5rem,9.2vw,8.5rem)] font-black leading-[0.78] tracking-[-0.045em]">
-            <span className="block">RAMIL</span>
-            <span className="mt-3 block text-[#F15A36]">AOANAN</span>
+        {/* NAME */}
+        <div data-heading className="relative z-10 mt-6 w-full">
+          <h1 className="text-[clamp(3.25rem,10vw,8.5rem)] font-black leading-[0.88] tracking-[-0.085em]">
+            <span className="block text-[#242321]">RAMIL</span>
+
+            <span className="mt-1 block text-[#F15A36]">
+              AOANAN<span className="text-[#242321]">.</span>
+            </span>
           </h1>
 
-          <div className="mt-9 max-w-lg">
-            <p className="mt-5 max-w-md text-sm leading-7 text-white/60 sm:text-base">
-              I&apos;m Ramil — a web developer who brings together thoughtful
-              design, modern technology, and practical solutions to create
-              digital experiences that work.
-            </p>
+          <div className="mt-5 flex items-center justify-center gap-2.5">
+            <Code2 size={16} className="text-[#F15A36]" />
           </div>
+        </div>
 
-          {/* Calls to action */}
-          <div className="mt-12 flex flex-wrap items-center gap-4">
+        {/* PORTRAIT */}
+        <div
+          data-portrait
+          className="relative z-0 mt-2 flex h-[290px] w-full max-w-[480px] items-end justify-center sm:mt-0 sm:h-[370px] md:h-[420px] lg:h-[390px]"
+        >
+          {/* Portrait halo */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[5%] left-1/2 h-[78%] w-[75%] -translate-x-1/2 rounded-full border border-[#F15A36]/10 bg-gradient-to-b from-[#F15A36]/[0.035] to-transparent"
+          />
+
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[7%] left-1/2 h-[55%] w-[72%] -translate-x-1/2 rounded-full bg-[#F15A36]/10 blur-[65px]"
+          />
+
+          {/* Minimal corner accents */}
+          <span
+            aria-hidden="true"
+            className="absolute left-[9%] top-[22%] h-5 w-5 border-l border-t border-[#F15A36]/50"
+          />
+
+          <span
+            aria-hidden="true"
+            className="absolute right-[9%] top-[34%] h-5 w-5 border-r border-t border-[#F15A36]/50"
+          />
+
+          <Image
+            src="/images/profile.png"
+            alt="Illustrated portrait of Ramil Aoanan, web developer"
+            width={850}
+            height={1050}
+            priority
+            sizes="(max-width: 640px) 90vw, 480px"
+            className="relative z-10 h-full w-full object-contain object-bottom drop-shadow-[0_16px_28px_rgba(36,35,33,0.10)]"
+          />
+
+          {/* Floating identity marker */}
+          <div className="absolute bottom-[9%] right-[2%] z-20 hidden items-center gap-2 border border-[#242321]/10 bg-white/90 px-3 py-2 shadow-sm backdrop-blur-sm sm:flex">
+            <span className="h-2 w-2 rounded-full bg-[#48A36A]" />
+
+            <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-[#55514D]">
+              Building for the web
+            </span>
+          </div>
+        </div>
+
+        {/* INTRODUCTION AND ACTIONS */}
+        <div className="relative z-10 -mt-1 flex w-full max-w-2xl flex-col items-center">
+          <p
+            data-content
+            className="max-w-xl text-sm leading-7 text-[#696560] sm:text-base sm:leading-8"
+          >
+            I&apos;m Ramil — a web developer who combines thoughtful design,
+            modern technology, and practical solutions to build responsive,
+            user-friendly digital experiences.
+          </p>
+
+          <div
+            data-content
+            className="mt-7 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row sm:gap-4"
+          >
             <Link
               href="#projects"
-              className="group inline-flex min-h-12 items-center gap-5 bg-[#F15A36] px-5 py-3 text-sm font-bold text-[#242321] transition hover:bg-[#ff7959]"
+              className="group inline-flex min-h-12 w-full items-center justify-center gap-4 bg-[#F15A36] px-6 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D94727] hover:shadow-[0_10px_25px_rgba(241,90,54,0.2)] sm:w-auto"
             >
               Explore My Work
               <ArrowRight
-                size={18}
-                className="transition-transform group-hover:translate-x-1"
+                size={17}
+                className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
 
             <Link
               href="#about"
-              className="inline-flex min-h-12 items-center gap-3 border border-white/20 px-5 py-3 text-sm font-medium transition hover:border-[#F15A36] hover:text-[#F15A36]"
+              className="group inline-flex min-h-12 w-full items-center justify-center gap-3 border border-[#242321]/15 bg-white/80 px-6 py-3 text-sm font-semibold text-[#242321] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F15A36] hover:text-[#F15A36] sm:w-auto"
             >
               Get to Know Me
+              <ArrowUpRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </Link>
           </div>
         </div>
 
-        {/* Right third: portrait and visual composition */}
-        <div className="relative min-h-[440px] overflow-hidden sm:min-h-[580px] lg:absolute lg:inset-y-0 lg:right-0 lg:w-[65%]">
-          {/* Portrait image */}
-          <div className="absolute inset-x-0 bottom-0 top-0 z-10 flex items-end justify-center">
-            <Image
-              src="/images/profile.png"
-              alt="Illustrated portrait of Ramil Aoanan, web developer"
-              width={850}
-              height={1050}
-              priority
-              sizes="(max-width: 1023px) 90vw, 50vw"
-              className="relative h-full max-h-[790px] w-full object-contain object-bottom drop-shadow-[0_20px_70px_rgba(0,0,0,0.45)]"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute bottom-[8%] left-1/2 z-0 h-[65%] w-[65%] -translate-x-1/2 rounded-full bg-[#F15A36]/[0.08] blur-[100px]"
-            />
+        {/* TECHNOLOGY STACK */}
+        <div
+          data-content
+          className="mt-9 w-full max-w-2xl border-t border-[#242321]/10 pt-5 sm:mt-10"
+        >
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <Globe2 size={12} className="text-[#F15A36]" />
+
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A847E] sm:text-[10px]">
+              Technologies I Work With
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {technologies.map((technology) => (
+              <span
+                data-tech
+                key={technology}
+                className="border border-[#242321]/10 bg-white/80 px-3 py-2 text-[10px] font-medium text-[#55514D] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F15A36]/50 hover:bg-[#F15A36]/5 hover:text-[#F15A36] sm:px-3.5 sm:text-[11px]"
+              >
+                {technology}
+              </span>
+            ))}
           </div>
         </div>
+
+        {/* SCROLL INDICATOR */}
+        <Link
+          data-content
+          href="#projects"
+          aria-label="Scroll to projects"
+          className="mt-8 inline-flex items-center gap-2 pb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#96908A] transition-colors hover:text-[#F15A36]"
+        >
+          Discover my work
+          <ArrowDown size={13} className="animate-bounce" />
+        </Link>
       </section>
     </main>
   );

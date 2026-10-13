@@ -1,7 +1,5 @@
 import StoryScene from "@/components/portfolio/StoryScene";
 import Hero from "@/components/portfolio/Hero";
-import Hero2 from "@/components/portfolio/Hero2";
-import Hero3 from "@/components/portfolio/Hero";
 import CinematicHero from "@/components/portfolio/CinematicHero";
 import Homepage from "@/components/portfolio/Homepage";
 import About from "@/components/portfolio/About";
@@ -14,6 +12,8 @@ export default function Home() {
   return (
     <main className="overflow-x-hidden bg-[#03040d] text-white">
       <Hero />
+      <About />
+      <Skills />
       <StoryScene />
     </main>
   );
