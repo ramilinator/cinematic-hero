@@ -592,7 +592,7 @@ export default function StoryScenes() {
               className="absolute left-1/2 top-[45%] aspect-square w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/15 blur-[75px]"
             />
 
-            <div className="relative z-10 aspect-[4/5] w-[78%] max-w-[390px]">
+            <div className="relative z-10 aspect-[4/5] w-[90%] max-w-[490px]">
               <Image
                 src="/images/profile.png"
                 alt="Ramil Aoanan, web developer"
@@ -603,7 +603,7 @@ export default function StoryScenes() {
               />
             </div>
 
-            <div className="absolute bottom-[8%] left-0 z-20 hidden sm:block">
+            <div className="absolute bottom-[8%] left-[-20%] z-20 hidden sm:block">
               <CodeCard />
             </div>
 
