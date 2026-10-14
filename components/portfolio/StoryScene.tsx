@@ -19,8 +19,6 @@ import {
   Terminal,
 } from "lucide-react";
 
-import "./StoryScene.css";
-
 const C = {
   bg: "#121516",
   panel: "#191c1d",

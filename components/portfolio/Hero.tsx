@@ -184,7 +184,7 @@ export default function PortfolioHeroDark() {
           </div>
 
           {/* RIGHT CONTENT */}
-          <div className="flex flex-col items-center md:relative md:bottom-auto md:mt-0 md:items-end">
+          <div className=" flex flex-col items-center justify-end md:relative md:bottom-auto md:mt-0 md:items-end">
             {/* FLOATING TECHNOLOGIES */}
             <div className="w-full sm:max-w-[380px] border border-[#F5F0E7]/10 bg-[#121516]/85 p-4 shadow-2xl shadow-black/20 backdrop-blur-md sm:mt-8 sm:p-5 lg:mt-0">
               <div className="mb-4 flex items-center justify-between gap-3">
