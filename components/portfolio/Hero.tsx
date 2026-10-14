@@ -37,7 +37,7 @@ export default function PortfolioHeroDark() {
 
         {/* Subtle grid */}
         <div
-          className="absolute inset-0 opacity-[0.09]"
+          className="absolute inset-0 opacity-[0.15]"
           style={{
             backgroundImage:
               "linear-gradient(rgba(245,240,231,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,231,0.15) 1px, transparent 1px)",
@@ -111,19 +111,6 @@ export default function PortfolioHeroDark() {
 
       {/* HERO */}
       <section className="ss-hero relative mx-auto flex min-h-[calc(100svh-100px)] w-full max-w-[1600px] flex-col px-5 pb-20 pt-10 sm:px-8 sm:pb-24 lg:min-h-[calc(100svh-100px)] lg:px-14 lg:py-12">
-        {/* Large name behind portrait */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-[38%] z-0 -translate-y-1/2 select-none text-center lg:top-[43%]"
-        >
-          <span className="block whitespace-nowrap text-[17vw] font-black leading-[0.78] tracking-[-0.09em] text-[#F5F0E7]/[0.07] sm:text-[15vw] lg:text-[13vw]">
-            RAMIL
-          </span>
-          <span className="mt-3 block whitespace-nowrap text-[15vw] font-black leading-[0.85] tracking-[-0.085em] text-[#F15A36]/20 sm:text-[13vw] lg:text-[11.5vw]">
-            AOANAN
-          </span>
-        </div>
-
         <div className="flex flex-col justify-between md:flex-row">
           {/* LEFT CONTENT */}
           <div className="relative z-20 flex flex-col items-start">
@@ -168,23 +155,38 @@ export default function PortfolioHeroDark() {
             </div>
           </div>
 
-          {/* Portrait */}
-          <div className="pointer-events-none relative z-10 flex items-end justify-center lg:absolute lg:inset-x-0 lg:bottom-0 lg:top-auto">
-            <Image
-              src="/images/profile.png"
-              alt="Ramil Aoanan, web developer"
-              width={850}
-              height={1050}
-              priority
-              sizes="(max-width: 639px) 90vw, (max-width: 1023px) 70vw, 48vw"
-              className="h-[47svh] min-h-[300px] max-h-[500px] w-auto max-w-[95%] object-contain object-bottom sm:h-[68svh] sm:max-h-[700px] sm:max-w-[80%] lg:h-[90svh] lg:max-h-[850px] lg:max-w-[58%]"
-            />
+          <div className="pointer-events-none relative mt-6 md:absolute md:inset-x-0 md:bottom-0 md:top-auto md:mt-0">
+            {/* Large name behind portrait */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 top-[38%] z-0 -translate-y-1/2 select-none text-center lg:top-[43%]"
+            >
+              <span className="block whitespace-nowrap text-[17vw] font-black leading-[0.78] tracking-[-0.09em] text-[#F5F0E7]/[0.07] sm:text-[15vw] lg:text-[13vw]">
+                RAMIL
+              </span>
+              <span className="mt-3 block whitespace-nowrap text-[15vw] font-black leading-[0.85] tracking-[-0.085em] text-[#F15A36]/20 sm:text-[13vw] lg:text-[11.5vw]">
+                AOANAN
+              </span>
+            </div>
+
+            {/* Portrait in front of the name */}
+            <div className="relative z-10 flex items-end justify-center">
+              <Image
+                src="/images/profile.png"
+                alt="Ramil Aoanan, web developer"
+                width={850}
+                height={1050}
+                priority
+                sizes="(max-width: 639px) 90vw, (max-width: 1023px) 70vw, 48vw"
+                className="h-[38svh] min-h-[240px] max-h-[400px] w-auto max-w-[76%] object-contain object-bottom sm:h-[54svh] sm:max-h-[560px] sm:max-w-[64%] lg:h-[72svh] lg:max-h-[680px] lg:max-w-[46%]"
+              />
+            </div>
           </div>
 
           {/* RIGHT CONTENT */}
           <div className="flex flex-col items-center md:relative md:bottom-auto md:mt-0 md:items-end">
             {/* FLOATING TECHNOLOGIES */}
-            <div className="w-full max-w-[380px] border border-[#F5F0E7]/10 bg-[#121516]/85 p-4 shadow-2xl shadow-black/20 backdrop-blur-md sm:mt-8 sm:p-5 lg:mt-0">
+            <div className="w-full sm:max-w-[380px] border border-[#F5F0E7]/10 bg-[#121516]/85 p-4 shadow-2xl shadow-black/20 backdrop-blur-md sm:mt-8 sm:p-5 lg:mt-0">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Code2 size={16} className="text-[#F15A36]" />
@@ -206,26 +208,10 @@ export default function PortfolioHeroDark() {
                 ))}
               </div>
             </div>
-
-            {/* FLOATING EXPERIENCE CARD */}
-            <div className="mt-6 flex w-fit items-center gap-3 border border-[#F5F0E7]/10 bg-[#1A1E1F]/90 p-3 backdrop-blur-md sm:mt-8">
-              <div className="flex h-10 w-10 items-center justify-center bg-[#F15A36]/10 text-[#F15A36]">
-                <Layers3 size={19} />
-              </div>
-              <div>
-                <p className="text-[10px] font-bold tracking-[0.15em] text-[#F5F0E7]/70">
-                  BUILT WITH INTENTION
-                </p>
-
-                <p className="mt-1 text-[10px] tracking-wide text-[#F5F0E7]/45">
-                  DESIGN · CODE · EXPERIENCE
-                </p>
-              </div>
-            </div>
           </div>
 
           {/* BOTTOM METADATA */}
-          <div className="z-30 mt-10 flex items-end justify-between pt-5 lg:absolute bottom-6 lg:left-14 lg:right-14 lg:mt-0">
+          <div className="relative z-30 mt-10 flex items-end justify-between pt-5 md:absolute md:bottom-6 md:left-14 md:right-14 md:mt-0">
             <div>
               <p className="text-[9px] tracking-[0.2em] text-[#F5F0E7]/40">
                 CURRENT STATUS
