@@ -1,6 +1,6 @@
 import StoryScene from "@/components/portfolio/StoryScene";
 import Hero from "@/components/portfolio/Hero";
-import Hero2 from "@/components/portfolio/Hero2";
+
 import CinematicHero from "@/components/portfolio/CinematicHero";
 import CinematicHero2 from "@/components/portfolio/CinematicHero2";
 import Homepage from "@/components/portfolio/Homepage";
@@ -12,7 +12,7 @@ import Contact from "@/components/portfolio/Contact";
 
 export default function Home() {
   return (
-    <main className="overflow-x-hidden bg-[#03040d] text-white">
+    <main>
       <Hero />
       <StoryScene />
     </main>

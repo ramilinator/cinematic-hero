@@ -259,43 +259,26 @@ function PaperRocket() {
 
 function CodeCard() {
   return (
-    <div className="relative w-full max-w-[330px] overflow-hidden rounded-sm border border-white/10 bg-[#191C1D] shadow-2xl shadow-black/30">
-      <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
+    <div className="relative w-full max-w-[330px] px-3 py-3 overflow-hidden rounded-sm border border-white/10 bg-[#191C1D] shadow-2xl shadow-black/30">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="size-2 rounded-full bg-[#F15A36]" />
-          <span className="size-2 rounded-full bg-white/20" />
-          <span className="size-2 rounded-full bg-white/10" />
+          <Code2 size={16} className="text-[#F15A36]" />
+          <p className="text-[10px] font-bold tracking-[0.15em] text-[#F5F0E7]/70">
+            MY TOOLKIT
+          </p>
         </div>
-        <span className="text-[9px] uppercase tracking-[0.16em] text-white/35">
-          page.tsx
-        </span>
+        <Sparkles size={14} className="text-[#F15A36]/70" />
       </div>
 
-      <div className="space-y-3 p-5 font-mono text-[11px] leading-relaxed">
-        <p className="text-white/30">{"// A thoughtful digital experience"}</p>
-        <p>
-          <span className="text-[#F15A36]">const</span>{" "}
-          <span className="text-[#F5F0E7]">approach</span>{" "}
-          <span className="text-white/50">=</span>{" "}
-          <span className="text-[#F5F0E7]">{"{"}</span>
-        </p>
-        <p className="pl-4">
-          <span className="text-white/55">design:</span>{" "}
-          <span className="text-[#D8B9A2]">"intentional"</span>,
-        </p>
-        <p className="pl-4">
-          <span className="text-white/55">code:</span>{" "}
-          <span className="text-[#D8B9A2]">"maintainable"</span>,
-        </p>
-        <p className="pl-4">
-          <span className="text-white/55">experience:</span>{" "}
-          <span className="text-[#D8B9A2]">"user-first"</span>,
-        </p>
-        <p className="text-[#F5F0E7]">{"};"}</p>
-        <div className="mt-4 flex items-center gap-2 border-t border-white/[0.08] pt-4 text-[10px] text-white/40">
-          <CheckCircle2 size={13} className="text-[#F15A36]" />
-          Built with intention
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {technologies.map((technology) => (
+          <span
+            key={technology}
+            className="border border-[#F5F0E7]/10 bg-[#F5F0E7]/[0.04] px-3 py-2 text-[10px] font-medium text-[#F5F0E7]/75 transition-colors duration-200 hover:border-[#F15A36]/60 hover:text-[#F15A36] sm:text-xs"
+          >
+            {technology}
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -438,206 +421,6 @@ export default function StoryScenes() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#121516_100%)]" />
       </div>
-
-      {/* Navigation */}
-      <header className="relative z-30 mx-auto flex w-full max-w-[1600px] items-center justify-between px-5 py-5 sm:px-8 lg:px-14">
-        <BrandMark />
-
-        <nav
-          aria-label="Main navigation"
-          className="hidden items-center gap-7 md:flex"
-        >
-          <Link
-            href="#story"
-            className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
-          >
-            Story
-          </Link>
-          <Link
-            href="#skills"
-            className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
-          >
-            Skills
-          </Link>
-          <Link
-            href="#work"
-            className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
-          >
-            Projects
-          </Link>
-          <Link
-            href="#contact"
-            className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
-          >
-            Contact
-          </Link>
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="#contact"
-            className="hidden items-center gap-2 rounded-sm bg-[#F15A36] px-4 py-3 text-[10px] font-bold uppercase tracking-[0.12em] text-[#121516] transition-colors hover:bg-[#F5F0E7] sm:inline-flex"
-          >
-            Let&apos;s talk <ArrowUpRight size={14} />
-          </Link>
-          <Link
-            href="#contact"
-            aria-label="Go to contact section"
-            className="flex size-10 items-center justify-center rounded-sm border border-white/10 text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36] md:hidden"
-          >
-            <Menu size={18} />
-          </Link>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <section
-        id="home"
-        className="relative mx-auto flex min-h-[calc(100svh-81px)] w-full max-w-[1600px] flex-col justify-center overflow-hidden px-5 pb-16 pt-10 sm:px-8 sm:pb-20 lg:px-14"
-      >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[43%] z-0 w-full -translate-x-1/2 -translate-y-1/2 select-none text-center"
-        >
-          <span className="ss-hero-name-line block whitespace-nowrap text-[19vw] font-black uppercase leading-[0.76] tracking-[-0.09em] text-[#F5F0E7]/[0.07] sm:text-[16vw] lg:text-[13vw]">
-            RAMIL
-          </span>
-          <span className="ss-hero-name-line mt-3 block whitespace-nowrap text-[16vw] font-black uppercase leading-[0.85] tracking-[-0.085em] text-[#F15A36]/20 sm:text-[13vw] lg:text-[11.5vw]">
-            AOANAN
-          </span>
-        </div>
-
-        <div className="relative z-10 mx-auto grid w-full max-w-[1320px] items-center gap-10 lg:grid-cols-[1fr_0.9fr] lg:gap-8">
-          <div className="relative z-20 order-2 max-w-[650px] lg:order-1">
-            <div className="ss-hero-kicker mb-7 flex items-center gap-3">
-              <span className="size-2 rounded-full bg-[#F15A36] shadow-[0_0_16px_rgba(241,90,54,.7)]" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
-                Independent Web Developer / Philippines
-              </span>
-            </div>
-
-            <h1 className="ss-reveal max-w-[720px] text-[clamp(3.4rem,8vw,7.7rem)] font-black uppercase leading-[0.84] tracking-[-0.075em]">
-              Building
-              <br />
-              for the <span className="text-[#F15A36]">better</span>
-              <br />
-              web<span className="text-[#F15A36]">.</span>
-            </h1>
-
-            <p className="ss-reveal mt-8 max-w-[470px] text-sm leading-7 text-white/60 sm:text-base sm:leading-8">
-              I&apos;m Ramil — a web developer who brings together thoughtful
-              design, modern technology, and practical solutions to create
-              digital experiences that work.
-            </p>
-
-            <div className="ss-reveal mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="#work"
-                className="group inline-flex items-center gap-3 rounded-sm bg-[#F15A36] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
-              >
-                Explore my work
-                <ArrowRight
-                  size={15}
-                  className="transition-transform group-hover:translate-x-1"
-                />
-              </Link>
-
-              <Link
-                href="#story"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/15 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36]"
-              >
-                Get to know me
-              </Link>
-            </div>
-
-            <div className="ss-hero-meta mt-12 flex flex-wrap gap-x-8 gap-y-4 border-t border-white/10 pt-6">
-              <div>
-                <p className="text-lg font-black tracking-tight text-[#F5F0E7]">
-                  05+
-                </p>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/40">
-                  Years in web development
-                </p>
-              </div>
-              <div>
-                <p className="text-lg font-black tracking-tight text-[#F5F0E7]">
-                  React
-                </p>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/40">
-                  Modern frontend
-                </p>
-              </div>
-              <div>
-                <p className="text-lg font-black tracking-tight text-[#F5F0E7]">
-                  Open
-                </p>
-                <p className="mt-1 text-[9px] uppercase tracking-[0.15em] text-white/40">
-                  To opportunities
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="ss-hero-art relative order-1 mx-auto flex w-full max-w-[520px] items-center justify-center lg:order-2 lg:max-w-none">
-            <div
-              aria-hidden="true"
-              className="absolute left-1/2 top-1/2 aspect-square w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.08]"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute left-1/2 top-1/2 aspect-square w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#F15A36]/25"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute left-1/2 top-[45%] aspect-square w-[60%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/15 blur-[75px]"
-            />
-
-            <div className="relative z-10 aspect-[4/5] w-[90%] max-w-[490px]">
-              <Image
-                src="/images/profile.png"
-                alt="Ramil Aoanan, web developer"
-                fill
-                priority
-                sizes="(max-width: 1024px) 75vw, 390px"
-                className="object-contain object-bottom"
-              />
-            </div>
-
-            <div className="absolute bottom-[8%] left-[-20%] z-20 hidden sm:block">
-              <CodeCard />
-            </div>
-
-            <div className="absolute right-0 top-[12%] z-20 flex items-center gap-3 rounded-sm border border-white/10 bg-[#191C1D]/90 px-4 py-3 backdrop-blur-md">
-              <span className="flex size-9 items-center justify-center rounded-sm bg-[#F15A36]/15 text-[#F15A36]">
-                <Braces size={18} />
-              </span>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.08em]">
-                  Built with purpose
-                </p>
-                <p className="mt-1 text-[9px] text-white/45">
-                  Design meets technology
-                </p>
-              </div>
-            </div>
-
-            <div className="absolute bottom-[5%] right-[2%] z-20 flex items-center gap-2 rounded-sm border border-white/10 bg-[#191C1D]/90 px-3 py-3 backdrop-blur-md">
-              <span className="size-2 rounded-full bg-[#F15A36]" />
-              <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/70">
-                Available for opportunities
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <Link
-          href="#story"
-          className="ss-hero-meta relative z-10 mx-auto mt-10 flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/35 transition-colors hover:text-[#F15A36]"
-        >
-          <ArrowDown size={14} />
-          Scroll to explore
-        </Link>
-      </section>
 
       {/* Story introduction */}
       <section

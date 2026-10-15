@@ -37,84 +37,70 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="relative z-30 border-b border-white/10">
-      <div className="mx-auto flex min-h-[82px] max-w-[1600px] items-center justify-between gap-6 px-6 py-4 sm:px-10 lg:px-14">
+    <header className="z-40 mx-auto flex w-full max-w-[1600px] items-center justify-between border-b border-white/10 bg-transparent px-5 py-5 sm:px-8 lg:px-14 lg:py-7 bg-[#121516]/80 backdrop-blur-md">
+      <Link
+        href="#home"
+        aria-label="Ramil Aoanan home"
+        className="group flex shrink-0 items-center gap-3"
+      >
+        <span className="flex size-10 items-center justify-center rounded-sm bg-[#F15A36] text-sm font-black tracking-[-0.1em] text-[#121516] transition-transform duration-300 group-hover:rotate-[-5deg]">
+          RA.
+        </span>
+
+        <span className="flex flex-col">
+          <span className="text-[12px] font-black uppercase leading-tight tracking-[0.12em] text-[#F5F0E7] sm:text-sm">
+            RAMIL AOANAN
+          </span>
+          <span className="mt-1 text-[8px] font-medium uppercase tracking-[0.16em] text-white/45 sm:text-[9px]">
+            Independent Web Developer
+          </span>
+        </span>
+      </Link>
+      <nav
+        aria-label="Main navigation"
+        className="hidden items-center gap-7 md:flex"
+      >
         <Link
-          href="#home"
-          aria-label="Ramil Aoanan home"
-          className="group flex shrink-0 items-center gap-3"
+          href="#story"
+          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
-          <span className="text-4xl font-black italic tracking-[-0.12em] text-[#F15A36]">
-            RA
-          </span>
-
-          <span className="border-l border-white/20 pl-3">
-            <span className="block text-sm font-bold tracking-[0.15em]">
-              RAMIL AOANAN
-            </span>
-            <span className="mt-1 block text-[9px] tracking-[0.32em] text-white/50">
-              WEB DEVELOPER
-            </span>
-          </span>
+          Story
         </Link>
-
-        <nav
-          aria-label="Main navigation"
-          className="hidden items-center gap-8 lg:flex"
+        <Link
+          href="#skills"
+          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
-          {navigation.map((item, index) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`relative py-2 text-sm transition-colors hover:text-[#F15A36] ${
-                index === 0 ? "text-[#F15A36]" : "text-white/75"
-              }`}
-            >
-              {item.label}
-              {index === 0 && (
-                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-[#F15A36]" />
-              )}
-            </Link>
-          ))}
-        </nav>
-
-        <a
+          Skills
+        </Link>
+        <Link
+          href="#work"
+          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
+        >
+          Projects
+        </Link>
+        <Link
           href="#contact"
-          className="hidden items-center gap-2 text-xs text-white/70 xl:flex"
+          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
-          <span className="h-2 w-2 rounded-full bg-[#F15A36]" />
-          Available for opportunities
-        </a>
+          Contact
+        </Link>
+      </nav>
 
-        <button
-          type="button"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="rounded-full border border-white/15 p-3 transition hover:border-[#F15A36] lg:hidden"
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
+      <Link
+        href="#contact"
+        className="hidden items-center gap-2 rounded-sm border border-[#F5F0E7]/20 px-4 py-3 text-xs font-semibold transition-all duration-300 hover:border-[#F15A36] hover:bg-[#F15A36] hover:text-[#121516] sm:flex"
+      >
+        LET&apos;S TALK
+        <ArrowUpRight size={14} />
+      </Link>
 
-      {menuOpen && (
-        <nav
-          aria-label="Mobile navigation"
-          className="absolute left-0 right-0 top-full z-40 border-b border-white/10 bg-[#242321] px-6 py-5 shadow-2xl lg:hidden"
-        >
-          {navigation.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-between border-b border-white/10 py-4 text-sm text-white/80 transition hover:text-[#F15A36]"
-            >
-              {item.label}
-              <ArrowUpRight size={16} />
-            </a>
-          ))}
-        </nav>
-      )}
+      <Link
+        href="#contact"
+        aria-label="Contact"
+        className="flex h-10 w-10 items-center justify-center border border-[#F5F0E7]/20 sm:hidden"
+      >
+        <Menu size={18} />
+      </Link>
     </header>
   );
 }
