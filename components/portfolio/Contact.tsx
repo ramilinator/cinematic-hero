@@ -13,11 +13,7 @@ export default function ContactForm() {
       onSubmit={() => setIsSending(true)}
       className="space-y-6"
     >
-      <input
-        type="hidden"
-        name="_subject"
-        value="New Portfolio Message — Ramil Aoanan"
-      />
+      <input type="hidden" name="_subject" value="New Portfolio Message" />
 
       <input type="hidden" name="_captcha" value="false" />
 
