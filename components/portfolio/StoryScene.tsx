@@ -191,7 +191,7 @@ function BrandMark() {
       aria-label="Ramil Aoanan home"
       className="group flex shrink-0 items-center gap-3"
     >
-      <span className="flex size-10 items-center justify-center rounded-sm bg-[#F15A36] text-sm font-black tracking-[-0.1em] text-[#121516] transition-transform duration-300 group-hover:rotate-[-5deg]">
+      <span className="flex size-10 items-center justify-center rounded-sm bg-white text-sm font-black tracking-[-0.1em] text-[#121516] transition-transform duration-300 group-hover:rotate-[-5deg]">
         RA.
       </span>
 
@@ -427,51 +427,124 @@ export default function StoryScenes() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#121516_100%)]" />
       </div>
+
       {/* Story introduction */}
       <section
         id="story"
         className="relative border-t border-white/[0.07] bg-[#171A1B] px-5 py-24 sm:px-8 sm:py-32 lg:px-14"
       >
-        <div className="mx-auto grid max-w-[1320px] gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <div className="ss-reveal">
-            <SectionLabel number="01">The person behind the code</SectionLabel>
-            <p className="max-w-sm text-sm leading-7 text-white/50">
-              A little about the person, the process, and the thinking behind
-              the work.
-            </p>
+        <div className="mx-auto max-w-[1320px]">
+          {/* Section heading */}
+          <div className="mb-12 flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between lg:mb-16">
+            <div>
+              <SectionLabel number="01">
+                The person behind the code
+              </SectionLabel>
+              <p className="mt-4 text-sm text-white/45">
+                A little about me, my process, and how I approach the web.
+              </p>
+            </div>
 
-            <div className="mt-8 flex items-center gap-4">
-              <div className="flex size-12 items-center justify-center rounded-sm border border-[#F15A36]/30 bg-[#F15A36]/10 text-[#F15A36]">
-                <Code2 size={21} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/30">
+              ABOUT / RAMIL AOANAN
+            </span>
+          </div>
+
+          {/* Main editorial layout */}
+          <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+            {/* Left: portrait and identity */}
+            <div className="ss-reveal min-w-0">
+              <div className="group relative h-[300px] w-full overflow-hidden rounded-sm border border-white/[0.08] bg-[#202425] sm:h-[380px] lg:h-[450px]">
+                <Image
+                  src="/images/developer.jpg"
+                  alt="Ramil Aoanan, web developer"
+                  fill
+                  sizes="(max-width: 1023px) 100vw, 55vw"
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                />
               </div>
-              <div>
-                <p className="text-sm font-bold">Ramil Aoanan</p>
-                <p className="mt-1 text-xs text-white/45">
-                  Web Developer & Technical Enthusiast
-                </p>
-              </div>
+            </div>
+
+            {/* Right: introduction and details */}
+            <div className="ss-reveal lg:pt-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#F15A36]">
+                A PRACTICAL APPROACH TO THE WEB
+              </p>
+
+              <h2 className="mt-5 max-w-2xl text-4xl font-black leading-[1.05] tracking-[-0.055em] text-[#F5F0E7] sm:text-5xl xl:text-6xl">
+                Good websites make ideas{" "}
+                <span className="text-[#F15A36]">clear.</span>
+              </h2>
+
+              <p className="mt-7 max-w-xl text-sm leading-8 text-white/60 sm:text-base">
+                I believe web development is about more than writing code. It is
+                about understanding what a website needs to accomplish, making
+                information easier to explore, and bringing everything together
+                into a cohesive experience.
+              </p>
+
+              <p className="mt-4 max-w-xl text-sm leading-8 text-white/60 sm:text-base">
+                I enjoy combining frontend development with practical
+                problem-solving, exploring modern tools, and refining the
+                details that make a digital product feel intuitive and complete.
+              </p>
+            </div>
+          </div>
+          {/* Key details */}
+          <div className="mt-10 grid grid-cols-1 border-y border-white/10 sm:grid-cols-2">
+            <div className="border-b border-white/10 py-5 sm:border-r sm:border-b-0 sm:pr-5">
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/40">
+                Focus
+              </p>
+              <p className="mt-2 text-sm font-semibold text-[#F5F0E7]">
+                Frontend Development
+              </p>
+              <p className="mt-2 text-xs leading-6 text-white/45">
+                React, Next.js, responsive interfaces, and modern web
+                technologies.
+              </p>
+            </div>
+
+            <div className="py-5 sm:pl-5">
+              <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/40">
+                Approach
+              </p>
+              <p className="mt-2 text-sm font-semibold text-[#F5F0E7]">
+                Design meets function
+              </p>
+              <p className="mt-2 text-xs leading-6 text-white/45">
+                Clear layouts, thoughtful details, and practical solutions.
+              </p>
             </div>
           </div>
 
-          <div className="ss-reveal">
-            <h2 className="max-w-3xl text-3xl font-black leading-tight tracking-[-0.045em] sm:text-5xl">
-              I believe the best websites bring{" "}
-              <span className="text-[#F15A36]">clarity</span> to ideas.
-            </h2>
-            <p className="mt-7 max-w-2xl text-sm leading-8 text-white/60 sm:text-base">
-              For me, web development is about more than writing code. It is
-              about understanding what a website needs to accomplish, making
-              information easier to explore, and bringing everything together in
-              a way that feels cohesive.
+          {/* Technologies */}
+          <div className="mt-7">
+            <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.16em] text-white/40">
+              Technologies I work with
             </p>
-            <p className="mt-4 max-w-2xl text-sm leading-8 text-white/60 sm:text-base">
-              I enjoy combining frontend development with practical problem
-              solving, learning new tools, and refining the details that make a
-              digital experience feel complete.
-            </p>
+
+            <div className="flex flex-wrap gap-2">
+              {[
+                "React",
+                "Next.js",
+                "JavaScript",
+                "Tailwind CSS",
+                "WordPress",
+                "Strapi",
+              ].map((technology) => (
+                <span
+                  key={technology}
+                  className="rounded-sm border border-white/10 px-3 py-2 text-[10px] font-medium text-white/65 transition-colors hover:border-[#F15A36]/50 hover:text-[#F15A36]"
+                >
+                  {technology}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
+
       {/* Story scenes */}
       <section className="relative px-5 py-24 sm:px-8 sm:py-32 lg:px-14">
         <div className="mx-auto max-w-[1320px]">

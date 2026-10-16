@@ -105,14 +105,14 @@ export default function PortfolioHeroDark() {
           {/* LEFT CONTENT */}
           <div className="relative z-20 flex flex-col items-start">
             <div className="max-w-[520px]">
-              <div className="ss-hero-kicker mb-5 flex items-center gap-3">
-                <span className="size-2 rounded-full bg-[#F15A36] shadow-[0_0_16px_rgba(241,90,54,.7)]" />
+              <div className="ss-hero-kicker mb-4 ml-2 flex items-center gap-3">
+                <span className="size-2 rounded-full bg-white shadow-[0_0_16px_rgba(241,90,54,.7)]" />
                 <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/55">
                   Independent Web Developer / Philippines
                 </span>
               </div>
 
-              <h1 className="ss-reveal max-w-[720px] text-[clamp(3.4rem,8vw,7.7rem)] font-black uppercase leading-[0.73] tracking-[-0.075em]">
+              <h1 className="ss-reveal max-w-[720px] text-[clamp(3.4rem,8vw,7.7rem)] font-black uppercase leading-[0.75] tracking-[-0.075em]">
                 Building
                 <br />
                 for the <span className="text-[#F15A36]">better</span>
@@ -130,7 +130,7 @@ export default function PortfolioHeroDark() {
               <div className="ss-reveal mt-8 flex flex-wrap items-center gap-3">
                 <Link
                   href="#work"
-                  className="group inline-flex items-center gap-3 rounded-sm bg-[#F15A36] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
+                  className="group inline-flex items-center gap-3 rounded-sm bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[#121516] transition-colors"
                 >
                   Explore my work
                   <ArrowRight
@@ -166,13 +166,6 @@ export default function PortfolioHeroDark() {
 
           {/* RIGHT CONTENT */}
           <div className="absolute bottom-10 flex flex-col items-center gap-7 md:relative md:bottom-auto md:mt-0 md:items-end">
-            <div className="z-20 flex items-center gap-2 rounded-sm border border-white/10 bg-[#191C1D]/90 px-3 py-3 backdrop-blur-md">
-              <span className="size-2 rounded-full bg-[#F15A36]" />
-              <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/70">
-                Available for opportunities
-              </span>
-            </div>
-
             {/* CODE CARD */}
 
             <div className="relative hidden w-full max-w-[330px] overflow-hidden rounded-sm border border-white/10 bg-[#191C1D] shadow-2xl shadow-black/30 sm:block">

@@ -86,7 +86,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={isSending}
-          className="inline-flex items-center gap-3 whitespace-nowrap rounded-sm bg-[#F15A36] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.13em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
+          className="inline-flex items-center gap-3 whitespace-nowrap rounded-sm bg-white px-5 py-4 text-[10px] font-bold uppercase tracking-[0.13em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
         >
           <Mail size={15} className="shrink-0" />
           {isSending ? "Sending message..." : "Send a message"}

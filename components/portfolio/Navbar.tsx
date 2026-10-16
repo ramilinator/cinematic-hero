@@ -10,14 +10,6 @@ import {
   X,
 } from "lucide-react";
 
-const navigation = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
-];
-
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -43,7 +35,7 @@ export default function Navbar() {
         aria-label="Ramil Aoanan home"
         className="group flex shrink-0 items-center gap-3"
       >
-        <span className="flex size-10 items-center justify-center rounded-sm bg-[#F15A36] text-sm font-black tracking-[-0.1em] text-[#121516] transition-transform duration-300 group-hover:rotate-[-5deg]">
+        <span className="flex size-10 items-center justify-center rounded-sm bg-white text-sm font-black tracking-[-0.1em] text-[#121516] transition-transform duration-300 group-hover:rotate-[-5deg]">
           RA.
         </span>
 
@@ -52,35 +44,35 @@ export default function Navbar() {
             RAMIL AOANAN
           </span>
           <span className="mt-1 text-[8px] font-medium uppercase tracking-[0.16em] text-white/45 sm:text-[9px]">
-            Independent Web Developer
+            Web Developer
           </span>
         </span>
       </Link>
       <nav
         aria-label="Main navigation"
-        className="hidden items-center gap-7 md:flex"
+        className="hidden items-center gap-7 md:flex text-[14px]"
       >
         <Link
           href="#story"
-          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
+          className="font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
           Story
         </Link>
         <Link
           href="#skills"
-          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
+          className="font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
           Skills
         </Link>
         <Link
           href="#work"
-          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
+          className="font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
           Projects
         </Link>
         <Link
           href="#contact"
-          className="text-[11px] font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
+          className="font-medium text-white/55 transition-colors hover:text-[#F5F0E7]"
         >
           Contact
         </Link>
