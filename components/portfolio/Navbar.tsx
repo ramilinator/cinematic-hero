@@ -29,7 +29,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="z-40 mx-auto flex w-full max-w-[1600px] items-center justify-between border-b border-white/10 bg-transparent px-5 py-5 sm:px-8 lg:px-14 lg:py-7 bg-[#121516]/80 backdrop-blur-md">
+    <header className="z-40 mx-auto flex w-full max-w-[1600px] items-center justify-between border-b border-white/10 bg-transparent px-5 py-5 sm:px-8 lg:px-14 lg:py-5 bg-[#121516]/80 backdrop-blur-md">
       <Link
         href="#home"
         aria-label="Ramil Aoanan home"
