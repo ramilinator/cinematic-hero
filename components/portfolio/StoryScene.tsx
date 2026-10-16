@@ -22,6 +22,8 @@ import {
   Terminal,
 } from "lucide-react";
 
+import ContactForm from "@/components/portfolio/Contact";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const C = {
@@ -132,36 +134,40 @@ const scenes = [
 const projects = [
   {
     number: "01",
-    category: "CONTENT-DRIVEN WEBSITE",
+    category: "CMS / WEB DEVELOPMENT",
     title: "Modern Blog",
     description:
-      "A personal publishing platform exploring a modern frontend, structured content, and a headless CMS workflow.",
+      "A modern blog platform built with Next.js and Strapi, featuring dynamic content and responsive layouts.",
     stack: ["Next.js", "Strapi", "Tailwind CSS"],
-    href: "https://ramilaoanan.wordpress.com/",
-    icon: Globe2,
+    image: "/images/nextjs.webp",
+    href: "https://nextjs-modern-blog-site.vercel.app/",
+    icon: Code2,
   },
   {
     number: "02",
-    category: "API-POWERED APPLICATION",
+    category: "FRONTEND DEVELOPMENT",
     title: "Movie Discovery",
     description:
-      "A movie discovery experience built around API data, interactive browsing, and a responsive interface.",
+      "A movie discovery application that helps users explore films through an API-powered interface.",
     stack: ["React", "JavaScript", "REST API"],
-    href: "https://github.com/ramilinator",
-    icon: Layers3,
+    image:
+      "https://images.unsplash.com/photo-1730830741396-ffb85bb2e983?q=80&w=1470&auto=format&fit=crop",
+    href: "https://movie-app-react-tau-pearl.vercel.app/",
+    icon: Globe2,
   },
+
   {
     number: "03",
-    category: "PERSONAL PORTFOLIO",
-    title: "Digital Experience",
+    category: "E-COMMERCE / FRONTEND DEVELOPMENT",
+    title: "Ecommerce App",
     description:
-      "A personal portfolio focused on clear presentation, considered typography, responsive layouts, and subtle motion.",
-    stack: ["React", "GSAP", "CSS"],
-    href: "https://ramilaoanan.onrender.com",
-    icon: Rocket,
+      "A React-based e-commerce application built to provide an intuitive online shopping experience, featuring product browsing, a clean user interface, and interactive shopping functionality.",
+    stack: ["React", "JavaScript", "CSS"],
+    image: "https://images.unsplash.com/photo-1758186342771-b36aa21f8494",
+    href: "https://ecommerce-react-six-nu.vercel.app/",
+    icon: Code2,
   },
 ];
-
 function SectionLabel({
   number,
   children,
@@ -421,7 +427,6 @@ export default function StoryScenes() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#121516_100%)]" />
       </div>
-
       {/* Story introduction */}
       <section
         id="story"
@@ -467,7 +472,6 @@ export default function StoryScenes() {
           </div>
         </div>
       </section>
-
       {/* Story scenes */}
       <section className="relative px-5 py-24 sm:px-8 sm:py-32 lg:px-14">
         <div className="mx-auto max-w-[1320px]">
@@ -564,7 +568,6 @@ export default function StoryScenes() {
           </div>
         </div>
       </section>
-
       {/* Tools and skills */}
       <section
         id="skills"
@@ -655,6 +658,7 @@ export default function StoryScenes() {
           <div className="ss-reveal mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div>
               <SectionLabel number="04">Selected work</SectionLabel>
+
               <h2 className="max-w-2xl text-4xl font-black tracking-[-0.055em] sm:text-6xl">
                 Ideas turned into{" "}
                 <span className="text-[#F15A36]">projects.</span>
@@ -673,59 +677,90 @@ export default function StoryScenes() {
             </Link>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project) => {
               const Icon = project.icon;
 
               return (
                 <article
                   key={project.number}
-                  className="ss-project-card group flex min-h-[350px] flex-col rounded-sm border border-white/[0.08] bg-[#191C1D] p-6 transition-colors duration-300 hover:border-[#F15A36]/40 sm:p-8"
+                  className="ss-project-card group flex min-h-full flex-col overflow-hidden rounded-sm border border-white/[0.08] bg-[#191C1D] transition-colors duration-300 hover:border-[#F15A36]/40"
                 >
-                  <div className="flex items-start justify-between">
-                    <span className="text-[10px] font-bold tracking-[0.15em] text-[#F15A36]">
-                      {project.number}
-                    </span>
-                    <span className="flex size-11 items-center justify-center rounded-sm border border-white/10 bg-[#121516] text-[#F15A36] transition-colors group-hover:border-[#F15A36]/40">
-                      <Icon size={20} strokeWidth={1.5} />
-                    </span>
-                  </div>
-
-                  <p className="mt-9 text-[9px] font-semibold uppercase tracking-[0.17em] text-white/40">
-                    {project.category}
-                  </p>
-
-                  <h3 className="mt-3 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
-                    {project.title}
-                  </h3>
-
-                  <p className="mt-4 flex-1 text-sm leading-7 text-white/50">
-                    {project.description}
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {project.stack.map((item) => (
-                      <span
-                        key={item}
-                        className="rounded-sm border border-white/[0.08] px-2.5 py-1.5 text-[9px] text-white/55"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-
+                  {/* Project thumbnail */}
                   <Link
                     href={project.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-7 inline-flex w-fit items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-[#F15A36] transition-colors hover:text-[#F5F0E7]"
+                    aria-label={`View ${project.title}`}
+                    className="relative block aspect-[16/9] overflow-hidden border-b border-white/[0.08] bg-[#121516]"
                   >
-                    Explore project
-                    <MoveUpRight
-                      size={14}
-                      className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} website preview`}
+                      fill
+                      sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 33vw"
+                      className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                     />
+
+                    {/* Subtle image overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#191C1D]/50 via-transparent to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-40" />
+
+                    {/* Preview label */}
+                    <span className="absolute bottom-3 left-3 rounded-sm border border-white/15 bg-[#121516]/80 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/80 backdrop-blur-sm">
+                      {project.category}
+                    </span>
+
+                    <span className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-sm border border-white/15 bg-[#121516]/80 text-[#F15A36] backdrop-blur-sm transition-colors group-hover:border-[#F15A36]/50">
+                      <ArrowUpRight size={17} />
+                    </span>
                   </Link>
+
+                  {/* Project details */}
+                  <div className="flex flex-1 flex-col p-6 sm:p-8">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold tracking-[0.15em] text-[#F15A36]">
+                        {project.number}
+                      </span>
+
+                      <Icon
+                        size={19}
+                        strokeWidth={1.5}
+                        className="text-white/40 transition-colors group-hover:text-[#F15A36]"
+                      />
+                    </div>
+
+                    <h3 className="mt-5 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                      {project.title}
+                    </h3>
+
+                    <p className="mt-4 flex-1 text-sm leading-7 text-white/50">
+                      {project.description}
+                    </p>
+
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {project.stack.map((item) => (
+                        <span
+                          key={item}
+                          className="rounded-sm border border-white/[0.08] px-2.5 py-1.5 text-[9px] text-white/55"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+
+                    <Link
+                      href={project.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-7 inline-flex w-fit items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em] text-[#F15A36] transition-colors hover:text-[#F5F0E7]"
+                    >
+                      Explore project
+                      <MoveUpRight
+                        size={14}
+                        className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    </Link>
+                  </div>
                 </article>
               );
             })}
@@ -761,32 +796,15 @@ export default function StoryScenes() {
                   collaborations, and projects where I can contribute, continue
                   learning, and create something useful.
                 </p>
-
-                <Link
-                  href="mailto:your-email@example.com"
-                  className="mt-8 inline-flex items-center gap-3 rounded-sm bg-[#F15A36] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.13em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
-                >
-                  <Mail size={15} />
-                  Get in touch
-                  <ArrowUpRight size={14} />
-                </Link>
               </div>
 
-              <div className="relative mx-auto aspect-square w-full max-w-[260px]">
-                <div className="absolute inset-0 rounded-full border border-dashed border-[#F15A36]/40" />
-                <div className="absolute inset-[12%] rounded-full border border-white/10" />
-                <div className="absolute inset-[24%] rounded-full bg-[#F15A36]/10" />
-                <div className="absolute inset-[30%]">
-                  <PaperRocket />
-                </div>
-                <span className="absolute left-0 top-[18%] size-2 rounded-full bg-[#F15A36]" />
-                <span className="absolute bottom-[17%] right-[3%] size-1.5 rounded-full bg-[#F5F0E7]/70" />
+              <div>
+                <ContactForm />
               </div>
             </div>
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="relative px-5 py-7 sm:px-8 lg:px-14">
         <div className="mx-auto flex max-w-[1320px] flex-col gap-5 border-t border-white/[0.08] pt-7 sm:flex-row sm:items-center sm:justify-between">

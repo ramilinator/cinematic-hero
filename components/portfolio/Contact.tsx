@@ -1,90 +1,101 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useState } from "react";
+import { Mail } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
-
-export default function Contact() {
-  const section = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".contact-reveal", {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: section.current,
-          start: "top 75%",
-        },
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
+export default function ContactForm() {
+  const [isSending, setIsSending] = useState(false);
 
   return (
-    <section
-      id="contact"
-      ref={section}
-      className="relative overflow-hidden border-t border-white/5 bg-[#03040d] py-40"
+    <form
+      action="https://formsubmit.co/9a0abf4171cf834a42cfd7f7be3a40ec"
+      method="POST"
+      onSubmit={() => setIsSending(true)}
+      className="space-y-6"
     >
-      <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-[120px]" />
+      <input
+        type="hidden"
+        name="_subject"
+        value="New Portfolio Message — Ramil Aoanan"
+      />
 
-      <div className="relative mx-auto max-w-5xl px-6 text-center">
-        <p className="contact-reveal text-[10px] uppercase tracking-[0.5em] text-cyan-300/60">
-          05 // Establish Connection
-        </p>
+      <input type="hidden" name="_captcha" value="false" />
 
-        <h2 className="contact-reveal mt-6 text-5xl font-light tracking-tight sm:text-7xl md:text-8xl">
-          Ready for the
-          <span className="block bg-gradient-to-r from-blue-300 via-cyan-200 to-violet-400 bg-clip-text text-transparent">
-            next mission?
-          </span>
-        </h2>
-
-        <p className="contact-reveal mx-auto mt-8 max-w-xl text-sm leading-8 text-white/35">
-          Have a project, idea or opportunity? Let's build something remarkable
-          together.
-        </p>
-
-        <div className="contact-reveal mt-10">
-          <a
-            href="mailto:ramilaoanan@gmail.com"
-            className="inline-flex items-center gap-4 rounded-full border border-cyan-300/30 bg-cyan-300/5 px-7 py-4 text-[10px] uppercase tracking-[0.25em] text-cyan-100 transition hover:border-cyan-200/70 hover:bg-cyan-300/10"
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label
+            htmlFor="contact-name"
+            className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/60"
           >
-            Start a Conversation
-            <span className="text-base">→</span>
-          </a>
+            Your name <span className="text-[#F15A36]">*</span>
+          </label>
+
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            placeholder="Your full name"
+            autoComplete="name"
+            required
+            disabled={isSending}
+            className="w-full rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
+          />
         </div>
 
-        <div className="contact-reveal mt-20 flex flex-wrap justify-center gap-8 text-[9px] uppercase tracking-[0.25em] text-white/25">
-          <a
-            href="https://github.com/ramilinator"
-            target="_blank"
-            rel="noreferrer"
-            className="transition hover:text-cyan-200"
+        <div className="space-y-2">
+          <label
+            htmlFor="contact-email"
+            className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/60"
           >
-            GitHub
-          </a>
+            Email address <span className="text-[#F15A36]">*</span>
+          </label>
 
-          <a
-            href="mailto:ramilaoanan@gmail.com"
-            className="transition hover:text-cyan-200"
-          >
-            Email
-          </a>
-
-          <span>Philippines</span>
-        </div>
-
-        <div className="mt-16 text-[8px] uppercase tracking-[0.35em] text-white/15">
-          © {new Date().getFullYear()} Ramil Aoanan // All systems operational
+          <input
+            id="contact-email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            required
+            disabled={isSending}
+            className="w-full rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
+          />
         </div>
       </div>
-    </section>
+
+      <div className="space-y-2">
+        <label
+          htmlFor="contact-message"
+          className="block text-[10px] font-bold uppercase tracking-[0.15em] text-white/60"
+        >
+          Tell me about it <span className="text-[#F15A36]">*</span>
+        </label>
+
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={5}
+          placeholder="What are you looking to build?"
+          required
+          disabled={isSending}
+          className="w-full resize-y rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm leading-7 text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
+        />
+      </div>
+
+      <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-start">
+        <button
+          type="submit"
+          disabled={isSending}
+          className="inline-flex items-center gap-3 whitespace-nowrap rounded-sm bg-[#F15A36] px-5 py-4 text-[10px] font-bold uppercase tracking-[0.13em] text-[#121516] transition-colors hover:bg-[#F5F0E7]"
+        >
+          <Mail size={15} className="shrink-0" />
+          {isSending ? "Sending message..." : "Send a message"}
+        </button>
+
+        <p className="text-[10px] uppercase tracking-[0.12em] text-white/35">
+          Typically happy to discuss new projects
+        </p>
+      </div>
+    </form>
   );
 }
