@@ -17,6 +17,8 @@ export default function ContactForm() {
 
       <input type="hidden" name="_captcha" value="false" />
 
+      <input type="hidden" name="_template" value="table" />
+
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-2">
           <label
@@ -27,13 +29,10 @@ export default function ContactForm() {
           </label>
 
           <input
-            id="contact-name"
             name="name"
             type="text"
             placeholder="Your full name"
-            autoComplete="name"
             required
-            disabled={isSending}
             className="w-full rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
           />
         </div>
@@ -47,13 +46,10 @@ export default function ContactForm() {
           </label>
 
           <input
-            id="contact-email"
             name="email"
             type="email"
             placeholder="you@example.com"
-            autoComplete="email"
             required
-            disabled={isSending}
             className="w-full rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
           />
         </div>
@@ -68,12 +64,10 @@ export default function ContactForm() {
         </label>
 
         <textarea
-          id="contact-message"
           name="message"
           rows={5}
           placeholder="What are you looking to build?"
           required
-          disabled={isSending}
           className="w-full resize-y rounded-sm border border-white/10 bg-[#191C1D] px-4 py-4 text-sm leading-7 text-[#F5F0E7] outline-none transition-colors placeholder:text-white/25 focus:border-[#F15A36] disabled:opacity-60"
         />
       </div>
