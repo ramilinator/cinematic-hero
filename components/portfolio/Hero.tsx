@@ -141,7 +141,7 @@ export default function PortfolioHeroDark() {
 
                 <Link
                   href="#story"
-                  className="inline-flex items-center gap-2 rounded-sm border border-white/100 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36]"
+                  className="inline-flex items-center gap-2 rounded-sm border border-white/ px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36]"
                 >
                   Get to know me
                 </Link>
