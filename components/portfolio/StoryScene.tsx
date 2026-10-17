@@ -199,8 +199,8 @@ function BrandMark() {
         <span className="text-[12px] font-black uppercase leading-tight tracking-[0.12em] text-[#F5F0E7] sm:text-sm">
           RAMIL AOANAN
         </span>
-        <span className="mt-1 text-[8px] font-medium uppercase tracking-[0.16em] text-white/45 sm:text-[9px]">
-          Independent Web Developer
+        <span className="mt-1 text-[8px] font-medium uppercase tracking-[.5em] text-white/45 sm:text-[9px]">
+          Web Developer
         </span>
       </span>
     </Link>
@@ -880,7 +880,7 @@ export default function StoryScenes() {
       </section>
       {/* Footer */}
       <footer className="relative px-5 py-7 sm:px-8 lg:px-14">
-        <div className="mx-auto flex max-w-[1320px] flex-col gap-5 border-t border-white/[0.08] pt-7 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-[1320px] flex-col gap-5 pt-7 sm:flex-row sm:items-center sm:justify-between">
           <BrandMark />
 
           <p className="text-[10px] text-white/35">

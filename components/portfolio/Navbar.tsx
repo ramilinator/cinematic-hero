@@ -43,7 +43,7 @@ export default function Navbar() {
           <span className="text-[12px] font-black uppercase leading-tight tracking-[0.12em] text-[#F5F0E7] sm:text-sm">
             RAMIL AOANAN
           </span>
-          <span className="mt-1 text-[8px] font-medium uppercase tracking-[0.16em] text-white/45 sm:text-[9px]">
+          <span className="mt-1 text-[8px] font-medium uppercase tracking-[.5em] text-white/45 sm:text-[9px]">
             Web Developer
           </span>
         </span>
