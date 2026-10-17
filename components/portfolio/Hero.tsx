@@ -141,7 +141,7 @@ export default function PortfolioHeroDark() {
 
                 <Link
                   href="#story"
-                  className="inline-flex items-center gap-2 rounded-sm border border-white/15 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36]"
+                  className="inline-flex items-center gap-2 rounded-sm border border-white/100 px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F5F0E7] transition-colors hover:border-[#F15A36] hover:text-[#F15A36]"
                 >
                   Get to know me
                 </Link>
@@ -168,7 +168,7 @@ export default function PortfolioHeroDark() {
           <div className="absolute bottom-10 flex flex-col items-center gap-7 md:relative md:bottom-auto md:mt-0 md:items-end">
             {/* CODE CARD */}
 
-            <div className="relative hidden w-full max-w-[330px] overflow-hidden rounded-sm border border-white/10 bg-[#191C1D] shadow-2xl shadow-black/30 sm:block">
+            <div className="relative hidden w-full max-w-[330px] overflow-hidden rounded-sm border border-white/10 transparent shadow-2xl shadow-black/30 sm:block">
               <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
                 <div className="flex items-center gap-2">
                   <span className="size-2 rounded-full bg-[#F15A36]" />
@@ -211,7 +211,7 @@ export default function PortfolioHeroDark() {
             </div>
 
             {/* TECHNOLOGIES CARD */}
-            <div className="relative w-full max-w-[330px] p-5 overflow-hidden rounded-sm border border-white/10 bg-[#191C1D] shadow-2xl shadow-black/30 hidden sm:block">
+            <div className="relative w-full max-w-[330px] p-5 overflow-hidden rounded-sm border border-white/10 transparent shadow-2xl shadow-black/30 hidden sm:block">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Code2 size={16} className="text-[#F15A36]" />
@@ -226,7 +226,7 @@ export default function PortfolioHeroDark() {
                 {technologies.map((technology) => (
                   <span
                     key={technology}
-                    className="border border-[#F5F0E7]/10 bg-[#F5F0E7]/[0.04] px-3 py-2 text-[10px] font-medium text-[#F5F0E7]/75 transition-colors duration-200 hover:border-[#F15A36]/60 hover:text-[#F15A36] sm:text-xs"
+                    className="border border-[#F5F0E7]/10  px-3 py-2 text-[10px] font-medium text-[#F5F0E7]/75 transition-colors duration-200 hover:border-[#F15A36]/60 hover:text-[#F15A36] sm:text-xs"
                   >
                     {technology}
                   </span>
