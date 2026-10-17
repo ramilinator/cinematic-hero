@@ -440,9 +440,14 @@ export default function StoryScenes() {
               <SectionLabel number="01">
                 The person behind the code
               </SectionLabel>
-              <p className="mt-4 text-sm text-white/45">
-                A little about me, my process, and how I approach the web.
-              </p>
+
+              <h1
+                data-hero-headline
+                className="max-w-[720px] text-[clamp(3.3rem,7.2vw,7.4rem)] font-black uppercase leading-[0.82] tracking-[-0.075em]"
+              >
+                Building <span className="text-[#F15A36]">for the</span> better
+                web.
+              </h1>
             </div>
 
             <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/30">
@@ -453,15 +458,36 @@ export default function StoryScenes() {
           {/* Main editorial layout */}
           <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
             {/* Left: portrait and identity */}
-            <div className="ss-reveal min-w-0">
-              <div className="group relative h-[300px] w-full overflow-hidden rounded-sm border border-white/[0.08] bg-[#202425] sm:h-[380px] lg:h-[450px]">
-                <Image
-                  src="/images/developer.jpg"
-                  alt="Ramil Aoanan, web developer"
-                  fill
-                  sizes="(max-width: 1023px) 100vw, 55vw"
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                />
+
+            <div className="group relative h-[300px] w-full overflow-hidden rounded-sm border border-white/[0.08] bg-[#202425] sm:h-[380px] lg:h-[450px]">
+              <Image
+                src="/images/developer.jpg"
+                alt="Ramil Aoanan, web developer"
+                fill
+                sizes="(max-width: 1023px) 100vw, 55vw"
+                className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              />
+
+              {/* Dark gradient overlay focused on the bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#121516] via-[#121516]/75 via-40% to-transparent to-85%" />
+
+              {/* Bottom-left personal details */}
+              <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6">
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F15A36]">
+                  Independent Web Developer
+                </p>
+
+                <h3 className="text-2xl font-black uppercase tracking-[-0.05em] text-[#F5F0E7] sm:text-3xl">
+                  Ramil Aoanan<span className="text-[#F15A36]">.</span>
+                </h3>
+
+                <p className="mt-2 text-xs text-white/65">
+                  Thoughtful design. Practical solutions.
+                </p>
+
+                <div className="mt-4 h-px w-full bg-white/15">
+                  <div className="h-px w-16 bg-[#F15A36] transition-all duration-500 group-hover:w-28" />
+                </div>
               </div>
             </div>
 
