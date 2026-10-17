@@ -112,7 +112,7 @@ export default function PortfolioHeroDark() {
                 </span>
               </div>
 
-              <h1 className="ss-reveal max-w-[720px] text-[clamp(3.4rem,8vw,7.7rem)] font-black uppercase leading-[0.75] tracking-[-0.075em]">
+              <h1 className="ss-reveal max-w-[720px] text-[clamp(3.4rem,8vw,7.7rem)] font-black leading-[0.73] tracking-[-0.055em]">
                 Building
                 <br />
                 for the <span className="text-[#F15A36]">better</span>
