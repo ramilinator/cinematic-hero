@@ -5,7 +5,7 @@ import StoryScene from "@/components/portfolio/StoryScene";
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <CinematicHero />
       <StoryScene />
     </main>
   );
