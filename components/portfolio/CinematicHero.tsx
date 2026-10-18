@@ -32,6 +32,14 @@ function SectionLabel({
   );
 }
 
+const TRAIL_COUNT = 8;
+const TRAIL_GROWTH = 2;
+
+const trailScales = Array.from(
+  { length: TRAIL_COUNT },
+  (_, index) => TRAIL_GROWTH ** index,
+);
+
 export default function PortfolioHeroDark() {
   const heroRef = useRef<HTMLElement>(null);
 
@@ -41,6 +49,14 @@ export default function PortfolioHeroDark() {
 
     const ctx = gsap.context(() => {
       const select = gsap.utils.selector(hero);
+
+      // --------------------------------------------------
+      // ELEMENT REFERENCES
+      // --------------------------------------------------
+
+      const independentLabel = select(
+        "[data-hero-independent]",
+      ) as HTMLElement[];
 
       const portrait = select("[data-hero-portrait-visual]")[0] as
         | HTMLElement
@@ -56,46 +72,86 @@ export default function PortfolioHeroDark() {
         select("[data-hero-frame-trail]"),
       );
 
-      const revealElements = gsap.utils.toArray<HTMLElement>(
-        select("[data-hero-reveal]"),
-      );
+      // Left headline lines
+      const leftHeadline = [
+        ...select("[data-hero-ramil]"),
+        ...select("[data-hero-aoanan]"),
+        ...select("[data-hero-better]"),
+        ...select("[data-hero-web]"),
+      ] as HTMLElement[];
+
+      const leftIntro = select("[data-hero-intro]") as HTMLElement[];
+
+      // Right-side content
+      const toolkit = select("[data-hero-toolkit]") as HTMLElement[];
+
+      const status = select("[data-hero-status]") as HTMLElement[];
+
+      const codeElements = select("[data-hero-code]") as HTMLElement[];
 
       if (!portrait || !frame || !frameBorder) return;
 
-      // Initial state:
-      // Portrait and frame start at exactly the same scale.
+      // --------------------------------------------------
+      // INITIAL STATES
+      // --------------------------------------------------
 
-      gsap.set([portrait], {
-        scale: 0.45,
+      gsap.set(independentLabel, {
+        autoAlpha: 0,
+        x: -35,
+        y: 8,
+        force3D: true,
+      });
+
+      gsap.set(frame, {
+        scale: 0.55,
         transformOrigin: "50% 50%",
         force3D: true,
       });
 
-      gsap.set([frame], {
-        scale: 0.72,
+      gsap.set(portrait, {
+        scale: 0.37,
         transformOrigin: "50% 50%",
         force3D: true,
       });
-
       gsap.set(frameBorder, {
         autoAlpha: 1,
       });
 
-      gsap.set(revealElements, {
+      // Left headline: slide in from the left.
+      gsap.set(leftHeadline, {
         autoAlpha: 0,
-        y: 28,
+        x: -55,
+        y: 12,
         force3D: true,
       });
 
-      // Initialize frame motion trails.
+      // Intro follows the headline.
+      gsap.set(leftIntro, {
+        autoAlpha: 0,
+        x: -30,
+        y: 12,
+        force3D: true,
+      });
+
+      // Right-side cards reveal from below.
+      gsap.set([...toolkit, ...status, ...codeElements], {
+        autoAlpha: 0,
+        y: 24,
+        force3D: true,
+      });
+
+      // Trails start smaller than the main frame.
       gsap.set(frameTrails, {
         autoAlpha: 0,
-        scale: 0.72,
-        x: (index) => -22 * (index + 1),
-        y: (index) => 14 * (index + 1),
+        scale: 0.75,
+        x: 0,
+        y: 0,
         transformOrigin: "50% 50%",
         force3D: true,
       });
+      // --------------------------------------------------
+      // SCROLL-DRIVEN TIMELINE
+      // --------------------------------------------------
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -109,37 +165,33 @@ export default function PortfolioHeroDark() {
         },
       });
 
-      // Frame trails briefly appear, then expand outward.
+      // --------------------------------------------------
+      // FRAME TRAILS — SAME SIZE, RANDOM POSITIONS
+      // --------------------------------------------------
+
       frameTrails.forEach((trail, index) => {
-        const depth = index + 1;
-        const opacity = [0.9, 0.65, 0.4][index] ?? 0.3;
+        // Random but consistent offsets for this animation setup.
+        const x = gsap.utils.random(-100, 100);
+        const y = gsap.utils.random(-100, 100);
 
         tl.to(
           trail,
           {
-            autoAlpha: opacity,
-            duration: 0.18,
-            ease: "power1.out",
-          },
-          0,
-        );
-
-        tl.to(
-          trail,
-          {
-            autoAlpha: 0,
-            scale: 1.2 + index * 0.1,
-            x: -(22 * depth) - 24,
-            y: 14 * depth + 18,
-            duration: 1.1,
+            autoAlpha: 0.35,
+            scale: 1.5, // Same size for every trail
+            x,
+            y,
+            duration: 1.2,
             ease: "power2.out",
+            force3D: true,
           },
-          0.12 + index * 0.06,
+          0.12 + index * 0.04,
         );
       });
+      // --------------------------------------------------
+      // 2. FRAME EXPANDS
+      // --------------------------------------------------
 
-      // 1. Frame zooms from 0.72 to 1.
-      // It reaches its final size before the portrait finishes.
       tl.to(
         frame,
         {
@@ -151,8 +203,10 @@ export default function PortfolioHeroDark() {
         0,
       );
 
-      // 2. Portrait starts at the same scale but continues growing.
-      // It eventually becomes larger than the frame.
+      // --------------------------------------------------
+      // 3. PORTRAIT ZOOMS PAST THE FRAME
+      // --------------------------------------------------
+
       tl.to(
         portrait,
         {
@@ -164,42 +218,95 @@ export default function PortfolioHeroDark() {
         0,
       );
 
-      // Reveal primary hero content.
-      if (revealElements.length > 0) {
-        tl.to(
-          revealElements,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.65,
-            stagger: 0.16,
-            ease: "power3.out",
-            force3D: true,
-          },
-          0.7,
-        );
-      }
-
-      // Optional secondary reveals.
-      const optionalReveals = [
-        { selector: "[data-hero-code]", position: 1.45 },
-        { selector: "[data-hero-toolkit]", position: 1.6 },
-        { selector: "[data-hero-status]", position: 1.75 },
-      ];
-
-      optionalReveals.forEach(({ selector, position }) => {
-        const elements = select(selector) as HTMLElement[];
-
-        if (!elements.length) return;
-
-        gsap.set(elements, {
-          autoAlpha: 0,
-          y: 20,
+      // Independent web developer label
+      tl.to(
+        independentLabel,
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          duration: 0.5,
+          ease: "power3.out",
           force3D: true,
-        });
+        },
+        0.3,
+      );
 
+      // --------------------------------------------------
+      // 4. LEFT HEADLINE REVEALS LINE BY LINE
+      // --------------------------------------------------
+
+      tl.to(
+        leftHeadline,
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.16,
+          ease: "power3.out",
+          force3D: true,
+        },
+        0.45,
+      );
+
+      // --------------------------------------------------
+      // 5. LEFT INTRO PARAGRAPH
+      // --------------------------------------------------
+
+      tl.to(
+        leftIntro,
+        {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          force3D: true,
+        },
+        1.15,
+      );
+
+      // --------------------------------------------------
+      // 6. RIGHT TOOLKIT CARD
+      // --------------------------------------------------
+
+      tl.to(
+        toolkit,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.1,
+          ease: "power3.out",
+          force3D: true,
+        },
+        1.35,
+      );
+
+      // --------------------------------------------------
+      // 7. AVAILABILITY STATUS
+      // --------------------------------------------------
+
+      tl.to(
+        status,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.55,
+          ease: "power3.out",
+          force3D: true,
+        },
+        1.65,
+      );
+
+      // --------------------------------------------------
+      // 8. OPTIONAL CODE ELEMENTS
+      // --------------------------------------------------
+
+      if (codeElements.length > 0) {
         tl.to(
-          elements,
+          codeElements,
           {
             autoAlpha: 1,
             y: 0,
@@ -208,11 +315,14 @@ export default function PortfolioHeroDark() {
             ease: "power3.out",
             force3D: true,
           },
-          position,
+          1.5,
         );
-      });
+      }
 
-      // Refresh ScrollTrigger after layout is ready.
+      // --------------------------------------------------
+      // 9. REFRESH SCROLLTRIGGER AFTER LAYOUT
+      // --------------------------------------------------
+
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
@@ -228,44 +338,56 @@ export default function PortfolioHeroDark() {
       id="home"
       className="relative isolate min-h-screen overflow-hidden bg-[#121516] text-[#F5F0E7] selection:bg-[#F15A36] selection:text-[#121516]"
     >
-      {/* Background: subtle technical grid and directional lighting */}
+      {/* Static background: visible depth, no animation */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        <div className="absolute -left-48 top-[20%] h-[420px] w-[420px] rounded-full bg-[#F15A36]/[0.07] blur-[140px]" />
+        {/* Base: rich charcoal gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#202323] via-[#141819] to-[#0c0f10]" />
 
-        <div className="absolute right-[-12%] top-[12%] h-[520px] w-[520px] rounded-full bg-[#F5F0E7]/[0.025] blur-[150px]" />
+        {/* Warm ambient light on the left */}
+        <div className="absolute -left-32 top-[12%] h-[500px] w-[500px] rounded-full bg-[#F15A36]/[0.14] blur-[120px]" />
 
+        {/* Cool neutral light on the right */}
+        <div className="absolute -right-32 top-[18%] h-[480px] w-[480px] rounded-full bg-[#D8D2C7]/[0.07] blur-[130px]" />
+
+        {/* Static orange glow behind the portrait */}
+        <div className="absolute left-1/2 top-[42%] h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.09] blur-[100px]" />
+
+        {/* Clearly visible technical grid */}
         <div
-          className="absolute inset-0 opacity-[0.075]"
+          className="absolute inset-0 opacity-[0.12]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(245,240,231,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,231,0.15) 1px, transparent 1px)",
+              "linear-gradient(rgba(245,240,231,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,231,0.18) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
-            maskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
-            WebkitMaskImage:
-              "linear-gradient(to bottom, black 0%, transparent 90%)",
           }}
         />
 
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#121516_78%)]" />
+        {/* Dark vignette to preserve text readability */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_10%,rgba(12,15,16,0.35)_100%)]" />
 
-        <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/40 to-transparent" />
+        {/* Bottom depth and grounding */}
+        <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#0b0d0e]/75 to-transparent" />
+
+        {/* Orange accent line */}
+        <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/50 to-transparent" />
       </div>
 
       <section
         ref={heroRef}
         aria-label="Introduction"
-        className=" relative mx-auto min-h-[100svh] w-full max-w-[1600px] flex-col justify-end overflow-hidden px-5 pt-[var(--navbar-height)] sm:px-8 lg:px-14"
+        className="relative mx-auto min-h-[100svh] w-full max-w-[1600px] overflow-hidden px-5 pt-[var(--navbar-height)] sm:px-8 lg:px-14"
       >
         {/* Hero composition */}
-        <div className="relative z-10 flex w-full flex-col gap-10 md:flex-row md:items-start md:gap-8">
-          {/* Left: identity and introduction */}
-          <div className="relative z-20 flex w-full flex-col items-start py-24 md:w-[43%] md:shrink-0">
-            <SectionLabel number="01">Independent web developer</SectionLabel>
-
-            {/* Four independently animated headline lines */}
+        <div className=" relative z-10 flex w-full flex-col justify-between gap-8 md:flex-row md:items-start md:gap-8">
+          {/* Top on mobile: identity and introduction */}
+          {/* 1. Identity and introduction */}
+          <div className="relative z-30 order-1 flex w-full flex-col items-center pt-12 pb-4 text-center sm:pt-16 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:w-[43%] md:shrink-0 md:items-start md:py-24 md:text-left">
+            <div data-hero-independent>
+              <SectionLabel number="01">Independent web developer</SectionLabel>
+            </div>
 
             <h1 className="mt-7 max-w-[480px] text-[clamp(2.8rem,6.4vw,6.5rem)] font-black uppercase leading-[0.9] tracking-[-0.075em]">
               <span data-hero-ramil className="text-[#F5F0E7]">
@@ -295,17 +417,17 @@ export default function PortfolioHeroDark() {
             </p>
           </div>
 
-          {/* Center: portrait and decorative frame */}
-          {/* Center: portrait and frame */}
+          {/* Middle on mobile: portrait and frame */}
+          {/* 2. Portrait and frame */}
           <div
             data-hero-portrait
-            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            className="pointer-events-none relative z-20 order-2 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-center justify-center md:absolute md:inset-0 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:h-auto md:max-w-none"
           >
             {/* Frame layer — behind the portrait */}
             <div
               data-hero-frame
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 z-0 h-[min(92vh,440px)] w-[95%] max-h-[440px] max-w-[440px] -translate-x-1/2 -translate-y-1/2 md:w-[48%]"
+              className="absolute left-1/2 top-1/2 z-0 h-[440px] w-[440px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2"
             >
               {/* Orange border */}
               <div
@@ -315,6 +437,7 @@ export default function PortfolioHeroDark() {
 
               {/* Corner accents */}
               <div className="absolute right-0 top-0 z-10 h-5 w-5 border-r border-t border-[#F15A36]/80" />
+
               <div className="absolute bottom-0 left-0 z-10 h-5 w-5 border-b border-l border-[#F15A36]/80" />
 
               {/* Frame label */}
@@ -323,9 +446,9 @@ export default function PortfolioHeroDark() {
               </div>
 
               {/* Motion trails */}
-              {[0, 1, 2].map((trail) => (
+              {trailScales.map((scale, index) => (
                 <div
-                  key={trail}
+                  key={index}
                   data-hero-frame-trail
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 border-2 border-[#F15A36]"
@@ -335,23 +458,28 @@ export default function PortfolioHeroDark() {
             </div>
 
             {/* Portrait layer — in front of the frame */}
-            <div data-hero-portrait-visual className="absolute inset-0 z-10">
+            <div
+              data-hero-portrait-visual
+              className="absolute left-1/2 top-1/2 z-10 h-[min(340px,90vw)] w-[min(340px,90vw)] -translate-x-1/2 -translate-y-1/2 sm:h-[640px] sm:w-[640px]"
+            >
               <Image
                 src="/images/profile.png"
                 alt="Ramil Aoanan, web developer"
                 fill
                 priority
-                sizes="(max-width: 767px) 80vw, 40vw"
+                sizes="(max-width: 767px) 100vw, 40vw"
                 className="object-contain object-center"
               />
             </div>
           </div>
-          {/* Right: developer cards */}
-          <div className="relative z-20 flex w-full flex-col items-center gap-5 md:ml-auto md:w-[31%] md:shrink-0 md:items-end">
+
+          {/* Bottom on mobile: developer cards */}
+          {/* 3. Toolkit and availability */}
+          <div className="relative z-30 order-3 flex w-full flex-col items-center justify-end gap-5 pb-12 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:ml-auto md:w-[31%] md:shrink-0 md:items-end md:py-24">
             {/* Toolkit card */}
             <div
               data-hero-toolkit
-              className="w-full max-w-[360px] border border-white/[0.10] bg-[#191C1D]/80 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.16)] backdrop-blur-xl transition-colors duration-300 hover:border-white/[0.18]"
+              className="w-full max-w-none md:max-w-[360px] border border-white/[0.10] bg-[#191C1D]/80 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.16)] backdrop-blur-xl transition-colors duration-300 hover:border-white/[0.18]"
             >
               <div className="mb-5 flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -384,7 +512,6 @@ export default function PortfolioHeroDark() {
                         index === 0 ? "bg-[#F15A36]" : "bg-white/25"
                       }`}
                     />
-
                     {technology}
                   </span>
                 ))}
@@ -404,12 +531,11 @@ export default function PortfolioHeroDark() {
             {/* Availability indicator */}
             <div
               data-hero-status
-              className="flex w-full max-w-[360px] items-center justify-between border border-white/[0.10] bg-[#191C1D]/90 px-4 py-3.5 backdrop-blur-xl md:w-auto md:self-end"
+              className="flex w-full max-w-none md:max-w-[360px] items-center justify-between border border-white/[0.10] bg-[#191C1D]/90 px-4 py-3.5 backdrop-blur-xl md:w-auto md:self-end"
             >
               <div className="flex items-center gap-3">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F15A36]/40" />
-
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F15A36]" />
                 </span>
 
@@ -430,7 +556,7 @@ export default function PortfolioHeroDark() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
+        <div className="pointer-events-none absolute bottom-20 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
           <span className="text-[9px] uppercase tracking-[0.24em] text-[#A5A19A]/70">
             Scroll to explore
           </span>
