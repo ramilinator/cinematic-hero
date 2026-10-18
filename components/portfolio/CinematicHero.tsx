@@ -7,8 +7,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, ArrowUpRight, Layers3, Sparkles } from "lucide-react";
 
-import Navbar from "@/components/portfolio/Navbar";
-
 const technologies = [
   "React",
   "Next.js",
@@ -38,84 +36,70 @@ export default function PortfolioHeroDark() {
   const heroRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+    const hero = heroRef.current;
+    if (!hero) return;
 
     const ctx = gsap.context(() => {
-      const select = (selector: string) =>
-        gsap.utils.toArray<HTMLElement>(selector, heroRef.current);
+      const select = gsap.utils.selector(hero);
 
-      const portrait = select("[data-hero-portrait]")[0];
-      const portraitVisual = select("[data-hero-portrait-visual]")[0];
+      const portrait = select("[data-hero-portrait-visual]")[0] as
+        | HTMLElement
+        | undefined;
 
-      const building = select("[data-hero-ramil]")[0];
-      const forThe = select("[data-hero-aoanan]")[0];
-      const better = select("[data-hero-better]")[0];
-      const web = select("[data-hero-web]")[0];
+      const frame = select("[data-hero-frame]")[0] as HTMLElement | undefined;
 
-      const intro = select("[data-hero-intro]")[0];
-      const code = select("[data-hero-code]")[0];
-      const toolkit = select("[data-hero-toolkit]")[0];
-      const status = select("[data-hero-status]")[0];
+      const frameBorder = select("[data-hero-frame-border]")[0] as
+        | HTMLElement
+        | undefined;
 
-      if (
-        !heroRef.current ||
-        !portrait ||
-        !portraitVisual ||
-        !building ||
-        !forThe ||
-        !better ||
-        !web ||
-        !intro ||
-        !toolkit ||
-        !status
-      ) {
-        return;
-      }
+      const frameTrails = gsap.utils.toArray<HTMLElement>(
+        select("[data-hero-frame-trail]"),
+      );
 
-      const headline = [building, forThe, better, web];
-      const supportingContent = [
-        intro,
-        ...(code ? [code] : []),
-        toolkit,
-        status,
-      ];
+      const revealElements = gsap.utils.toArray<HTMLElement>(
+        select("[data-hero-reveal]"),
+      );
 
-      // Initial portrait state.
-      gsap.set(portrait, {
+      if (!portrait || !frame || !frameBorder) return;
+
+      // Initial state:
+      // Portrait and frame start at exactly the same scale.
+
+      gsap.set([portrait], {
+        scale: 0.45,
+        transformOrigin: "50% 50%",
+        force3D: true,
+      });
+
+      gsap.set([frame], {
+        scale: 0.72,
+        transformOrigin: "50% 50%",
+        force3D: true,
+      });
+
+      gsap.set(frameBorder, {
         autoAlpha: 1,
       });
 
-      gsap.set(portraitVisual, {
-        scale: 0.75,
+      gsap.set(revealElements, {
+        autoAlpha: 0,
+        y: 28,
+        force3D: true,
+      });
+
+      // Initialize frame motion trails.
+      gsap.set(frameTrails, {
+        autoAlpha: 0,
+        scale: 0.72,
+        x: (index) => -22 * (index + 1),
+        y: (index) => 14 * (index + 1),
         transformOrigin: "50% 50%",
+        force3D: true,
       });
 
-      // Initial headline states.
-      gsap.set(building, {
-        autoAlpha: 0,
-        y: -90,
-        rotateX: -12,
-        transformOrigin: "50% 100%",
-      });
-
-      gsap.set([forThe, better, web], {
-        autoAlpha: 0,
-        x: -100,
-        y: 12,
-      });
-
-      // Initial supporting content states.
-      gsap.set(supportingContent, {
-        autoAlpha: 0,
-        y: 24,
-      });
-
-      const timeline = gsap.timeline({
-        defaults: {
-          ease: "power3.out",
-        },
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: heroRef.current,
+          trigger: hero,
           start: "top top",
           end: "+=180%",
           pin: true,
@@ -125,111 +109,114 @@ export default function PortfolioHeroDark() {
         },
       });
 
-      // 1. Portrait starts small and zooms in on scroll.
-      timeline.to(
-        portraitVisual,
+      // Frame trails briefly appear, then expand outward.
+      frameTrails.forEach((trail, index) => {
+        const depth = index + 1;
+        const opacity = [0.9, 0.65, 0.4][index] ?? 0.3;
+
+        tl.to(
+          trail,
+          {
+            autoAlpha: opacity,
+            duration: 0.18,
+            ease: "power1.out",
+          },
+          0,
+        );
+
+        tl.to(
+          trail,
+          {
+            autoAlpha: 0,
+            scale: 1.2 + index * 0.1,
+            x: -(22 * depth) - 24,
+            y: 14 * depth + 18,
+            duration: 1.1,
+            ease: "power2.out",
+          },
+          0.12 + index * 0.06,
+        );
+      });
+
+      // 1. Frame zooms from 0.72 to 1.
+      // It reaches its final size before the portrait finishes.
+      tl.to(
+        frame,
         {
-          scale: 1.15,
-          duration: 1.4,
+          scale: 1,
+          duration: 1.2,
           ease: "power2.out",
+          force3D: true,
         },
         0,
       );
 
-      // 2. Reveal BUILDING.
-      timeline.to(
-        building,
+      // 2. Portrait starts at the same scale but continues growing.
+      // It eventually becomes larger than the frame.
+      tl.to(
+        portrait,
         {
-          autoAlpha: 1,
-          y: 0,
-          rotateX: 0,
-          duration: 0.65,
+          scale: 1,
+          duration: 1.8,
+          ease: "power2.out",
+          force3D: true,
         },
-        0.25,
+        0,
       );
 
-      // 3. Reveal FOR THE.
-      timeline.to(
-        forThe,
-        {
-          autoAlpha: 1,
-          x: 0,
-          y: 0,
-          duration: 0.6,
-        },
-        0.65,
-      );
-
-      // 4. Reveal BETTER.
-      timeline.to(
-        better,
-        {
-          autoAlpha: 1,
-          x: 0,
-          y: 0,
-          duration: 0.6,
-        },
-        0.95,
-      );
-
-      // 5. Reveal WEB.
-      timeline.to(
-        web,
-        {
-          autoAlpha: 1,
-          x: 0,
-          y: 0,
-          duration: 0.6,
-        },
-        1.2,
-      );
-
-      // 6. Reveal introduction.
-      timeline.to(
-        intro,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.55,
-        },
-        1.45,
-      );
-
-      // 7. Reveal optional code card if present.
-      if (code) {
-        timeline.to(
-          code,
+      // Reveal primary hero content.
+      if (revealElements.length > 0) {
+        tl.to(
+          revealElements,
           {
             autoAlpha: 1,
             y: 0,
-            duration: 0.5,
+            duration: 0.65,
+            stagger: 0.16,
+            ease: "power3.out",
+            force3D: true,
           },
-          1.6,
+          0.7,
         );
       }
 
-      // 8. Reveal toolkit.
-      timeline.to(
-        toolkit,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.5,
-        },
-        1.75,
-      );
+      // Optional secondary reveals.
+      const optionalReveals = [
+        { selector: "[data-hero-code]", position: 1.45 },
+        { selector: "[data-hero-toolkit]", position: 1.6 },
+        { selector: "[data-hero-status]", position: 1.75 },
+      ];
 
-      // 9. Reveal availability status.
-      timeline.to(
-        status,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.45,
-        },
-        1.9,
-      );
-    }, heroRef);
+      optionalReveals.forEach(({ selector, position }) => {
+        const elements = select(selector) as HTMLElement[];
+
+        if (!elements.length) return;
+
+        gsap.set(elements, {
+          autoAlpha: 0,
+          y: 20,
+          force3D: true,
+        });
+
+        tl.to(
+          elements,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.55,
+            stagger: 0.1,
+            ease: "power3.out",
+            force3D: true,
+          },
+          position,
+        );
+      });
+
+      // Refresh ScrollTrigger after layout is ready.
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+    }, hero);
 
     return () => {
       ctx.revert();
@@ -267,40 +254,33 @@ export default function PortfolioHeroDark() {
         <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/40 to-transparent" />
       </div>
 
-      <Navbar />
-
       <section
         ref={heroRef}
         aria-label="Introduction"
-        className="relative mx-auto flex min-h-[100svh] w-full max-w-[1600px] flex-col justify-end overflow-hidden px-5 pt-24 sm:px-8 lg:px-14"
+        className=" relative mx-auto min-h-[100svh] w-full max-w-[1600px] flex-col justify-end overflow-hidden px-5 pt-[var(--navbar-height)] sm:px-8 lg:px-14"
       >
         {/* Hero composition */}
-        <div className="relative z-10 flex w-full flex-col justify-center gap-10 md:min-h-[min(760px,calc(100svh-120px))] md:flex-row md:items-center md:gap-8">
+        <div className="relative z-10 flex w-full flex-col gap-10 md:flex-row md:items-start md:gap-8">
           {/* Left: identity and introduction */}
-          <div className="relative z-20 flex w-full flex-col items-start pb-12 md:w-[43%] md:shrink-0">
+          <div className="relative z-20 flex w-full flex-col items-start py-24 md:w-[43%] md:shrink-0">
             <SectionLabel number="01">Independent web developer</SectionLabel>
 
             {/* Four independently animated headline lines */}
-            <h1 className="mt-7 flex max-w-[680px] flex-col items-start text-[clamp(2.8rem,6.4vw,6.5rem)] font-black uppercase leading-[0.84] tracking-[-0.075em]">
-              <span data-hero-ramil className="inline-block text-[#F5F0E7]">
-                BUILDING
+
+            <h1 className="mt-7 max-w-[480px] text-[clamp(2.8rem,6.4vw,6.5rem)] font-black uppercase leading-[0.9] tracking-[-0.075em]">
+              <span data-hero-ramil className="text-[#F5F0E7]">
+                BUILDING{" "}
               </span>
 
-              <span
-                data-hero-aoanan
-                className="mt-2 inline-block text-[#F5F0E7]"
-              >
-                FOR THE
+              <span data-hero-aoanan className="text-[#F5F0E7]">
+                FOR THE{" "}
               </span>
 
-              <span
-                data-hero-better
-                className="mt-2 inline-block text-[#F15A36]"
-              >
-                BETTER
+              <span data-hero-better className="text-[#F15A36]">
+                BETTER{" "}
               </span>
 
-              <span data-hero-web className="mt-2 inline-block text-[#F5F0E7]">
+              <span data-hero-web className="text-[#F5F0E7]">
                 WEB.
               </span>
             </h1>
@@ -315,40 +295,57 @@ export default function PortfolioHeroDark() {
             </p>
           </div>
 
-          {/* Center: portrait */}
+          {/* Center: portrait and decorative frame */}
+          {/* Center: portrait and frame */}
           <div
             data-hero-portrait
-            className="pointer-events-none relative z-10 mx-auto w-full max-w-[350px] shrink-0 md:absolute md:inset-0 md:mx-auto md:flex md:max-w-none md:items-end md:justify-center"
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
           >
+            {/* Frame layer — behind the portrait */}
             <div
-              data-hero-portrait-visual
-              className="relative mx-auto aspect-[4/5] w-[95%] max-w-[560px] will-change-transform md:aspect-auto md:h-[min(92vh,900px)] md:w-[48%] md:max-w-[650px]"
+              data-hero-frame
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 z-0 h-[min(92vh,440px)] w-[95%] max-h-[440px] max-w-[440px] -translate-x-1/2 -translate-y-1/2 md:w-[48%]"
             >
-              {/* Warm light behind the portrait */}
-              <div className="absolute bottom-[7%] left-1/2 h-[48%] w-[75%] -translate-x-1/2 rounded-full bg-[#F15A36]/[0.16] blur-[90px]" />
+              {/* Orange border */}
+              <div
+                data-hero-frame-border
+                className="absolute inset-0 border-2 border-[#F15A36]"
+              />
 
-              {/* Fine portrait frame */}
-              <div className="absolute bottom-[4%] left-[7%] right-[7%] top-[8%] border border-white/[0.07]" />
+              {/* Corner accents */}
+              <div className="absolute right-0 top-0 z-10 h-5 w-5 border-r border-t border-[#F15A36]/80" />
+              <div className="absolute bottom-0 left-0 z-10 h-5 w-5 border-b border-l border-[#F15A36]/80" />
 
-              <div className="absolute right-[7%] top-[8%] h-5 w-5 border-r border-t border-[#F15A36]/80" />
+              {/* Frame label */}
+              <div className="absolute right-[4%] top-[4%] z-10 font-mono text-[9px] tracking-wider text-[#F5F0E7]/40">
+                RA. / 001
+              </div>
 
-              <div className="absolute bottom-[4%] left-[7%] h-5 w-5 border-b border-l border-[#F15A36]/80" />
+              {/* Motion trails */}
+              {[0, 1, 2].map((trail) => (
+                <div
+                  key={trail}
+                  data-hero-frame-trail
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 border-2 border-[#F15A36]"
+                  style={{ opacity: 0 }}
+                />
+              ))}
+            </div>
 
+            {/* Portrait layer — in front of the frame */}
+            <div data-hero-portrait-visual className="absolute inset-0 z-10">
               <Image
                 src="/images/profile.png"
                 alt="Ramil Aoanan, web developer"
                 fill
                 priority
                 sizes="(max-width: 767px) 80vw, 40vw"
-                className="object-contain object-bottom"
+                className="object-contain object-center"
               />
-
-              <div className="absolute right-[10%] top-[12%] font-mono text-[9px] tracking-wider text-[#F5F0E7]/40">
-                RA. / 001
-              </div>
             </div>
           </div>
-
           {/* Right: developer cards */}
           <div className="relative z-20 flex w-full flex-col items-center gap-5 md:ml-auto md:w-[31%] md:shrink-0 md:items-end">
             {/* Toolkit card */}
