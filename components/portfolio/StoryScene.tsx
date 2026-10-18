@@ -440,14 +440,6 @@ export default function StoryScenes() {
               <SectionLabel number="01">
                 The person behind the code
               </SectionLabel>
-
-              <h1
-                data-hero-headline
-                className="max-w-[720px] text-[clamp(3.3rem,7.2vw,7.4rem)] font-black uppercase leading-[0.82] tracking-[-0.075em]"
-              >
-                Building <span className="text-[#F15A36]">for the</span> better
-                web.
-              </h1>
             </div>
 
             <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/30">
