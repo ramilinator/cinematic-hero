@@ -109,7 +109,7 @@ export default function PortfolioHeroDark() {
       });
 
       gsap.set(portrait, {
-        scale: 0.37,
+        scale: 0.34,
         transformOrigin: "50% 50%",
         force3D: true,
       });
@@ -338,43 +338,50 @@ export default function PortfolioHeroDark() {
       id="home"
       className="relative isolate min-h-screen overflow-hidden bg-[#121516] text-[#F5F0E7] selection:bg-[#F15A36] selection:text-[#121516]"
     >
-      {/* Static background: visible depth, no animation */}
+      {/* Static background: centered orange glow + technical grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
       >
         {/* Base: rich charcoal gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#202323] via-[#141819] to-[#0c0f10]" />
 
-        {/* Warm ambient light on the left */}
-        <div className="absolute -left-32 top-[12%] h-[500px] w-[500px] rounded-full bg-[#F15A36]/[0.14] blur-[120px]" />
+        {/* Main centered ambient glow */}
+        <div className="absolute left-1/2 top-[42%] h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.17] blur-[140px]" />
 
-        {/* Cool neutral light on the right */}
-        <div className="absolute -right-32 top-[18%] h-[480px] w-[480px] rounded-full bg-[#D8D2C7]/[0.07] blur-[130px]" />
+        {/* Concentrated center glow behind the portrait */}
+        <div className="absolute left-1/2 top-[42%] h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.13] blur-[90px]" />
 
-        {/* Static orange glow behind the portrait */}
-        <div className="absolute left-1/2 top-[42%] h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.09] blur-[100px]" />
-
-        {/* Clearly visible technical grid */}
+        {/* Orange technical grid */}
         <div
-          className="absolute inset-0 opacity-[0.12]"
+          className="absolute inset-0 opacity-40"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(245,240,231,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,231,0.18) 1px, transparent 1px)",
+              "linear-gradient(rgba(241,90,54,0.32) 1px, transparent 1px), linear-gradient(90deg, rgba(241,90,54,0.32) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
           }}
         />
 
-        {/* Dark vignette to preserve text readability */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_10%,rgba(12,15,16,0.35)_100%)]" />
+        {/* Subtle grid glow */}
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(241,90,54,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(241,90,54,0.16) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+            filter: "blur(3px)",
+          }}
+        />
 
-        {/* Bottom depth and grounding */}
-        <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#0b0d0e]/75 to-transparent" />
+        {/* Center-focused vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_5%,rgba(12,15,16,0.5)_100%)]" />
+
+        {/* Bottom depth */}
+        <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#0b0d0e]/80 to-transparent" />
 
         {/* Orange accent line */}
-        <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/80 to-transparent shadow-[0_0_12px_rgba(241,90,54,0.65)]" />
       </div>
-
       <section
         ref={heroRef}
         aria-label="Introduction"
@@ -384,7 +391,7 @@ export default function PortfolioHeroDark() {
         <div className=" relative z-10 flex w-full flex-col justify-between gap-8 md:flex-row md:items-start md:gap-8">
           {/* Top on mobile: identity and introduction */}
           {/* 1. Identity and introduction */}
-          <div className="relative z-30 order-1 flex w-full flex-col items-center pt-12 pb-4 text-center sm:pt-16 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:w-[43%] md:shrink-0 md:items-start md:py-24 md:text-left">
+          <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 text-center sm:pt-0 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:w-[43%] md:shrink-0 md:items-start md:justify-center md:py-0 md:text-left">
             <div data-hero-independent>
               <SectionLabel number="01">Independent web developer</SectionLabel>
             </div>
@@ -427,7 +434,7 @@ export default function PortfolioHeroDark() {
             <div
               data-hero-frame
               aria-hidden="true"
-              className="absolute left-1/2 top-1/2 z-0 h-[440px] w-[440px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
             >
               {/* Orange border */}
               <div
@@ -460,7 +467,7 @@ export default function PortfolioHeroDark() {
             {/* Portrait layer — in front of the frame */}
             <div
               data-hero-portrait-visual
-              className="absolute left-1/2 top-1/2 z-10 h-[min(340px,90vw)] w-[min(340px,90vw)] -translate-x-1/2 -translate-y-1/2 sm:h-[640px] sm:w-[640px]"
+              className="absolute left-1/2 top-1/2 z-10 h-[340px] w-[340px] min-h-[340px] min-w-[340px] -translate-x-1/2 -translate-y-1/2 sm:h-[664px] sm:w-[664px] sm:min-h-[664px] sm:min-w-[664px]"
             >
               <Image
                 src="/images/profile.png"
