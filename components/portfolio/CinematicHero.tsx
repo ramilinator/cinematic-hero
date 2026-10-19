@@ -166,26 +166,55 @@ export default function PortfolioHeroDark() {
       });
 
       // --------------------------------------------------
-      // 1. FRAME TRAILS APPEAR — HIDE ORIGINAL FRAME BORDER
+      // 1. FRAME TRAILS — DYNAMIC OUTWARD MOVEMENT
       // --------------------------------------------------
 
       frameTrails.forEach((trail, index) => {
-        // Random but consistent offsets for each trail.
-        const x = gsap.utils.random(-100, 100);
-        const y = gsap.utils.random(-100, 100);
+        const angle = (index / frameTrails.length) * Math.PI * 2;
+        const distance = 70 + index * 25;
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        const rotation = index % 2 === 0 ? 12 : -12;
+
+        gsap.set(trail, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scale: 0.75,
+          autoAlpha: 0,
+          transformOrigin: "50% 50%",
+        });
 
         tl.to(
           trail,
           {
-            autoAlpha: 0.35,
-            scale: 1,
             x,
             y,
-            duration: 1.2,
+            rotation,
+            scale: 1 + index * 0.08,
+            autoAlpha: 0.4,
+            duration: 0.8,
             ease: "power2.out",
             force3D: true,
           },
-          0.12 + index * 0.04,
+          0.1 + index * 0.08,
+        );
+
+        // Continue moving the trail in another direction
+        tl.to(
+          trail,
+          {
+            x: -x * 0.45,
+            y: -y * 0.45,
+            rotation: -rotation,
+            scale: 0.85,
+            autoAlpha: 0.15,
+            duration: 0.8,
+            ease: "sine.inOut",
+            force3D: true,
+          },
+          0.9 + index * 0.08,
         );
       });
 
@@ -268,6 +297,23 @@ export default function PortfolioHeroDark() {
         1.15,
       );
 
+      const portraitVisual = hero.querySelector<HTMLElement>(
+        "[data-hero-portrait-visual]",
+      );
+
+      if (portraitVisual) {
+        gsap.to(portraitVisual, {
+          y: 500,
+          ease: "none",
+          scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+      }
+
       // --------------------------------------------------
       // 9. REFRESH SCROLLTRIGGER AFTER LAYOUT
       // --------------------------------------------------
@@ -287,50 +333,6 @@ export default function PortfolioHeroDark() {
       id="home"
       className="relative isolate min-h-screen overflow-hidden bg-[#121516] text-[#F5F0E7] selection:bg-[#F15A36] selection:text-[#121516]"
     >
-      {/* Static background: centered orange glow + technical grid */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      >
-        {/* Base: rich charcoal gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#202323] via-[#141819] to-[#0c0f10]" />
-
-        {/* Main centered ambient glow */}
-        <div className="absolute left-1/2 top-[42%] h-[560px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.17] blur-[140px]" />
-
-        {/* Concentrated center glow behind the portrait */}
-        <div className="absolute left-1/2 top-[42%] h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#F15A36]/[0.13] blur-[90px]" />
-
-        {/* Orange technical grid */}
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(241,90,54,0.32) 1px, transparent 1px), linear-gradient(90deg, rgba(241,90,54,0.32) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-
-        {/* Subtle grid glow */}
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(241,90,54,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(241,90,54,0.16) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-            filter: "blur(3px)",
-          }}
-        />
-
-        {/* Center-focused vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_5%,rgba(12,15,16,0.5)_100%)]" />
-
-        {/* Bottom depth */}
-        <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#0b0d0e]/80 to-transparent" />
-
-        {/* Orange accent line */}
-        <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[#F15A36]/80 to-transparent shadow-[0_0_12px_rgba(241,90,54,0.65)]" />
-      </div>
       <section
         ref={heroRef}
         aria-label="Introduction"
@@ -339,10 +341,9 @@ export default function PortfolioHeroDark() {
         {/* Main hero composition */}
         <div className="relative z-10 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
           {/* Top on mobile: identity and introduction */}
-          {/* 1. Identity and introduction */}
-          {/* Left: headline and introduction */}
-          <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 text-center sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
-            <div data-hero-independent>
+
+          <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
+            <div data-hero-independent className="ml-2">
               <SectionLabel number="01">Independent web developer</SectionLabel>
             </div>
 
@@ -350,15 +351,12 @@ export default function PortfolioHeroDark() {
               <span data-hero-ramil className="text-[#F5F0E7]">
                 BUILDING{" "}
               </span>
-
               <span data-hero-aoanan className="text-[#F5F0E7]">
                 FOR THE{" "}
               </span>
-
               <span data-hero-better className="text-[#F15A36]">
                 BETTER{" "}
               </span>
-
               <span data-hero-web className="text-[#F5F0E7]">
                 WEB.
               </span>
@@ -374,38 +372,32 @@ export default function PortfolioHeroDark() {
             </p>
           </div>
 
-          {/* Middle on mobile: portrait and frame */}
-          {/* 2. Portrait and frame */}
-          {/* Center: portrait and frame */}
+          {/* Portrait and frame */}
           <div
             data-hero-portrait
             className="pointer-events-none relative z-20 order-2 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-center justify-center md:absolute md:left-[66.6667%] md:top-1/2 md:order-none md:h-full md:w-[664px] md:max-w-none md:-translate-x-1/2 md:-translate-y-1/2"
           >
-            {/* Frame layer — behind the portrait */}
             <div
               data-hero-frame
               aria-hidden="true"
               className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
             >
-              {/* Orange border */}
               <div
                 data-hero-frame-border
                 className="absolute inset-0 border-2 border-[#F15A36]"
               />
 
-              {/* Motion trails */}
               {trailScales.map((scale, index) => (
                 <div
                   key={index}
                   data-hero-frame-trail
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 border-2 border-[#F15A36]"
+                  className="pointer-events-none absolute inset-0 border-1 border-[#F15A36]"
                   style={{ opacity: 0 }}
                 />
               ))}
             </div>
 
-            {/* Portrait layer — in front of the frame */}
             <div
               data-hero-portrait-visual
               className="absolute inset-x-0 bottom-0 z-10 mx-auto h-full w-full min-h-0"
@@ -420,8 +412,9 @@ export default function PortfolioHeroDark() {
               />
             </div>
           </div>
+
           {/* Animated scroll indicator */}
-          <div className="pointer-events-none absolute bottom-16 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
+          <div className="pointer-events-none absolute bottom-50% left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
             <span className="text-[9px] font-medium uppercase tracking-[0.24em] text-[#A5A19A]/70">
               Scroll to explore
             </span>

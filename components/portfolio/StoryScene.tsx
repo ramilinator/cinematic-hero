@@ -409,24 +409,21 @@ export default function StoryScenes() {
       ref={rootRef}
       className="ss-page relative isolate overflow-hidden bg-[#121516] text-[#F5F0E7] selection:bg-[#F15A36] selection:text-[#121516]"
     >
-      {/* Ambient background and subtle grid */}
+      {/* Dark grid with fading edges */}
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <div className="absolute left-1/2 top-0 h-[620px] w-[900px] -translate-x-1/2 rounded-full bg-[#F15A36]/[0.09] blur-[150px]" />
-        <div
-          className="absolute inset-0 opacity-[0.055]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(245,240,231,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,231,.25) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-            maskImage:
-              "linear-gradient(to bottom, black 0%, black 50%, transparent 100%)",
-          }}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,#121516_100%)]" />
-      </div>
+        className="absolute inset-0 opacity-100"
+        style={{
+          backgroundImage: `
+      linear-gradient(#121516 1px, transparent 1px),
+      linear-gradient(90deg, #121516 1px, transparent 1px)
+    `,
+          backgroundSize: "64px 64px",
+          maskImage:
+            "radial-gradient(ellipse 75% 70% at center, black 15%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 75% 70% at center, black 15%, transparent 100%)",
+        }}
+      />
 
       {/* Story introduction */}
       <section
