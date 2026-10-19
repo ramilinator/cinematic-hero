@@ -103,7 +103,7 @@ export default function PortfolioHeroDark() {
       });
 
       gsap.set(frame, {
-        scale: 0.55,
+        scale: 1,
         transformOrigin: "50% 50%",
         force3D: true,
       });
@@ -114,7 +114,7 @@ export default function PortfolioHeroDark() {
         force3D: true,
       });
       gsap.set(frameBorder, {
-        autoAlpha: 1,
+        autoAlpha: 0,
       });
 
       // Left headline: slide in from the left.
@@ -189,16 +189,6 @@ export default function PortfolioHeroDark() {
         );
       });
 
-      // Hide the original frame border as the trails appear.
-      tl.to(
-        frameBorder,
-        {
-          autoAlpha: 0,
-          duration: 0.35,
-          ease: "power2.out",
-        },
-        0.12,
-      );
       // --------------------------------------------------
       // 2. FRAME EXPANDS
       // --------------------------------------------------
@@ -277,58 +267,6 @@ export default function PortfolioHeroDark() {
         },
         1.15,
       );
-
-      // --------------------------------------------------
-      // 6. RIGHT TOOLKIT CARD
-      // --------------------------------------------------
-
-      tl.to(
-        toolkit,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.65,
-          stagger: 0.1,
-          ease: "power3.out",
-          force3D: true,
-        },
-        1.35,
-      );
-
-      // --------------------------------------------------
-      // 7. AVAILABILITY STATUS
-      // --------------------------------------------------
-
-      tl.to(
-        status,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.55,
-          ease: "power3.out",
-          force3D: true,
-        },
-        1.65,
-      );
-
-      // --------------------------------------------------
-      // 8. OPTIONAL CODE ELEMENTS
-      // --------------------------------------------------
-
-      if (codeElements.length > 0) {
-        tl.to(
-          codeElements,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.55,
-            stagger: 0.1,
-            ease: "power3.out",
-            force3D: true,
-          },
-          1.5,
-        );
-      }
 
       // --------------------------------------------------
       // 9. REFRESH SCROLLTRIGGER AFTER LAYOUT
@@ -470,7 +408,7 @@ export default function PortfolioHeroDark() {
             {/* Portrait layer — in front of the frame */}
             <div
               data-hero-portrait-visual
-              className="absolute left-1/2 top-1/2 z-10 h-[340px] w-[340px] min-h-[340px] min-w-[340px] -translate-x-1/2 -translate-y-1/2 sm:h-[664px] sm:w-[664px] sm:min-h-[664px] sm:min-w-[664px]"
+              className="absolute inset-x-0 bottom-0 z-10 mx-auto h-full w-full min-h-0"
             >
               <Image
                 src="/images/profile.png"
@@ -478,7 +416,7 @@ export default function PortfolioHeroDark() {
                 fill
                 priority
                 sizes="(max-width: 767px) 100vw, 40vw"
-                className="object-contain object-center"
+                className="object-contain object-bottom"
               />
             </div>
           </div>
