@@ -337,7 +337,7 @@ export default function PortfolioHeroDark() {
         className="relative mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
       >
         {/* Main hero composition */}
-        <div className="relative z-10 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-8 lg:gap-12 xl:gap-16">
+        <div className="relative z-10 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
           {/* Top on mobile: identity and introduction */}
           {/* 1. Identity and introduction */}
           {/* Left: headline and introduction */}
