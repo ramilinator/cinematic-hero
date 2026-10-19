@@ -46,17 +46,21 @@ export default function PortfolioHeroDark() {
         "[data-hero-independent]",
       ) as HTMLElement[];
 
-      const dropThread = select("[data-hero-drop-thread]")[0] as
-        | SVGSVGElement
-        | undefined;
+      const dropThread = hero.querySelector<SVGSVGElement>(
+        "[data-hero-drop-thread]",
+      );
 
-      const dropLine = select("[data-hero-drop-line]")[0] as
-        | SVGLineElement
-        | undefined;
+      const dropLine = hero.querySelector<SVGLineElement>(
+        "[data-hero-drop-line]",
+      );
 
-      const dropEnd = select("[data-hero-drop-end]")[0] as
-        | SVGCircleElement
-        | undefined;
+      const dropEnd = hero.querySelector<SVGCircleElement>(
+        "[data-hero-drop-end]",
+      );
+
+      const spiderWeb = hero.querySelector<SVGSVGElement>(
+        "[data-hero-spiderweb]",
+      );
 
       const portrait = select("[data-hero-portrait-visual]")[0] as
         | HTMLElement
@@ -67,10 +71,6 @@ export default function PortfolioHeroDark() {
         | undefined;
 
       const frame = select("[data-hero-frame]")[0] as HTMLElement | undefined;
-
-      const spiderWeb = select("[data-hero-spiderweb]")[0] as
-        | SVGSVGElement
-        | undefined;
 
       const leftHeadline = [
         ...select("[data-hero-ramil]"),
