@@ -32,8 +32,8 @@ function SectionLabel({
   );
 }
 
-const TRAIL_COUNT = 4;
-const TRAIL_GROWTH = 1;
+const TRAIL_COUNT = 8;
+const TRAIL_GROWTH = 4;
 
 const trailScales = Array.from(
   { length: TRAIL_COUNT },
@@ -200,22 +200,6 @@ export default function PortfolioHeroDark() {
           },
           0.1 + index * 0.08,
         );
-
-        // Continue moving the trail in another direction
-        tl.to(
-          trail,
-          {
-            x: -x * 0.45,
-            y: -y * 0.45,
-            rotation: -rotation,
-            scale: 0.85,
-            autoAlpha: 0.15,
-            duration: 0.8,
-            ease: "sine.inOut",
-            force3D: true,
-          },
-          0.9 + index * 0.08,
-        );
       });
 
       // --------------------------------------------------
@@ -340,6 +324,27 @@ export default function PortfolioHeroDark() {
       >
         {/* Main hero composition */}
         <div className="relative z-10 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
+          <div
+            data-hero-frame
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
+          >
+            <div
+              data-hero-frame-border
+              className="absolute inset-0 border-2 border-[#F15A36]"
+            />
+
+            {trailScales.map((scale, index) => (
+              <div
+                key={index}
+                data-hero-frame-trail
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 border-1 border-[#F15A36]"
+                style={{ opacity: 0 }}
+              />
+            ))}
+          </div>
+
           {/* Top on mobile: identity and introduction */}
 
           <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
@@ -377,27 +382,6 @@ export default function PortfolioHeroDark() {
             data-hero-portrait
             className="pointer-events-none relative z-20 order-2 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-center justify-center md:absolute md:left-[66.6667%] md:top-1/2 md:order-none md:h-full md:w-[664px] md:max-w-none md:-translate-x-1/2 md:-translate-y-1/2"
           >
-            <div
-              data-hero-frame
-              aria-hidden="true"
-              className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
-            >
-              <div
-                data-hero-frame-border
-                className="absolute inset-0 border-2 border-[#F15A36]"
-              />
-
-              {trailScales.map((scale, index) => (
-                <div
-                  key={index}
-                  data-hero-frame-trail
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 border-1 border-[#F15A36]"
-                  style={{ opacity: 0 }}
-                />
-              ))}
-            </div>
-
             <div
               data-hero-portrait-visual
               className="absolute inset-x-0 bottom-0 z-10 mx-auto h-full w-full min-h-0"
