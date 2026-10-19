@@ -32,8 +32,8 @@ function SectionLabel({
   );
 }
 
-const TRAIL_COUNT = 8;
-const TRAIL_GROWTH = 2;
+const TRAIL_COUNT = 4;
+const TRAIL_GROWTH = 1;
 
 const trailScales = Array.from(
   { length: TRAIL_COUNT },
@@ -109,7 +109,7 @@ export default function PortfolioHeroDark() {
       });
 
       gsap.set(portrait, {
-        scale: 0.34,
+        scale: 1,
         transformOrigin: "50% 50%",
         force3D: true,
       });
@@ -166,11 +166,11 @@ export default function PortfolioHeroDark() {
       });
 
       // --------------------------------------------------
-      // FRAME TRAILS — SAME SIZE, RANDOM POSITIONS
+      // 1. FRAME TRAILS APPEAR — HIDE ORIGINAL FRAME BORDER
       // --------------------------------------------------
 
       frameTrails.forEach((trail, index) => {
-        // Random but consistent offsets for this animation setup.
+        // Random but consistent offsets for each trail.
         const x = gsap.utils.random(-100, 100);
         const y = gsap.utils.random(-100, 100);
 
@@ -178,7 +178,7 @@ export default function PortfolioHeroDark() {
           trail,
           {
             autoAlpha: 0.35,
-            scale: 1.5, // Same size for every trail
+            scale: 1,
             x,
             y,
             duration: 1.2,
@@ -188,6 +188,17 @@ export default function PortfolioHeroDark() {
           0.12 + index * 0.04,
         );
       });
+
+      // Hide the original frame border as the trails appear.
+      tl.to(
+        frameBorder,
+        {
+          autoAlpha: 0,
+          duration: 0.35,
+          ease: "power2.out",
+        },
+        0.12,
+      );
       // --------------------------------------------------
       // 2. FRAME EXPANDS
       // --------------------------------------------------
@@ -385,13 +396,14 @@ export default function PortfolioHeroDark() {
       <section
         ref={heroRef}
         aria-label="Introduction"
-        className="relative mx-auto min-h-[100svh] w-full max-w-[1600px] overflow-hidden px-5 pt-[var(--navbar-height)] sm:px-8 lg:px-14"
+        className="relative mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
       >
-        {/* Hero composition */}
-        <div className=" relative z-10 flex w-full flex-col justify-between gap-8 md:flex-row md:items-start md:gap-8">
+        {/* Main hero composition */}
+        <div className="relative z-10 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 md:grid-cols-3 md:gap-8 lg:gap-12 xl:gap-16">
           {/* Top on mobile: identity and introduction */}
           {/* 1. Identity and introduction */}
-          <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 text-center sm:pt-0 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:w-[43%] md:shrink-0 md:items-start md:justify-center md:py-0 md:text-left">
+          {/* Left: headline and introduction */}
+          <div className="relative z-30 order-1 flex w-full flex-col justify-center pb-4 text-center sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
             <div data-hero-independent>
               <SectionLabel number="01">Independent web developer</SectionLabel>
             </div>
@@ -426,9 +438,10 @@ export default function PortfolioHeroDark() {
 
           {/* Middle on mobile: portrait and frame */}
           {/* 2. Portrait and frame */}
+          {/* Center: portrait and frame */}
           <div
             data-hero-portrait
-            className="pointer-events-none relative z-20 order-2 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-center justify-center md:absolute md:inset-0 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:h-auto md:max-w-none"
+            className="pointer-events-none relative z-20 order-2 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-center justify-center md:absolute md:left-[66.6667%] md:top-1/2 md:order-none md:h-full md:w-[664px] md:max-w-none md:-translate-x-1/2 md:-translate-y-1/2"
           >
             {/* Frame layer — behind the portrait */}
             <div
@@ -441,16 +454,6 @@ export default function PortfolioHeroDark() {
                 data-hero-frame-border
                 className="absolute inset-0 border-2 border-[#F15A36]"
               />
-
-              {/* Corner accents */}
-              <div className="absolute right-0 top-0 z-10 h-5 w-5 border-r border-t border-[#F15A36]/80" />
-
-              <div className="absolute bottom-0 left-0 z-10 h-5 w-5 border-b border-l border-[#F15A36]/80" />
-
-              {/* Frame label */}
-              <div className="absolute right-[4%] top-[4%] z-10 font-mono text-[9px] tracking-wider text-[#F5F0E7]/40">
-                RA. / 001
-              </div>
 
               {/* Motion trails */}
               {trailScales.map((scale, index) => (
@@ -479,43 +482,101 @@ export default function PortfolioHeroDark() {
               />
             </div>
           </div>
+          {/* Animated scroll indicator */}
+          <div className="pointer-events-none absolute bottom-16 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
+            <span className="text-[9px] font-medium uppercase tracking-[0.24em] text-[#A5A19A]/70">
+              Scroll to explore
+            </span>
 
-          {/* Bottom on mobile: developer cards */}
-          {/* 3. Toolkit and availability */}
-          <div className="relative z-30 order-3 flex w-full flex-col items-center justify-end gap-5 pb-12 md:order-none md:min-h-[calc(100svh-var(--navbar-height))] md:ml-auto md:w-[31%] md:shrink-0 md:items-end md:py-24">
-            {/* Toolkit card */}
-            <div
-              data-hero-toolkit
-              className="w-full max-w-none md:max-w-[360px] border border-white/[0.10] bg-[#191C1D]/80 p-5 shadow-[0_20px_80px_rgba(0,0,0,0.16)] backdrop-blur-xl transition-colors duration-300 hover:border-white/[0.18]"
-            >
-              <div className="mb-5 flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center border border-[#F15A36]/25 bg-[#F15A36]/[0.08]">
-                    <Layers3 size={16} className="text-[#F15A36]" />
-                  </div>
+            <div className="relative flex h-12 w-7 justify-center overflow-hidden rounded-full border border-white/15 bg-[#191C1D]/80 p-2">
+              <span className="h-2 w-1 rounded-full bg-[#F15A36] animate-scroll-wheel" />
+            </div>
 
-                  <div>
-                    <p className="text-xs font-semibold text-[#F5F0E7]">
-                      My toolkit
-                    </p>
-
-                    <p className="mt-1 text-[10px] text-[#77766F]">
-                      Tools of the trade
-                    </p>
-                  </div>
+            <ArrowDown size={13} className="animate-bounce text-[#F15A36]/70" />
+          </div>
+        </div>
+        {/* Developer information panel */}
+        <div className="relative z-30 -mx-8 border-t border-white/[0.10] bg-[#191C1D]/95 px-8 py-8 sm:-mx-12 sm:px-12 md:-mx-16 md:px-16 lg:-mx-20 lg:px-20 xl:-mx-24 xl:px-24">
+          <div className="mx-auto max-w-[1552px]">
+            {/* Key information */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-0">
+              {/* Experience */}
+              <div className="flex items-center gap-4 sm:pr-6 lg:pr-10">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#F15A36]/25 bg-[#F15A36]/[0.06]">
+                  <span className="font-mono text-lg font-medium tracking-tight text-[#F15A36]">
+                    05+
+                  </span>
                 </div>
 
-                <Sparkles size={14} className="text-[#77766F]" />
+                <div>
+                  <p className="text-sm font-semibold text-[#F5F0E7]">
+                    Years of experience
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
+                    Building responsive web experiences
+                  </p>
+                </div>
+              </div>
+
+              {/* Specialty */}
+              <div className="flex items-center gap-4 border-white/[0.10] sm:border-l sm:px-6 lg:px-10">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.02]">
+                  <Layers3 size={20} className="text-[#F15A36]" />
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-[#F5F0E7]">
+                    Frontend development
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
+                    Thoughtful, user-focused interfaces
+                  </p>
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="flex items-center gap-4 border-white/[0.10] sm:border-l sm:pl-6 lg:pl-10">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.02]">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F15A36]/40" />
+                    <span className="relative h-2.5 w-2.5 rounded-full bg-[#F15A36]" />
+                  </span>
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-[#F5F0E7]">
+                    Available for opportunities
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
+                    Open to projects and collaborations
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Technology stack */}
+            <div className="mt-8 flex flex-col gap-5 border-t border-white/[0.10] pt-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center gap-3">
+                <Sparkles size={16} className="shrink-0 text-[#F15A36]" />
+
+                <div>
+                  <p className="text-xs font-semibold text-[#F5F0E7]">
+                    Technologies I work with
+                  </p>
+                  <p className="mt-1 text-[10px] text-[#77766F]">
+                    Continuously learning and improving
+                  </p>
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {technologies.map((technology, index) => (
                   <span
                     key={technology}
-                    className="inline-flex items-center gap-1.5 border border-white/[0.08] bg-white/[0.025] px-2.5 py-2 text-[10px] text-[#C9C4BB] transition-colors duration-300 hover:border-[#F15A36]/40 hover:bg-[#F15A36]/[0.06] hover:text-[#F5F0E7]"
+                    className="inline-flex items-center gap-2 rounded-md border border-white/[0.10] bg-white/[0.025] px-3 py-2.5 text-[10px] text-[#C9C4BB] transition-colors duration-300 hover:border-[#F15A36]/40 hover:bg-[#F15A36]/[0.06] hover:text-[#F5F0E7]"
                   >
                     <span
-                      className={`h-1 w-1 ${
+                      className={`h-1.5 w-1.5 rounded-full ${
                         index === 0 ? "bg-[#F15A36]" : "bg-white/25"
                       }`}
                     />
@@ -523,56 +584,8 @@ export default function PortfolioHeroDark() {
                   </span>
                 ))}
               </div>
-
-              <div className="mt-5 flex items-center justify-between border-t border-white/[0.08] pt-3">
-                <span className="text-[9px] uppercase tracking-[0.16em] text-[#77766F]">
-                  Constantly learning
-                </span>
-
-                <span className="font-mono text-[10px] text-[#F15A36]">
-                  06 / STACK
-                </span>
-              </div>
-            </div>
-
-            {/* Availability indicator */}
-            <div
-              data-hero-status
-              className="flex w-full max-w-none md:max-w-[360px] items-center justify-between border border-white/[0.10] bg-[#191C1D]/90 px-4 py-3.5 backdrop-blur-xl md:w-auto md:self-end"
-            >
-              <div className="flex items-center gap-3">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#F15A36]/40" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F15A36]" />
-                </span>
-
-                <div>
-                  <p className="text-[11px] font-medium text-[#F5F0E7]">
-                    Available for opportunities
-                  </p>
-
-                  <p className="mt-1 text-[9px] text-[#77766F]">
-                    Open to new projects
-                  </p>
-                </div>
-              </div>
-
-              <ArrowUpRight size={14} className="ml-5 text-[#77766F]" />
             </div>
           </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="pointer-events-none absolute bottom-20 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
-          <span className="text-[9px] uppercase tracking-[0.24em] text-[#A5A19A]/70">
-            Scroll to explore
-          </span>
-
-          <div className="flex h-8 w-5 items-start justify-center border border-white/20 p-1">
-            <span className="h-2 w-px bg-[#F15A36]" />
-          </div>
-
-          <ArrowDown size={12} className="text-[#F15A36]/70" />
         </div>
       </section>
     </main>
