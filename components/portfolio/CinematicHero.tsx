@@ -135,10 +135,8 @@ export default function PortfolioHeroDark() {
       });
 
       gsap.set(portrait, {
-        y: () => -window.innerHeight,
+        yPercent: -120,
         scale: 1,
-        transformOrigin: "50% 50%",
-        force3D: true,
       });
 
       gsap.set(portraitParallax, {
@@ -199,31 +197,11 @@ export default function PortfolioHeroDark() {
         ease: "power2.in",
       });
 
-      // 2. Reveal the thread's endpoint.
-      tl.to(
-        dropEnd,
-        {
-          autoAlpha: 1,
-          duration: 0.15,
-        },
-        "<",
-      );
-
-      // Spider web expands after the portrait reveal.
-      tl.to(spiderWeb, {
-        autoAlpha: 0.75,
-        scale: 1,
-        duration: 1.2,
-        ease: "power2.out",
-        force3D: true,
-      });
-
       // 1. PORTRAIT SLIDES DOWN FIRST.
       tl.to(portrait, {
-        y: -150,
+        yPercent: -20,
         duration: 2.5,
         ease: "none",
-        force3D: true,
       });
 
       // 3. INDEPENDENT DEVELOPER LABEL.
@@ -269,19 +247,24 @@ export default function PortfolioHeroDark() {
         ">",
       );
 
-      // 6. REVEAL RIGHT-SIDE CONTENT.
+      // 2. Reveal the thread's endpoint.
       tl.to(
-        [...toolkit, ...status, ...codeElements],
+        dropEnd,
         {
           autoAlpha: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.12,
-          ease: "power3.out",
-          force3D: true,
+          duration: 0.15,
         },
-        ">",
+        "<",
       );
+
+      // Spider web expands after the portrait reveal.
+      tl.to(spiderWeb, {
+        autoAlpha: 0.75,
+        scale: 1,
+        duration: 1.2,
+        ease: "power2.out",
+        force3D: true,
+      });
 
       // --------------------------------------------------
       // POST-PIN PARALLAX
@@ -337,32 +320,7 @@ export default function PortfolioHeroDark() {
             aria-hidden="true"
             className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
           >
-            {/* Falling web thread */}
-            <svg
-              data-hero-drop-thread
-              aria-hidden="true"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible"
-            >
-              <line
-                data-hero-drop-line
-                x1="50"
-                y1="-100"
-                x2="50"
-                y2="50"
-                stroke="#F15A36"
-                strokeWidth="0.35"
-                strokeLinecap="round"
-              />
-              <circle
-                data-hero-drop-end
-                cx="50"
-                cy="50"
-                r="0.8"
-                fill="#F5F0E7"
-              />
-            </svg>
+            {/* Spider-web trails */}
 
             {/* Spider-web trails */}
 
@@ -379,10 +337,11 @@ export default function PortfolioHeroDark() {
                 strokeWidth="0.25"
                 strokeLinejoin="round"
               >
+                {/* 8 extended radial division lines */}
                 {Array.from({ length: 8 }, (_, index) => {
                   const angle = (index * Math.PI) / 4 - Math.PI / 8;
-                  const x = Number((50 + Math.cos(angle) * 70).toFixed(4));
-                  const y = Number((50 + Math.sin(angle) * 70).toFixed(4));
+                  const x = Number((50 + Math.cos(angle) * 350).toFixed(4));
+                  const y = Number((50 + Math.sin(angle) * 350).toFixed(4));
 
                   return (
                     <line
@@ -396,7 +355,8 @@ export default function PortfolioHeroDark() {
                   );
                 })}
 
-                {[12, 21, 31, 42, 54, 67, 80].map((radius, ringIndex) => {
+                {/* 8 concentric web rings */}
+                {[10, 18, 26, 34, 42, 50, 60, 70].map((radius, ringIndex) => {
                   const points = Array.from({ length: 8 }, (_, index) => {
                     const angle = (index * Math.PI) / 4 - Math.PI / 8;
                     const x = Number(
@@ -457,12 +417,21 @@ export default function PortfolioHeroDark() {
 
           <div
             data-hero-portrait
-            className="pointer-events-none relative z-50 order-1 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-start justify-center md:absolute md:left-[66.6667%] md:top-1/2 md:order-none md:h-full md:w-[664px] md:max-w-none md:-translate-x-1/2 md:-translate-y-1/2"
+            className="
+    pointer-events-none relative z-50
+    order-1 mx-auto flex
+    h-[min(78vw,380px)] w-full max-w-[440px]
+    shrink-0 items-start justify-center
+    md:absolute md:left-[66.6667%] md:top-0
+    md:order-none md:h-[100svh] md:w-[664px]
+    md:max-w-none md:-translate-x-1/2
+  "
           >
             <div
               data-hero-portrait-parallax
               className="absolute inset-x-0 top-0 h-full"
             >
+              {/* Portrait */}
               <div
                 data-hero-portrait-visual
                 className="absolute inset-x-0 top-0 z-10 mx-auto h-full w-full"
@@ -476,6 +445,33 @@ export default function PortfolioHeroDark() {
                   className="rotate-180 object-contain object-top"
                 />
               </div>
+
+              {/* Falling thread: centered over the portrait */}
+              <svg
+                data-hero-drop-thread
+                aria-hidden="true"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+              >
+                <line
+                  data-hero-drop-line
+                  x1="50"
+                  y1="-300"
+                  x2="50"
+                  y2="250"
+                  stroke="#F15A36"
+                  strokeWidth="0.25"
+                />
+
+                <circle
+                  data-hero-drop-end
+                  cx="50"
+                  cy="250"
+                  r="0.8"
+                  fill="#F15A36"
+                />
+              </svg>
             </div>
           </div>
 
