@@ -5,7 +5,9 @@ import { useLayoutEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowDown, ArrowUpRight, Layers3, Sparkles } from "lucide-react";
+import { ArrowDown, Layers3, Sparkles } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const technologies = [
   "React",
@@ -37,6 +39,7 @@ export default function PortfolioHeroDark() {
 
   useLayoutEffect(() => {
     const hero = heroRef.current;
+
     if (!hero) return;
 
     const ctx = gsap.context(() => {
@@ -45,18 +48,6 @@ export default function PortfolioHeroDark() {
       const independentLabel = select(
         "[data-hero-independent]",
       ) as HTMLElement[];
-
-      const dropThread = hero.querySelector<SVGSVGElement>(
-        "[data-hero-drop-thread]",
-      );
-
-      const dropLine = hero.querySelector<SVGLineElement>(
-        "[data-hero-drop-line]",
-      );
-
-      const dropEnd = hero.querySelector<SVGCircleElement>(
-        "[data-hero-drop-end]",
-      );
 
       const spiderWeb = hero.querySelector<SVGSVGElement>(
         "[data-hero-spiderweb]",
@@ -70,8 +61,6 @@ export default function PortfolioHeroDark() {
         | HTMLElement
         | undefined;
 
-      const frame = select("[data-hero-frame]")[0] as HTMLElement | undefined;
-
       const leftHeadline = [
         ...select("[data-hero-ramil]"),
         ...select("[data-hero-aoanan]"),
@@ -81,86 +70,42 @@ export default function PortfolioHeroDark() {
 
       const leftIntro = select("[data-hero-intro]") as HTMLElement[];
 
-      const toolkit = select("[data-hero-toolkit]") as HTMLElement[];
-
-      const status = select("[data-hero-status]") as HTMLElement[];
-
-      const codeElements = select("[data-hero-code]") as HTMLElement[];
-
-      if (
-        !portrait ||
-        !portraitParallax ||
-        !frame ||
-        !spiderWeb ||
-        !dropThread ||
-        !dropLine ||
-        !dropEnd
-      ) {
+      if (!portrait || !portraitParallax || !spiderWeb) {
         return;
       }
 
-      // --------------------------------------------------
       // INITIAL STATES
-      // --------------------------------------------------
-
-      gsap.set(dropThread, {
-        autoAlpha: 1,
-      });
-
-      gsap.set(dropLine, {
-        attr: {
-          y1: -100,
-          y2: -100,
-        },
-      });
-
-      gsap.set(dropEnd, {
-        autoAlpha: 0,
-        attr: {
-          cy: -100,
-        },
-      });
 
       gsap.set(independentLabel, {
         autoAlpha: 0,
-        x: -35,
+        x: -25,
         y: 8,
-        force3D: true,
-      });
-
-      gsap.set(frame, {
-        scale: 1,
-        transformOrigin: "50% 50%",
-        force3D: true,
-      });
-
-      gsap.set(portrait, {
-        yPercent: -120,
-        scale: 1,
-      });
-
-      gsap.set(portraitParallax, {
-        y: 0,
         force3D: true,
       });
 
       gsap.set(leftHeadline, {
         autoAlpha: 0,
-        x: -55,
+        x: -35,
         y: 12,
         force3D: true,
       });
 
       gsap.set(leftIntro, {
         autoAlpha: 0,
-        x: -30,
+        x: -20,
         y: 12,
         force3D: true,
       });
 
-      gsap.set([...toolkit, ...status, ...codeElements], {
-        autoAlpha: 0,
-        y: 24,
+      gsap.set(portrait, {
+        y: () => window.innerHeight + portrait.offsetHeight,
+        scale: 1,
+        transformOrigin: "50% 50%",
+        force3D: true,
+      });
+
+      gsap.set(portraitParallax, {
+        y: 0,
         force3D: true,
       });
 
@@ -171,11 +116,12 @@ export default function PortfolioHeroDark() {
         force3D: true,
       });
 
-      // --------------------------------------------------
       // PINNED HERO TIMELINE
-      // --------------------------------------------------
 
       const tl = gsap.timeline({
+        defaults: {
+          overwrite: "auto",
+        },
         scrollTrigger: {
           trigger: hero,
           start: "top top",
@@ -187,24 +133,29 @@ export default function PortfolioHeroDark() {
         },
       });
 
-      // 1. Drop the web thread from the top.
-      tl.to(dropLine, {
-        attr: {
-          y1: -100,
-          y2: 50,
-        },
-        duration: 0.8,
-        ease: "power2.in",
-      });
+      // 1. Spiderweb expands.
 
-      // 1. PORTRAIT SLIDES DOWN FIRST.
+      tl.to(
+        spiderWeb,
+        {
+          autoAlpha: 0.75,
+          scale: 0.5,
+          duration: 1.2,
+          ease: "power2.out",
+        },
+        0,
+      );
+
+      // 2. Portrait slides up.
+
       tl.to(portrait, {
-        yPercent: -20,
+        y: 0,
         duration: 2.5,
         ease: "none",
       });
 
-      // 3. INDEPENDENT DEVELOPER LABEL.
+      // 3. Independent developer label.
+
       tl.to(
         independentLabel,
         {
@@ -212,13 +163,14 @@ export default function PortfolioHeroDark() {
           x: 0,
           y: 0,
           duration: 0.5,
+          stagger: 0.1,
           ease: "power3.out",
-          force3D: true,
         },
         ">",
       );
 
-      // 4. HEADLINE REVEALS LINE BY LINE.
+      // 4. Headline reveal.
+
       tl.to(
         leftHeadline,
         {
@@ -228,12 +180,12 @@ export default function PortfolioHeroDark() {
           duration: 0.65,
           stagger: 0.16,
           ease: "power3.out",
-          force3D: true,
         },
         ">",
       );
 
-      // 5. INTRO PARAGRAPH.
+      // 5. Introduction paragraph.
+
       tl.to(
         leftIntro,
         {
@@ -242,56 +194,24 @@ export default function PortfolioHeroDark() {
           y: 0,
           duration: 0.7,
           ease: "power3.out",
-          force3D: true,
         },
         ">",
       );
 
-      // 2. Reveal the thread's endpoint.
-      tl.to(
-        dropEnd,
-        {
-          autoAlpha: 1,
-          duration: 0.15,
-        },
-        "<",
-      );
+      // PORTRAIT PARALLAX
 
-      // Spider web expands after the portrait reveal.
-      tl.to(spiderWeb, {
-        autoAlpha: 0.75,
-        scale: 1,
-        duration: 1.2,
-        ease: "power2.out",
+      gsap.to(portraitParallax, {
+        y: () => window.innerHeight * 0.12,
+        ease: "none",
         force3D: true,
-      });
-
-      // --------------------------------------------------
-      // POST-PIN PARALLAX
-      // --------------------------------------------------
-
-      // Animate the OUTER wrapper so this does not overwrite
-      // the inner portrait's entrance transform.
-      gsap.fromTo(
-        portraitParallax,
-        { y: 0 },
-        {
-          y: 550,
-          ease: "none",
-          force3D: true,
-          scrollTrigger: {
-            trigger: hero,
-            start: "bottom bottom",
-            end: "bottom top",
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
+        scrollTrigger: {
+          trigger: hero,
+          start: "top top",
+          end: "+=180%",
+          scrub: 1,
+          invalidateOnRefresh: true,
         },
-      );
-
-      // --------------------------------------------------
-      // REFRESH AFTER LAYOUT
-      // --------------------------------------------------
+      });
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -311,79 +231,55 @@ export default function PortfolioHeroDark() {
       <section
         ref={heroRef}
         aria-label="Introduction"
-        className="relative mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
+        className="relative isolate mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
       >
-        {/* Main hero composition */}
-        <div className="relative z-50 grid min-h-[calc(100svh-var(--navbar-height))] w-full grid-cols-1 items-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
-          <div
-            data-hero-frame
-            aria-hidden="true"
-            className="absolute left-1/2 top-1/2 z-0 h-[340px] w-[340px] min-h-[340px] min-w-[340px] max-h-none max-w-none -translate-x-1/2 -translate-y-1/2 sm:h-[400px] sm:w-[400px] sm:min-h-[400px] sm:min-w-[400px]"
+        {/* SPIDERWEB
+            Sibling of the composition and panel.
+            Above the panel, but doesn't raise the portrait. */}
+
+        <svg
+          data-hero-spiderweb
+          aria-hidden="true"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+          className="pointer-events-none absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]"
+        >
+          <g
+            fill="none"
+            stroke="#F15A36"
+            strokeWidth="0.25"
+            strokeLinejoin="round"
           >
-            {/* Spider-web trails */}
+            {Array.from({ length: 8 }, (_, index) => {
+              const angle = (index * Math.PI) / 4 - Math.PI / 8;
+              const x = Number((50 + Math.cos(angle) * 400).toFixed(4));
+              const y = Number((50 + Math.sin(angle) * 400).toFixed(4));
 
-            {/* Spider-web trails */}
+              return (
+                <line key={`spoke-${index}`} x1="50" y1="50" x2={x} y2={y} />
+              );
+            })}
 
-            <svg
-              data-hero-spiderweb
-              aria-hidden="true"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              className="pointer-events-none absolute inset-0 z-0 h-full w-full overflow-visible"
-            >
-              <g
-                fill="none"
-                stroke="#F15A36"
-                strokeWidth="0.25"
-                strokeLinejoin="round"
-              >
-                {/* 8 extended radial division lines */}
-                {Array.from({ length: 8 }, (_, index) => {
-                  const angle = (index * Math.PI) / 4 - Math.PI / 8;
-                  const x = Number((50 + Math.cos(angle) * 350).toFixed(4));
-                  const y = Number((50 + Math.sin(angle) * 350).toFixed(4));
+            {[10, 18, 26, 34, 42, 50, 60, 70].map((radius, ringIndex) => {
+              const points = Array.from({ length: 8 }, (_, index) => {
+                const angle = (index * Math.PI) / 4 - Math.PI / 8;
+                const x = Number((50 + Math.cos(angle) * radius).toFixed(4));
+                const y = Number((50 + Math.sin(angle) * radius).toFixed(4));
 
-                  return (
-                    <line
-                      key={`spoke-${index}`}
-                      data-web-thread
-                      x1="50"
-                      y1="50"
-                      x2={x}
-                      y2={y}
-                    />
-                  );
-                })}
+                return `${x},${y}`;
+              }).join(" ");
 
-                {/* 8 concentric web rings */}
-                {[10, 18, 26, 34, 42, 50, 60, 70].map((radius, ringIndex) => {
-                  const points = Array.from({ length: 8 }, (_, index) => {
-                    const angle = (index * Math.PI) / 4 - Math.PI / 8;
-                    const x = Number(
-                      (50 + Math.cos(angle) * radius).toFixed(4),
-                    );
-                    const y = Number(
-                      (50 + Math.sin(angle) * radius).toFixed(4),
-                    );
+              return <polygon key={`ring-${ringIndex}`} points={points} />;
+            })}
+          </g>
+        </svg>
 
-                    return `${x},${y}`;
-                  }).join(" ");
+        {/* MAIN HERO COMPOSITION */}
 
-                  return (
-                    <polygon
-                      key={`ring-${ringIndex}`}
-                      data-web-ring
-                      points={points}
-                    />
-                  );
-                })}
-              </g>
-            </svg>
-          </div>
+        <div className="relative z-20 grid min-h-[calc(100svh-var(--navbar-height))] min-h-[calc(100dvh-var(--navbar-height))] w-full grid-cols-1 items-center justify-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
+          {/* HEADLINE AND INTRODUCTION */}
 
-          {/* Top on mobile: identity and introduction */}
-
-          <div className="relative z-30 order-2 flex w-full flex-col justify-center pb-4 sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
+          <div className="relative z-30 order-1 flex w-full flex-col justify-start sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
             <div data-hero-independent className="ml-2">
               <SectionLabel number="01">Independent web developer</SectionLabel>
             </div>
@@ -392,49 +288,34 @@ export default function PortfolioHeroDark() {
               <span data-hero-ramil className="text-[#F5F0E7]">
                 BUILDING{" "}
               </span>
+
               <span data-hero-aoanan className="text-[#F5F0E7]">
                 FOR THE{" "}
               </span>
+
               <span data-hero-better className="text-[#F15A36]">
                 BETTER{" "}
               </span>
+
               <span data-hero-web className="text-[#F5F0E7]">
                 WEB.
               </span>
             </h1>
-
-            <p
-              data-hero-intro
-              className="mt-5 max-w-[410px] text-sm leading-7 text-[#A5A19A] sm:text-base sm:leading-8"
-            >
-              I&apos;m Ramil — a web developer who brings together thoughtful
-              design, modern technology, and practical solutions to build
-              meaningful digital experiences.
-            </p>
           </div>
 
-          {/* Portrait and frame */}
+          {/* PORTRAIT */}
 
           <div
             data-hero-portrait
-            className="
-    pointer-events-none relative z-50
-    order-1 mx-auto flex
-    h-[min(78vw,380px)] w-full max-w-[440px]
-    shrink-0 items-start justify-center
-    md:absolute md:left-[66.6667%] md:top-0
-    md:order-none md:h-[100svh] md:w-[664px]
-    md:max-w-none md:-translate-x-1/2
-  "
+            className="pointer-events-none relative z-10 order-3 mx-auto flex h-[min(78vw,380px)] w-full max-w-[440px] shrink-0 items-end justify-center md:absolute md:inset-y-0 md:left-[66.6667%] md:order-none md:h-full md:w-[664px] md:max-w-none md:-translate-x-1/2"
           >
             <div
               data-hero-portrait-parallax
-              className="absolute inset-x-0 top-0 h-full"
+              className="absolute inset-x-0 bottom-0 h-full"
             >
-              {/* Portrait */}
               <div
                 data-hero-portrait-visual
-                className="absolute inset-x-0 top-0 z-10 mx-auto h-full w-full"
+                className="absolute inset-x-0 bottom-0 z-10 mx-auto h-full w-full"
               >
                 <Image
                   src="/images/profile.png"
@@ -442,58 +323,47 @@ export default function PortfolioHeroDark() {
                   fill
                   priority
                   sizes="(max-width: 767px) 100vw, 40vw"
-                  className="rotate-180 object-contain object-top"
+                  className="object-contain object-bottom"
                 />
               </div>
-
-              {/* Falling thread: centered over the portrait */}
-              <svg
-                data-hero-drop-thread
-                aria-hidden="true"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-              >
-                <line
-                  data-hero-drop-line
-                  x1="50"
-                  y1="-300"
-                  x2="50"
-                  y2="250"
-                  stroke="#F15A36"
-                  strokeWidth="0.25"
-                />
-
-                <circle
-                  data-hero-drop-end
-                  cx="50"
-                  cy="250"
-                  r="0.8"
-                  fill="#F15A36"
-                />
-              </svg>
             </div>
           </div>
 
-          {/* Animated scroll indicator */}
-          <div className="pointer-events-none absolute bottom-1/2 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-3 md:flex">
+          <div className="relative z-30 order-2 flex w-full flex-col justify-center sm:pt-0 md:order-none md:col-start-3 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:justify-end md:py-8 md:pl-8 md:text-left lg:pl-10">
+            <p
+              data-hero-intro
+              className="max-w-[410px] pb-12 text-sm leading-7 text-[#A5A19A] sm:text-base sm:leading-8"
+            >
+              I&apos;m Ramil — a web developer who brings together thoughtful
+              design, modern technology, and practical solutions to build
+              meaningful digital experiences.
+            </p>
+          </div>
+          {/* SCROLL INDICATOR */}
+
+          <div className="pointer-events-none absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-3 text-center ">
             <span className="text-[9px] font-medium uppercase tracking-[0.24em] text-[#A5A19A]/70">
               Scroll to explore
             </span>
 
             <div className="relative flex h-12 w-7 justify-center overflow-hidden rounded-full border border-white/15 bg-[#191C1D]/80 p-2">
-              <span className="h-2 w-1 rounded-full bg-[#F15A36] animate-scroll-wheel" />
+              <span className="h-2 w-1 animate-scroll-wheel rounded-full bg-[#F15A36]" />
             </div>
 
             <ArrowDown size={13} className="animate-bounce text-[#F15A36]/70" />
           </div>
         </div>
-        {/* Developer information panel */}
+
+        {/* DEVELOPER INFORMATION PANEL
+            Above the portrait, below the spiderweb. */}
+
         <div className="relative z-30 -mx-8 border-t border-white/[0.10] bg-[#191C1D]/95 px-8 py-8 sm:-mx-12 sm:px-12 md:-mx-16 md:px-16 lg:-mx-20 lg:px-20 xl:-mx-24 xl:px-24">
           <div className="mx-auto max-w-[1552px]">
-            {/* Key information */}
+            {/* KEY INFORMATION */}
+
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-0">
               {/* Experience */}
+
               <div className="flex items-center gap-4 sm:pr-6 lg:pr-10">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-[#F15A36]/25 bg-[#F15A36]/[0.06]">
                   <span className="font-mono text-lg font-medium tracking-tight text-[#F15A36]">
@@ -512,6 +382,7 @@ export default function PortfolioHeroDark() {
               </div>
 
               {/* Specialty */}
+
               <div className="flex items-center gap-4 border-white/[0.10] sm:border-l sm:px-6 lg:px-10">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.02]">
                   <Layers3 size={20} className="text-[#F15A36]" />
@@ -528,6 +399,7 @@ export default function PortfolioHeroDark() {
               </div>
 
               {/* Availability */}
+
               <div className="flex items-center gap-4 border-white/[0.10] sm:border-l sm:pl-6 lg:pl-10">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-white/[0.10] bg-white/[0.02]">
                   <span className="relative flex h-2.5 w-2.5">
@@ -547,7 +419,8 @@ export default function PortfolioHeroDark() {
               </div>
             </div>
 
-            {/* Technology stack */}
+            {/* TECHNOLOGY STACK */}
+
             <div className="mt-8 flex flex-col gap-5 border-t border-white/[0.10] pt-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-3">
                 <Sparkles size={16} className="shrink-0 text-[#F15A36]" />
