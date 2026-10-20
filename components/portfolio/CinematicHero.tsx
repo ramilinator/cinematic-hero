@@ -138,7 +138,7 @@ export default function PortfolioHeroDark() {
         {
           x: 0,
           y: 0,
-          scale: 0.45,
+          scale: 0.35,
           duration: 1.2,
           ease: "power2.inOut",
         },
@@ -149,13 +149,13 @@ export default function PortfolioHeroDark() {
         portrait,
         {
           autoAlpha: 1,
-          xPercent: 28,
+          x: () => hero.clientWidth,
           yPercent: 5,
           scale: 1,
         },
         {
           autoAlpha: 1,
-          xPercent: 0,
+          x: 0,
           yPercent: 0,
           scale: 1,
           duration: 1.2,
@@ -194,7 +194,7 @@ export default function PortfolioHeroDark() {
       // --------------------------------------------------
 
       gsap.to(portraitParallax, {
-        yPercent: -8,
+        yPercent: 100,
         ease: "none",
         scrollTrigger: {
           trigger: hero,
@@ -227,11 +227,11 @@ export default function PortfolioHeroDark() {
 
         <div
           data-hero-spider-effects
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]"
         >
-          <SpiderWeb className="absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />
+          <SpiderWeb className="absolute inset-0 h-full w-full overflow-visible" />
 
-          <WebDroppingSpider className="absolute left-1/2 top-[33.3333%] z-20 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />
+          <WebDroppingSpider className="absolute inset-0 z-10 h-full w-full overflow-visible" />
         </div>
 
         {/* MAIN HERO COMPOSITION */}

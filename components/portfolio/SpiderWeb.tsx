@@ -89,7 +89,7 @@ export default function SpiderWeb({ className = "" }: SpiderWebProps) {
             duration: 1.5,
             ease: "power2.out",
           },
-          index * 0.2,
+          2 + index * 0.2,
         );
       });
 

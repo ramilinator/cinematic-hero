@@ -34,7 +34,7 @@ export default function WebDroppingSpider({
       });
 
       gsap.set(spider, {
-        y: -65,
+        y: -100,
         opacity: 0,
         scale: 0.7,
         visibility: "visible",
@@ -106,8 +106,8 @@ export default function WebDroppingSpider({
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
       >
-        <line ref={threadRef} x1="50" y1="-15" x2="50" y2="43" />
-
+        // Extend the thread above the SVG viewport.
+        <line ref={threadRef} x1="50" y1="-100" x2="50" y2="43" />
         <g ref={spiderRef}>
           <path
             d="M50 43 C53 43 54 46 53 49 L50 52 L47 49 C46 46 47 43 50 43Z"
