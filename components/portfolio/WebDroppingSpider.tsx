@@ -1,4 +1,3 @@
-// WebDroppingSpider.tsx
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
@@ -17,6 +16,7 @@ export default function WebDroppingSpider({
 }: WebDroppingSpiderProps) {
   const spiderRef = useRef<SVGGElement>(null);
   const threadRef = useRef<SVGLineElement>(null);
+  const hasPlayedRef = useRef(false);
 
   useLayoutEffect(() => {
     const spider = spiderRef.current;
@@ -30,19 +30,20 @@ export default function WebDroppingSpider({
       gsap.set(thread, {
         strokeDasharray: threadLength,
         strokeDashoffset: threadLength,
+        visibility: "visible",
       });
 
       gsap.set(spider, {
         y: -65,
         opacity: 0,
         scale: 0.7,
+        visibility: "visible",
         transformOrigin: "50px 50px",
       });
 
       const timeline = gsap.timeline({
         delay,
-        repeat: -1,
-        repeatDelay: 1.5,
+        repeat: 0,
       });
 
       timeline
@@ -80,15 +81,10 @@ export default function WebDroppingSpider({
           duration: 0.25,
           ease: "elastic.out(1, 0.5)",
         })
-        .to({}, { duration: 1.5 })
-        .to(spider, {
-          y: -65,
+        .to(thread, {
           opacity: 0,
-          duration: 0.65,
-          ease: "power2.in",
-        })
-        .set(thread, {
-          strokeDashoffset: threadLength,
+          duration: 0.5,
+          ease: "power1.out",
         });
     });
 
@@ -105,23 +101,22 @@ export default function WebDroppingSpider({
       <g
         fill="none"
         stroke="#F15A36"
-        strokeWidth="0.65"
+        strokeWidth="0.25"
         strokeLinecap="round"
         strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
       >
         <line ref={threadRef} x1="50" y1="-15" x2="50" y2="43" />
 
         <g ref={spiderRef}>
-          {/* Futuristic spider body */}
           <path
             d="M50 43 C53 43 54 46 53 49 L50 52 L47 49 C46 46 47 43 50 43Z"
             fill="#191C1D"
+            strokeWidth="0.35"
           />
 
-          {/* Glowing-looking orange core */}
           <circle cx="50" cy="46.5" r="1.1" fill="#F15A36" stroke="none" />
 
-          {/* Eight angular robotic legs */}
           <path d="M48 44 L45 42 L42 44" />
           <path d="M47 46 L44 46 L42 49" />
           <path d="M48 48 L45 50 L44 53" />

@@ -9,7 +9,6 @@ import { ArrowDown, Layers3, Sparkles } from "lucide-react";
 import WebDroppingSpider from "@/components/portfolio/WebDroppingSpider";
 import SpiderWeb from "@/components/portfolio/SpiderWeb";
 
-<SpiderWeb className="pointer-events-none absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />;
 gsap.registerPlugin(ScrollTrigger);
 
 const technologies = [
@@ -48,10 +47,12 @@ export default function PortfolioHeroDark() {
     const ctx = gsap.context(() => {
       const select = gsap.utils.selector(hero);
 
-      const independentLabel = select(
-        "[data-hero-independent]",
-      ) as HTMLElement[];
+      // Shared wrapper: moves the web and spider together.
+      const spiderEffects = hero.querySelector<HTMLElement>(
+        "[data-hero-spider-effects]",
+      );
 
+      // Portrait entrance and its separate parallax wrapper.
       const portrait = select("[data-hero-portrait-visual]")[0] as
         | HTMLElement
         | undefined;
@@ -60,146 +61,141 @@ export default function PortfolioHeroDark() {
         | HTMLElement
         | undefined;
 
-      const leftHeadline = [
-        ...select("[data-hero-ramil]"),
-        ...select("[data-hero-aoanan]"),
-        ...select("[data-hero-better]"),
-        ...select("[data-hero-web]"),
-      ] as HTMLElement[];
+      // The complete left and right text columns.
+      const leftText = select("[data-hero-left-text]")[0] as
+        | HTMLElement
+        | undefined;
 
-      const leftIntro = select("[data-hero-intro]") as HTMLElement[];
+      const rightText = select("[data-hero-right-text]")[0] as
+        | HTMLElement
+        | undefined;
 
-      const spiderWeb = hero.querySelector<SVGSVGElement>(
-        "[data-hero-spiderweb]",
-      );
-
-      if (!portrait || !portraitParallax || !spiderWeb) {
+      if (
+        !spiderEffects ||
+        !portrait ||
+        !portraitParallax ||
+        !leftText ||
+        !rightText
+      ) {
         return;
       }
 
-      // INITIAL STATES
+      // Calculate the starting offset relative to the hero.
+      // The effects start centered, then travel to their
+      // existing CSS position in the upper-left third.
+      const getCenterOffsetX = () => hero.clientWidth / 6;
 
-      gsap.set(independentLabel, {
-        autoAlpha: 0,
-        x: -25,
-        y: 8,
-        force3D: true,
-      });
+      const getCenterOffsetY = () => hero.clientHeight / 6;
 
-      gsap.set(leftHeadline, {
-        autoAlpha: 0,
-        x: -35,
-        y: 12,
-        force3D: true,
-      });
-
-      gsap.set(leftIntro, {
-        autoAlpha: 0,
-        x: -20,
-        y: 12,
-        force3D: true,
-      });
-
-      gsap.set(portraitParallax, {
-        y: 0,
-        force3D: true,
-      });
-
-      gsap.set(spiderWeb, {
-        autoAlpha: 0,
-        scale: 0.15,
+      // Initial state: centered web and spider at normal scale.
+      gsap.set(spiderEffects, {
+        x: getCenterOffsetX,
+        y: getCenterOffsetY,
+        scale: 0.75,
+        autoAlpha: 1,
         transformOrigin: "50% 50%",
         force3D: true,
       });
 
-      // PINNED HERO TIMELINE
+      // Initial portrait state.
+      gsap.set(portrait, {
+        autoAlpha: 0,
+        yPercent: 20,
+        scale: 0.9,
+        transformOrigin: "50% 50%",
+        force3D: true,
+      });
 
+      // Hide both text columns without removing them
+      // from the layout.
+      gsap.set(leftText, {
+        autoAlpha: 0,
+        x: -35,
+      });
+
+      gsap.set(rightText, {
+        autoAlpha: 0,
+        x: 35,
+      });
+
+      // Main scroll-controlled timeline.
       const tl = gsap.timeline({
-        defaults: {
-          overwrite: "auto",
-        },
         scrollTrigger: {
           trigger: hero,
           start: "top top",
           end: "+=180%",
           pin: true,
           scrub: 1,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      // 1. Spiderweb expands.
-
+      // 1. Web + spider move together from center to upper-left.
+      // Web + spider move to the upper-left third while scaling down.
+      // Web and spider move and scale down while the portrait slides in.
       tl.to(
-        spiderWeb,
+        spiderEffects,
         {
-          autoAlpha: 0.75,
-          scale: 0.5,
+          x: 0,
+          y: 0,
+          scale: 0.45,
+          duration: 1.2,
+          ease: "power2.inOut",
+        },
+        0,
+      );
+
+      tl.fromTo(
+        portrait,
+        {
+          autoAlpha: 1,
+          xPercent: 28,
+          yPercent: 5,
+          scale: 1,
+        },
+        {
+          autoAlpha: 1,
+          xPercent: 0,
+          yPercent: 0,
+          scale: 1,
           duration: 1.2,
           ease: "power2.out",
         },
         0,
       );
 
-      // 2. Portrait slides up.
-
-      tl.to(portrait, {
-        y: 0,
-        duration: 2.5,
-        ease: "none",
-      });
-
-      // 3. Independent developer label.
-
+      // 3. Left text appears after both animations finish.
       tl.to(
-        independentLabel,
+        leftText,
         {
           autoAlpha: 1,
           x: 0,
-          y: 0,
-          duration: 0.5,
-          stagger: 0.1,
-          ease: "power3.out",
+          duration: 0.6,
+          ease: "power2.out",
         },
-        ">",
+        1.2,
       );
 
-      // 4. Headline reveal.
-
+      // 4. Right text appears last.
       tl.to(
-        leftHeadline,
+        rightText,
         {
           autoAlpha: 1,
           x: 0,
-          y: 0,
-          duration: 0.65,
-          stagger: 0.16,
-          ease: "power3.out",
+          duration: 0.6,
+          ease: "power2.out",
         },
-        ">",
+        1.8,
       );
 
-      // 5. Introduction paragraph.
-
-      tl.to(
-        leftIntro,
-        {
-          autoAlpha: 1,
-          x: 0,
-          y: 0,
-          duration: 0.7,
-          ease: "power3.out",
-        },
-        ">",
-      );
-
+      // --------------------------------------------------
       // PORTRAIT PARALLAX
+      // Keep this separate from the entrance animation.
+      // --------------------------------------------------
 
       gsap.to(portraitParallax, {
-        y: () => window.innerHeight * 0.12,
+        yPercent: -8,
         ease: "none",
-        force3D: true,
         scrollTrigger: {
           trigger: hero,
           start: "top top",
@@ -209,14 +205,12 @@ export default function PortfolioHeroDark() {
         },
       });
 
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+      // Recalculate the centered starting position when
+      // the viewport changes size.
+      ScrollTrigger.refresh();
     }, hero);
 
-    return () => {
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -229,23 +223,27 @@ export default function PortfolioHeroDark() {
         aria-label="Introduction"
         className="relative isolate mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
       >
-        <div className="pointer-events-none absolute inset-0">
+        {/* SPIDER WEB + DROPPING SPIDER */}
+
+        <div
+          data-hero-spider-effects
+          className="pointer-events-none absolute inset-0"
+        >
           <SpiderWeb className="absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />
 
-          <WebDroppingSpider
-            className="absolute left-1/2 top-[33.3333%] z-20 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]"
-            duration={1.2}
-            delay={0.3}
-          />
+          <WebDroppingSpider className="absolute left-1/2 top-[33.3333%] z-20 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />
         </div>
 
         {/* MAIN HERO COMPOSITION */}
 
         <div className="relative z-20 grid min-h-[calc(100svh-var(--navbar-height))] min-h-[calc(100dvh-var(--navbar-height))] w-full grid-cols-1 items-center justify-center gap-8 pt-8 md:grid-cols-3 md:gap-8 md:pt-0 lg:gap-12 xl:gap-16">
-          {/* HEADLINE AND INTRODUCTION */}
+          {/* LEFT: HEADLINE AND LABEL */}
 
-          <div className="relative z-30 order-1 flex w-full flex-col justify-start sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10">
-            <div data-hero-independent className="ml-2">
+          <div
+            data-hero-left-text
+            className="relative z-30 order-1 flex w-full flex-col justify-start sm:pt-0 md:order-none md:col-start-1 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:py-8 md:pr-8 md:text-left lg:pr-10"
+          >
+            <div className="ml-2">
               <SectionLabel number="01">Independent web developer</SectionLabel>
             </div>
 
@@ -268,7 +266,7 @@ export default function PortfolioHeroDark() {
             </h1>
           </div>
 
-          {/* PORTRAIT */}
+          {/* CENTER: PORTRAIT */}
 
           <div
             data-hero-portrait
@@ -294,7 +292,12 @@ export default function PortfolioHeroDark() {
             </div>
           </div>
 
-          <div className="relative z-30 order-2 flex w-full flex-col justify-center sm:pt-0 md:order-none md:col-start-3 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:justify-end md:py-8 md:pl-8 md:text-left lg:pl-10">
+          {/* RIGHT: INTRODUCTION */}
+
+          <div
+            data-hero-right-text
+            className="relative z-30 order-2 flex w-full flex-col justify-center sm:pt-0 md:order-none md:col-start-3 md:row-start-1 md:min-h-[calc(100svh-var(--navbar-height))] md:items-start md:justify-end md:py-8 md:pl-8 md:text-left lg:pl-10"
+          >
             <p
               data-hero-intro
               className="max-w-[410px] pb-12 text-sm leading-7 text-[#A5A19A] sm:text-base sm:leading-8"
@@ -304,9 +307,10 @@ export default function PortfolioHeroDark() {
               meaningful digital experiences.
             </p>
           </div>
+
           {/* SCROLL INDICATOR */}
 
-          <div className="pointer-events-none absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-3 text-center ">
+          <div className="pointer-events-none absolute bottom-6 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-3 text-center">
             <span className="text-[9px] font-medium uppercase tracking-[0.24em] text-[#A5A19A]/70">
               Scroll to explore
             </span>
@@ -319,8 +323,7 @@ export default function PortfolioHeroDark() {
           </div>
         </div>
 
-        {/* DEVELOPER INFORMATION PANEL
-            Above the portrait, below the spiderweb. */}
+        {/* DEVELOPER INFORMATION PANEL */}
 
         <div className="relative z-30 -mx-8 border-t border-white/[0.10] bg-[#191C1D]/95 px-8 py-8 sm:-mx-12 sm:px-12 md:-mx-16 md:px-16 lg:-mx-20 lg:px-20 xl:-mx-24 xl:px-24">
           <div className="mx-auto max-w-[1552px]">
@@ -340,6 +343,7 @@ export default function PortfolioHeroDark() {
                   <p className="text-sm font-semibold text-[#F5F0E7]">
                     Years of experience
                   </p>
+
                   <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
                     Building responsive web experiences
                   </p>
@@ -357,6 +361,7 @@ export default function PortfolioHeroDark() {
                   <p className="text-sm font-semibold text-[#F5F0E7]">
                     Frontend development
                   </p>
+
                   <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
                     Thoughtful, user-focused interfaces
                   </p>
@@ -377,6 +382,7 @@ export default function PortfolioHeroDark() {
                   <p className="text-sm font-semibold text-[#F5F0E7]">
                     Available for opportunities
                   </p>
+
                   <p className="mt-1 text-xs leading-5 text-[#A5A19A]">
                     Open to projects and collaborations
                   </p>
@@ -394,6 +400,7 @@ export default function PortfolioHeroDark() {
                   <p className="text-xs font-semibold text-[#F5F0E7]">
                     Technologies I work with
                   </p>
+
                   <p className="mt-1 text-[10px] text-[#77766F]">
                     Continuously learning and improving
                   </p>
@@ -411,6 +418,7 @@ export default function PortfolioHeroDark() {
                         index === 0 ? "bg-[#F15A36]" : "bg-white/25"
                       }`}
                     />
+
                     {technology}
                   </span>
                 ))}
