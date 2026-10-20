@@ -6,7 +6,10 @@ import type { ReactNode } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown, Layers3, Sparkles } from "lucide-react";
+import WebDroppingSpider from "@/components/portfolio/WebDroppingSpider";
+import SpiderWeb from "@/components/portfolio/SpiderWeb";
 
+<SpiderWeb className="pointer-events-none absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />;
 gsap.registerPlugin(ScrollTrigger);
 
 const technologies = [
@@ -49,10 +52,6 @@ export default function PortfolioHeroDark() {
         "[data-hero-independent]",
       ) as HTMLElement[];
 
-      const spiderWeb = hero.querySelector<SVGSVGElement>(
-        "[data-hero-spiderweb]",
-      );
-
       const portrait = select("[data-hero-portrait-visual]")[0] as
         | HTMLElement
         | undefined;
@@ -69,6 +68,10 @@ export default function PortfolioHeroDark() {
       ] as HTMLElement[];
 
       const leftIntro = select("[data-hero-intro]") as HTMLElement[];
+
+      const spiderWeb = hero.querySelector<SVGSVGElement>(
+        "[data-hero-spiderweb]",
+      );
 
       if (!portrait || !portraitParallax || !spiderWeb) {
         return;
@@ -94,13 +97,6 @@ export default function PortfolioHeroDark() {
         autoAlpha: 0,
         x: -20,
         y: 12,
-        force3D: true,
-      });
-
-      gsap.set(portrait, {
-        y: () => window.innerHeight + portrait.offsetHeight,
-        scale: 1,
-        transformOrigin: "50% 50%",
         force3D: true,
       });
 
@@ -233,46 +229,15 @@ export default function PortfolioHeroDark() {
         aria-label="Introduction"
         className="relative isolate mx-auto grid min-h-[100svh] w-full max-w-[1800px] grid-rows-[1fr_auto] overflow-hidden px-8 pt-[var(--navbar-height)] sm:px-12 md:px-16 lg:px-20 xl:px-24"
       >
-        {/* SPIDERWEB
-            Sibling of the composition and panel.
-            Above the panel, but doesn't raise the portrait. */}
+        <div className="pointer-events-none absolute inset-0">
+          <SpiderWeb className="absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]" />
 
-        <svg
-          data-hero-spiderweb
-          aria-hidden="true"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="xMidYMid meet"
-          className="pointer-events-none absolute left-1/2 top-[33.3333%] z-10 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]"
-        >
-          <g
-            fill="none"
-            stroke="#F15A36"
-            strokeWidth="0.25"
-            strokeLinejoin="round"
-          >
-            {Array.from({ length: 8 }, (_, index) => {
-              const angle = (index * Math.PI) / 4 - Math.PI / 8;
-              const x = Number((50 + Math.cos(angle) * 400).toFixed(4));
-              const y = Number((50 + Math.sin(angle) * 400).toFixed(4));
-
-              return (
-                <line key={`spoke-${index}`} x1="50" y1="50" x2={x} y2={y} />
-              );
-            })}
-
-            {[10, 18, 26, 34, 42, 50, 60, 70].map((radius, ringIndex) => {
-              const points = Array.from({ length: 8 }, (_, index) => {
-                const angle = (index * Math.PI) / 4 - Math.PI / 8;
-                const x = Number((50 + Math.cos(angle) * radius).toFixed(4));
-                const y = Number((50 + Math.sin(angle) * radius).toFixed(4));
-
-                return `${x},${y}`;
-              }).join(" ");
-
-              return <polygon key={`ring-${ringIndex}`} points={points} />;
-            })}
-          </g>
-        </svg>
+          <WebDroppingSpider
+            className="absolute left-1/2 top-[33.3333%] z-20 h-[min(100vw,100svh)] w-[min(100vw,100svh)] max-w-none -translate-x-1/2 -translate-y-1/2 overflow-visible md:left-[33.3333%]"
+            duration={1.2}
+            delay={0.3}
+          />
+        </div>
 
         {/* MAIN HERO COMPOSITION */}
 
