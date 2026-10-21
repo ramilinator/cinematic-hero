@@ -22,11 +22,11 @@ type Spoke = {
 };
 
 const CENTER = 50;
-const SPOKE_ANGLE = 40;
+const SPOKE_ANGLE = -75;
 const LINE_COUNT = 4;
 const SPOKE_STEP = 45;
 const EDGE_RADIUS = 50;
-const SPOKE_GAP = 0.06;
+const SPOKE_GAP = 0.25;
 
 const SPOKE_COLOR = "#F15A36";
 const SPOKE_WIDTH = 0.1;
@@ -146,25 +146,31 @@ function getOctagonPoint(radius: number, index: number): Point {
 }
 
 function createWebbingPaths(): string[] {
-  return RADII.map((radius) => {
-    const points = Array.from({ length: SPOKE_COUNT }, (_, index) =>
-      getOctagonPoint(radius, index),
-    );
+  const commands: string[] = ["M 50 50"];
 
-    return [
-      `M ${points[0].x} ${points[0].y}`,
-      ...points.slice(1).map((point) => `L ${point.x} ${point.y}`),
-      "Z",
-    ].join(" ");
+  RADII.forEach((radius, roundIndex) => {
+    const direction = roundIndex % 2 === 0 ? 1 : -1;
+    const startIndex = direction === 1 ? 0 : SPOKE_COUNT - 1;
+
+    const start = getOctagonPoint(radius, startIndex);
+    commands.push(`L ${start.x} ${start.y}`);
+
+    for (let step = 1; step <= SPOKE_COUNT; step++) {
+      const index = (startIndex + direction * step + SPOKE_COUNT) % SPOKE_COUNT;
+
+      const point = getOctagonPoint(radius, index);
+      commands.push(`L ${point.x} ${point.y}`);
+    }
   });
-}
 
+  return [commands.join(" ")];
+}
 const WEBBING_PATHS = createWebbingPaths();
 
 export default function WebbingSpider({
   className = "",
   spokeDuration = 2,
-  webbingDuration = 8,
+  webbingDuration = 12,
   delay = 0,
 }: WebbingSpiderProps) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -178,23 +184,24 @@ export default function WebbingSpider({
         svg.querySelectorAll<SVGLineElement>("[data-spoke]"),
       );
 
-      const webbingPaths = Array.from(
-        svg.querySelectorAll<SVGPathElement>("[data-webbing]"),
-      );
+      const webbingPath = svg.querySelector<SVGPathElement>("[data-webbing]");
 
       const spider = svg.querySelector<SVGGElement>("[data-drawing-spider]");
 
-      if (
-        !spider ||
-        spokes.length !== LINE_COUNT ||
-        webbingPaths.length !== RADII.length
-      ) {
+      if (!spider || !webbingPath || spokes.length !== LINE_COUNT) {
         return;
       }
 
+      const webbingLength = webbingPath.getTotalLength();
+
+      // Prepare the single continuous webbing path.
+      gsap.set(webbingPath, {
+        strokeDasharray: `${webbingLength} ${webbingLength}`,
+        strokeDashoffset: webbingLength,
+      });
+
       // Prepare the spokes.
-      // Only the designated spoke uses solid endpoint animation.
-      const spokeLengths = spokes.map((spoke, index) => {
+      spokes.forEach((spoke, index) => {
         const length = spoke.getTotalLength();
 
         if (index === CLEAN_SPOKE_ID) {
@@ -215,18 +222,6 @@ export default function WebbingSpider({
             strokeDashoffset: length,
           });
         }
-
-        return length;
-      });
-
-      // Prepare the octagonal webbing.
-      webbingPaths.forEach((path) => {
-        const length = path.getTotalLength();
-
-        gsap.set(path, {
-          strokeDasharray: `${length} ${length}`,
-          strokeDashoffset: length,
-        });
       });
 
       const firstStart = SPOKES[0].start;
@@ -243,46 +238,12 @@ export default function WebbingSpider({
         defaults: { ease: "none" },
       });
 
-      // -----------------------------------------------------
-      // STAGE 1: animate all four spokes.
-      // The designated spoke grows as a solid line.
-      // Other spokes keep their original dash reveal.
-      // -----------------------------------------------------
-
-      // Prepare spokes.
-      spokes.forEach((spoke, index) => {
-        const length = spoke.getTotalLength();
-
-        if (index === CLEAN_SPOKE_ID) {
-          const { start } = SPOKES[index];
-
-          // Remove all dash styling from this spoke.
-          spoke.removeAttribute("stroke-dasharray");
-          spoke.removeAttribute("stroke-dashoffset");
-
-          gsap.set(spoke, {
-            clearProps: "strokeDasharray,strokeDashoffset",
-            attr: {
-              x1: start.x,
-              y1: start.y,
-              x2: start.x,
-              y2: start.y,
-            },
-          });
-        } else {
-          gsap.set(spoke, {
-            strokeDasharray: `${length} ${length}`,
-            strokeDashoffset: length,
-          });
-        }
-      });
-
-      // Stage 1: animate the spokes.
+      // STAGE 1: Animate the spokes.
       spokes.forEach((spoke, index) => {
         const { start, end } = SPOKES[index];
         const length = spoke.getTotalLength();
         const progress = { value: 0 };
-        const startTime = index === 0 ? 0 : `+=${SPOKE_GAP}`;
+        const isCleanSpoke = index === CLEAN_SPOKE_ID;
 
         timeline.set(
           spider,
@@ -291,18 +252,49 @@ export default function WebbingSpider({
             y: start.y,
             visibility: "visible",
           },
-          startTime,
+          index === 0 ? 0 : `+=${SPOKE_GAP}`,
         );
 
-        if (index === CLEAN_SPOKE_ID) {
-          // Solid-line reveal: no dash animation.
-          timeline.to(
-            progress,
+        if (isCleanSpoke) {
+          timeline.set(
+            spoke,
             {
-              value: 1,
-              duration: spokeDuration,
-              ease: "none",
-              onUpdate: () => {
+              attr: {
+                x1: start.x,
+                y1: start.y,
+                x2: start.x,
+                y2: start.y,
+              },
+              strokeDasharray: "none",
+              strokeDashoffset: 0,
+            },
+            "<",
+          );
+        } else {
+          timeline.set(
+            spoke,
+            {
+              attr: {
+                x1: start.x,
+                y1: start.y,
+                x2: end.x,
+                y2: end.y,
+              },
+              strokeDasharray: `${length} ${length}`,
+              strokeDashoffset: length,
+            },
+            "<",
+          );
+        }
+
+        timeline.to(
+          progress,
+          {
+            value: 1,
+            duration: spokeDuration,
+            ease: "none",
+            onUpdate: () => {
+              if (isCleanSpoke) {
                 const x = start.x + (end.x - start.x) * progress.value;
                 const y = start.y + (end.y - start.y) * progress.value;
 
@@ -311,19 +303,7 @@ export default function WebbingSpider({
                 });
 
                 gsap.set(spider, { x, y });
-              },
-            },
-            "<",
-          );
-        } else {
-          // Keep the original animation for the other spokes.
-          timeline.to(
-            progress,
-            {
-              value: 1,
-              duration: spokeDuration,
-              ease: "none",
-              onUpdate: () => {
+              } else {
                 const point = spoke.getPointAtLength(progress.value * length);
 
                 gsap.set(spoke, {
@@ -334,99 +314,70 @@ export default function WebbingSpider({
                   x: point.x,
                   y: point.y,
                 });
-              },
-            },
-            "<",
-          );
-        }
-      });
-
-      // -----------------------------------------------------
-      // STAGE 2: trace the octagonal rings from inside out.
-      // -----------------------------------------------------
-
-      const ringDuration = webbingDuration / webbingPaths.length;
-
-      webbingPaths.forEach((path) => {
-        const length = path.getTotalLength();
-        const progress = { value: 0 };
-        const startPoint = path.getPointAtLength(0);
-
-        timeline.set(spider, {
-          visibility: "visible",
-          x: startPoint.x,
-          y: startPoint.y,
-        });
-
-        timeline.to(path, {
-          strokeDashoffset: 0,
-          duration: ringDuration,
-          ease: "none",
-        });
-
-        timeline.to(
-          progress,
-          {
-            value: length,
-            duration: ringDuration,
-            ease: "none",
-            onUpdate: () => {
-              const point = path.getPointAtLength(progress.value);
-
-              gsap.set(spider, {
-                x: point.x,
-                y: point.y,
-              });
+              }
             },
           },
           "<",
         );
+
+        // Hide the spider for 1 second after every spoke.
+        timeline.set(spider, { visibility: "hidden" });
+        timeline.to({}, { duration: 1 });
+
+        // After the last spoke, reveal the spider and return it to center.
+        if (index === spokes.length - 1) {
+          timeline.set(spider, {
+            visibility: "visible",
+          });
+
+          timeline.to(spider, {
+            x: CENTER,
+            y: CENTER,
+            duration: 0.8,
+            ease: "power2.inOut",
+          });
+        }
+
+        // The next spoke's existing timeline.set() makes it visible again.
       });
 
-      // Return the spider to the web center along the nearest spoke.
-      const nearestSpoke = SPOKES.reduce(
-        (nearest, spoke) => {
-          const midpoint = {
-            x: (spoke.start.x + spoke.end.x) / 2,
-            y: (spoke.start.y + spoke.end.y) / 2,
-          };
+      // STAGE 2: Organic, spider-like webbing speed.
 
-          const nearestDistance = Math.hypot(
-            nearest.x - CENTER,
-            nearest.y - CENTER,
-          );
-          const currentDistance = Math.hypot(
-            midpoint.x - CENTER,
-            midpoint.y - CENTER,
-          );
+      const segmentCount = RADII.length * (SPOKE_COUNT + 1);
+      const segmentDuration = webbingDuration / segmentCount;
 
-          return currentDistance < nearestDistance ? midpoint : nearest;
-        },
-        { x: Infinity, y: Infinity },
-      );
-
-      const returnSpoke = spokes[0];
-      const returnLength = returnSpoke.getTotalLength();
-      const centerDistance = returnLength / 2;
+      const webProgress = { value: 0 };
 
       timeline.to(
-        { progress: 0 },
+        webProgress,
         {
-          progress: 1,
-          duration: 0.6,
-          ease: "power1.inOut",
-          onUpdate() {
-            const point = returnSpoke.getPointAtLength(
-              returnLength * (1 - this.progress()) +
-                centerDistance * this.progress(),
-            );
+          value: webbingLength,
+          duration: webbingDuration,
+          ease: "none",
+          onUpdate: () => {
+            const distance = webProgress.value;
 
-            gsap.set(spider, { x: point.x, y: point.y });
+            gsap.set(webbingPath, {
+              strokeDashoffset: webbingLength - distance,
+            });
+
+            const point = webbingPath.getPointAtLength(distance);
+
+            gsap.set(spider, {
+              x: point.x,
+              y: point.y,
+            });
           },
         },
+        "+=0.2",
       );
-
-      // Keep the spider visible after the final ring.
+      // STAGE 3: Return the spider to the center after webbing is complete.
+      timeline.to(spider, {
+        x: CENTER,
+        y: CENTER,
+        duration: 0.8,
+        ease: "power2.inOut",
+      });
     }, svg);
 
     return () => {
@@ -461,9 +412,13 @@ export default function WebbingSpider({
           />
         ))}
 
-        {WEBBING_PATHS.map((path, index) => (
-          <path key={index} data-webbing d={path} strokeWidth={WEBBING_WIDTH} />
-        ))}
+        <path
+          key="webbing"
+          data-webbing
+          d={WEBBING_PATHS[0]}
+          fill="none"
+          strokeWidth={WEBBING_WIDTH}
+        />
       </g>
 
       <g
@@ -475,19 +430,14 @@ export default function WebbingSpider({
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {/* Left legs */}
         <path d="M 0 0 L -1.2 -1.1 L -2.2 -1.1" />
         <path d="M 0 0 L -1.5 -0.3 L -2.5 0.1" />
         <path d="M 0 0 L -1.5 0.4 L -2.3 1.2" />
         <path d="M 0 0 L -1.1 1 L -1.7 2" />
-
-        {/* Right legs */}
         <path d="M 0 0 L 1.2 -1.1 L 2.2 -1.1" />
         <path d="M 0 0 L 1.5 -0.3 L 2.5 0.1" />
         <path d="M 0 0 L 1.5 0.4 L 2.3 1.2" />
         <path d="M 0 0 L 1.1 1 L 1.7 2" />
-
-        {/* Body and head */}
         <ellipse cx="0" cy="0" rx="0.65" ry="0.9" fill={SPOKE_COLOR} />
         <circle cx="0" cy="-0.85" r="0.4" fill={SPOKE_COLOR} />
       </g>
