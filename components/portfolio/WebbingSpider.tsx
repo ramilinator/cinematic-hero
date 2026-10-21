@@ -3,55 +3,59 @@
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 
-type WebDroppingSpiderProps = {
+type WebbingSpiderProps = {
   className?: string;
-  duration?: number;
+  spokeDuration?: number;
+  webbingDuration?: number;
   delay?: number;
 };
-
-const CENTER = 50;
-const SPOKE_ANGLE = 40;
-const LINE_COUNT = 4;
-const SPOKE_STEP = 45;
-const COORDINATE_EPSILON = 1e-10;
 
 type Point = {
   x: number;
   y: number;
 };
 
-type WebPath = {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
+type Spoke = {
+  id: number;
+  start: Point;
+  end: Point;
 };
 
-/**
- * Normalize floating-point coordinates to prevent hydration mismatches.
- * For example, 7.105427357601002e-15 becomes exactly 0.
- */
-function normalizeCoordinate(value: number): number {
-  if (Math.abs(value) < COORDINATE_EPSILON) return 0;
+const CENTER = 50;
+const SPOKE_ANGLE = 40;
+const LINE_COUNT = 4;
+const SPOKE_STEP = 45;
+const EDGE_RADIUS = 50;
+const SPOKE_GAP = 0.06;
 
-  if (Math.abs(value - 100) < COORDINATE_EPSILON) {
-    return 100;
-  }
+const SPOKE_COLOR = "#F15A36";
+const SPOKE_WIDTH = 0.1;
+const WEBBING_WIDTH = 0.1;
 
-  // Remove insignificant floating-point precision while preserving
-  // sufficient accuracy for SVG geometry.
-  return Math.round(value * 1e10) / 1e10;
+const SPOKE_COUNT = 8;
+const EPSILON = 1e-8;
+
+// Radii increase outward from the center, stopping inside the viewBox.
+const RADII = [3, 4.5, 6, 8, 10.5, 13.5, 17, 21, 25, 29, 33, 37, 41, 45, 48];
+
+function normalize(value: number): number {
+  if (Math.abs(value) < EPSILON) return 0;
+  if (Math.abs(value - 100) < EPSILON) return 100;
+
+  return Math.round(value * 1e8) / 1e8;
 }
 
 function getEdgePoint(angleDegrees: number): Point {
   const angle = (angleDegrees * Math.PI) / 180;
   const dx = Math.cos(angle);
   const dy = Math.sin(angle);
-  const scale = CENTER / Math.max(Math.abs(dx), Math.abs(dy));
+
+  // Extend each line to the edge of the square SVG viewBox.
+  const scale = EDGE_RADIUS / Math.max(Math.abs(dx), Math.abs(dy));
 
   return {
-    x: normalizeCoordinate(CENTER + dx * scale),
-    y: normalizeCoordinate(CENTER + dy * scale),
+    x: normalize(CENTER + dx * scale),
+    y: normalize(CENTER + dy * scale),
   };
 }
 
@@ -59,242 +63,249 @@ function distance(a: Point, b: Point): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-// Four edge-to-edge lines create eight evenly spaced spokes.
-const allLines = Array.from({ length: LINE_COUNT }, (_, index) => {
-  const start = getEdgePoint(SPOKE_ANGLE + index * SPOKE_STEP);
-  const end = getEdgePoint(SPOKE_ANGLE + index * SPOKE_STEP + 180);
+/**
+ * STAGE 1
+ * Generate the original edge-to-edge spokes and preserve
+ * the nearest-endpoint drawing order.
+ */
+function createSpokes(): Spoke[] {
+  const allLines = Array.from({ length: LINE_COUNT }, (_, index) => {
+    const angle = SPOKE_ANGLE + index * SPOKE_STEP;
 
-  return { start, end };
-});
+    return {
+      start: getEdgePoint(angle),
+      end: getEdgePoint(angle + 180),
+    };
+  });
 
-// Order lines by the nearest endpoint to create a continuous route.
-function createWebPaths(): WebPath[] {
-  const paths: WebPath[] = [];
   const remaining = [...allLines];
+  const ordered: Spoke[] = [];
+
   let current = getEdgePoint(SPOKE_ANGLE);
 
   while (remaining.length > 0) {
-    let bestIndex = 0;
+    let closestIndex = 0;
+    let closestDistance = Infinity;
     let reverse = false;
-    let bestDistance = Infinity;
 
     remaining.forEach((line, index) => {
       const startDistance = distance(current, line.start);
       const endDistance = distance(current, line.end);
 
-      if (startDistance < bestDistance) {
-        bestDistance = startDistance;
-        bestIndex = index;
+      if (startDistance < closestDistance) {
+        closestDistance = startDistance;
+        closestIndex = index;
         reverse = false;
       }
 
-      if (endDistance < bestDistance) {
-        bestDistance = endDistance;
-        bestIndex = index;
+      if (endDistance < closestDistance) {
+        closestDistance = endDistance;
+        closestIndex = index;
         reverse = true;
       }
     });
 
-    const [line] = remaining.splice(bestIndex, 1);
+    const [line] = remaining.splice(closestIndex, 1);
 
     const start = reverse ? line.end : line.start;
     const end = reverse ? line.start : line.end;
 
-    paths.push({
-      x1: normalizeCoordinate(start.x),
-      y1: normalizeCoordinate(start.y),
-      x2: normalizeCoordinate(end.x),
-      y2: normalizeCoordinate(end.y),
+    ordered.push({
+      id: ordered.length,
+      start,
+      end,
     });
 
     current = end;
   }
 
-  return paths;
+  return ordered;
 }
 
-const WEB_PATHS = createWebPaths();
+const SPOKES = createSpokes();
 
-export default function WebDroppingSpider({
+/**
+ * STAGE 2
+ * Derive the eight radial directions directly from the
+ * actual edge-to-edge spokes.
+ *
+ * Each of the four lines supplies two opposite directions.
+ */
+function getSpokeDirections(): number[] {
+  const directions: number[] = [];
+
+  SPOKES.forEach(({ start, end }) => {
+    directions.push(
+      Math.atan2(start.y - CENTER, start.x - CENTER),
+      Math.atan2(end.y - CENTER, end.x - CENTER),
+    );
+  });
+
+  const fullTurn = Math.PI * 2;
+
+  return directions
+    .map((angle) => ((angle % fullTurn) + fullTurn) % fullTurn)
+    .sort((a, b) => a - b);
+}
+
+const SPOKE_DIRECTIONS = getSpokeDirections();
+
+/**
+ * Find a point on a particular spoke direction at a given
+ * distance from the center.
+ *
+ * Every ring corner therefore lies directly on a spoke.
+ */
+function getOctagonPoint(radius: number, index: number): Point {
+  const angle = SPOKE_DIRECTIONS[index];
+
+  return {
+    x: normalize(CENTER + Math.cos(angle) * radius),
+    y: normalize(CENTER + Math.sin(angle) * radius),
+  };
+}
+
+/**
+ * Generate one closed octagonal ring per radius.
+ *
+ * The corners follow the actual spoke directions, so each
+ * ring intersects all eight radial directions.
+ */
+function createWebbingPaths(): string[] {
+  return RADII.map((radius) => {
+    const points = Array.from({ length: SPOKE_COUNT }, (_, index) =>
+      getOctagonPoint(radius, index),
+    );
+
+    const first = points[0];
+
+    const commands = [
+      `M ${first.x} ${first.y}`,
+      ...points.slice(1).map((point) => `L ${point.x} ${point.y}`),
+      "Z",
+    ];
+
+    return commands.join(" ");
+  });
+}
+
+const WEBBING_PATHS = createWebbingPaths();
+
+export default function WebbingSpider({
   className = "",
-  duration = 1.2,
+  spokeDuration = 0.45,
+  webbingDuration = 8,
   delay = 0,
-}: WebDroppingSpiderProps) {
-  const spiderRef = useRef<SVGGElement>(null);
-  const threadRefs = useRef<(SVGLineElement | null)[]>([]);
+}: WebbingSpiderProps) {
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useLayoutEffect(() => {
-    const spider = spiderRef.current;
-    const lines = threadRefs.current.slice(0, WEB_PATHS.length);
+    const svg = svgRef.current;
 
-    if (!spider || lines.length !== WEB_PATHS.length) return;
-    if (lines.some((line) => line === null)) return;
+    if (!svg) return;
 
-    const validLines = lines as SVGLineElement[];
+    const context = gsap.context(() => {
+      const spokes = Array.from(
+        svg.querySelectorAll<SVGLineElement>("[data-spoke]"),
+      );
 
-    const ctx = gsap.context(() => {
-      // Prepare all web lines for drawing.
-      validLines.forEach((line) => {
-        const length = line.getTotalLength();
+      const webbingPaths = Array.from(
+        svg.querySelectorAll<SVGPathElement>("[data-webbing]"),
+      );
 
-        gsap.set(line, {
+      if (
+        spokes.length !== LINE_COUNT ||
+        webbingPaths.length !== RADII.length
+      ) {
+        return;
+      }
+
+      // Prepare edge-to-edge spokes for line-by-line drawing.
+      spokes.forEach((spoke) => {
+        const length = spoke.getTotalLength();
+
+        gsap.set(spoke, {
           strokeDasharray: length,
           strokeDashoffset: length,
           visibility: "visible",
         });
       });
 
-      // The spider's original geometry is centered around (50, 48).
-      gsap.set(spider, {
-        x: WEB_PATHS[0].x1 - CENTER,
-        y: WEB_PATHS[0].y1 - 48,
-        opacity: 0,
-        scale: 0.7,
-        visibility: "visible",
-        transformOrigin: "50px 48px",
+      // Prepare every octagonal ring for progressive drawing.
+      webbingPaths.forEach((path) => {
+        const length = path.getTotalLength();
+
+        gsap.set(path, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
+          visibility: "visible",
+        });
       });
 
-      const timeline = gsap.timeline({ delay });
+      const timeline = gsap.timeline({
+        delay,
+        defaults: {
+          ease: "none",
+        },
+      });
 
-      WEB_PATHS.forEach((path, index) => {
-        const line = validLines[index];
-
-        const startX = path.x1 - CENTER;
-        const startY = path.y1 - 48;
-        const endX = path.x2 - CENTER;
-        const endY = path.y2 - 48;
-
-        // Move to the beginning of the next web strand.
-        if (index > 0) {
-          timeline.set(spider, {
-            x: startX,
-            y: startY,
-          });
-        }
-
-        // Reveal the spider at the first endpoint.
-        if (index === 0) {
-          timeline.to(spider, {
-            opacity: 1,
-            duration: 0.15,
-            ease: "power1.out",
-          });
-        }
-
-        // Draw each edge-to-edge silk strand.
+      // STAGE 1: draw each complete edge-to-edge line.
+      spokes.forEach((spoke, index) => {
         timeline.to(
-          line,
+          spoke,
           {
             strokeDashoffset: 0,
-            duration,
-            ease: "power2.out",
+            duration: spokeDuration,
           },
-          index === 0 ? "<" : ">",
+          index === 0 ? 0 : `+=${SPOKE_GAP}`,
         );
-
-        // Crawl along the strand while it is being drawn.
-        timeline.to(
-          spider,
-          {
-            x: endX,
-            y: endY,
-            scale: 1,
-            duration,
-            ease: "power2.out",
-          },
-          "<",
-        );
-
-        // Small endpoint movement.
-        timeline.to(spider, {
-          y: endY + 1,
-          duration: 0.1,
-          ease: "power1.out",
-        });
-
-        timeline.to(spider, {
-          y: endY,
-          duration: 0.15,
-          ease: "power1.inOut",
-        });
       });
 
-      // Return to the center and remain visible.
-      timeline.to(spider, {
-        x: 0,
-        y: CENTER - 48,
-        opacity: 1,
-        scale: 1,
-        duration: duration * 0.8,
-        ease: "power2.inOut",
+      // STAGE 2: draw closed octagonal rings from inside outward.
+      // Each ring starts after the previous ring is completed.
+      webbingPaths.forEach((path) => {
+        timeline.to(path, {
+          strokeDashoffset: 0,
+          duration: webbingDuration / webbingPaths.length,
+        });
       });
-    });
+    }, svg);
 
     return () => {
-      ctx.revert();
+      context.revert();
     };
-  }, [duration, delay]);
+  }, [spokeDuration, webbingDuration, delay]);
 
   return (
     <svg
+      ref={svgRef}
       aria-hidden="true"
+      data-hero-spiderweb
       viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      className={`pointer-events-none absolute inset-0 h-full w-full overflow-visible ${className}`}
+      preserveAspectRatio="xMidYMid meet"
+      className={`pointer-events-none ${className}`}
     >
-      {/* Web strands */}
       <g
         fill="none"
-        stroke="#F15A36"
-        strokeWidth="0.1"
+        stroke={SPOKE_COLOR}
+        strokeWidth={SPOKE_WIDTH}
         strokeLinecap="round"
         strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
       >
-        {WEB_PATHS.map((path, index) => (
+        {SPOKES.map(({ id, start, end }) => (
           <line
-            key={index}
-            ref={(element) => {
-              threadRefs.current[index] = element;
-            }}
-            x1={path.x1}
-            y1={path.y1}
-            x2={path.x2}
-            y2={path.y2}
+            key={id}
+            data-spoke
+            x1={start.x}
+            y1={start.y}
+            x2={end.x}
+            y2={end.y}
           />
         ))}
-      </g>
 
-      {/* Independent spider styling */}
-      <g
-        ref={spiderRef}
-        fill="none"
-        stroke="#F15A36"
-        strokeWidth="0.35"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-      >
-        {/* Spider body */}
-        <path
-          d="M50 43 C53 43 54 46 53 49 L50 52 L47 49 C46 46 47 43 50 43Z"
-          fill="#191C1D"
-        />
-
-        {/* Head */}
-        <circle cx="50" cy="46.5" r="1.1" fill="#F15A36" stroke="none" />
-
-        {/* Left legs */}
-        <path d="M48 44 L45 42 L42 44" />
-        <path d="M47 46 L44 46 L42 49" />
-        <path d="M48 48 L45 50 L44 53" />
-        <path d="M49 50 L48 52 L46 54" />
-
-        {/* Right legs */}
-        <path d="M52 44 L55 42 L58 44" />
-        <path d="M53 46 L56 46 L58 49" />
-        <path d="M52 48 L55 50 L56 53" />
-        <path d="M51 50 L52 52 L54 54" />
+        {WEBBING_PATHS.map((path, index) => (
+          <path key={index} data-webbing d={path} strokeWidth={WEBBING_WIDTH} />
+        ))}
       </g>
     </svg>
   );
